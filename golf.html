@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore Webill Golf Estate: 16 residential blocks of 14 storeys, service quarters Q1–Q6, a clubhouse, and restaurant.">
+  <title>Webill Golf Estate · Webill Spatial Explorer</title>
+  <style>
+    :root { color-scheme: light; --ink:#213a3e; --muted:#6d7e80; --line:#dbe4e3; --accent:#117c70; --soft:#f3f7f6; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:28px; background:#edf2f1; color:var(--ink); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    button,select,a { -webkit-tap-highlight-color:transparent; }
+    button,select { font:inherit; color:inherit; }
+    button { cursor:pointer; }
+    button,a,select,canvas { outline-offset:4px; }
+    :focus-visible { outline:2px solid var(--accent); }
+    button { background:white; border:1px solid var(--line); border-radius:7px; padding:9px 12px; transition:background .15s,border-color .15s; }
+    button:hover { background:var(--soft); border-color:#a6beb8; }
+    button[aria-pressed="true"] { border-color:var(--accent); color:#086356; background:#e8f3ef; }
+    button:disabled { opacity:.4; cursor:default; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    h1,h2,h3,p { margin:0; }
+    #golf-explorer { max-width:1536px; margin:auto; border:1px solid #d2dfdc; border-radius:16px; overflow:hidden; background:white; box-shadow:0 15px 55px #193e3610; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:19px 27px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .wordmark { font-size:23px; font-weight:760; letter-spacing:-1.2px; }
+    .wordmark i { color:var(--accent); font-style:normal; }
+    .brand-divider { height:20px; width:1px; background:var(--line); }
+    .overline { font-size:10px; font-weight:650; letter-spacing:1.7px; text-transform:uppercase; color:var(--muted); }
+    .top-actions { display:flex; align-items:center; gap:18px; font-size:12px; }
+    .concept { display:flex; align-items:center; gap:6px; color:var(--muted); }
+    .concept::before { content:""; width:6px; height:6px; border-radius:50%; background:#b5a071; }
+    .intro { display:flex; align-items:center; justify-content:space-between; gap:22px; padding:27px 28px 25px; }
+    h1 { font-size:34px; font-weight:600; line-height:1.2; letter-spacing:-1.15px; margin-bottom:7px; }
+    .muted { color:var(--muted); font-size:12px; }
+    .intro p { color:var(--muted); font-size:13px; }
+    .stats { display:flex; gap:30px; }
+    .stat strong { display:block; font-size:25px; font-weight:550; letter-spacing:-.8px; }
+    .stat span { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.9px; }
+    .tabs { display:flex; gap:0; padding:0 28px; border-bottom:1px solid var(--line); overflow-x:auto; }
+    .tabs button { border:0; border-bottom:2px solid transparent; border-radius:0; background:none; padding:13px 17px; white-space:nowrap; font-size:12px; color:var(--muted); }
+    .tabs button:first-child { padding-left:0; padding-right:23px; }
+    .tabs button[aria-pressed="true"] { color:var(--accent); border-bottom-color:var(--accent); }
+    .dot { display:inline-block; width:7px; height:7px; border-radius:2px; background:var(--dot,var(--accent)); margin-right:7px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 318px; align-items:stretch; }
+    .stage { position:relative; min-width:0; background:#f3f7f6; }
+    .toolbar { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:18px 22px 4px; position:relative; z-index:1; }
+    .selectors { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .toolbar select { background:#ffffffdd; border:1px solid var(--line); border-radius:6px; padding:8px 24px 8px 10px; font-size:12px; max-width:210px; }
+    .toolbar button { font-size:11px; white-space:nowrap; }
+    .model-wrap { position:relative; }
+    canvas { display:block; width:100%; height:590px; touch-action:none; cursor:grab; }
+    canvas.dragging { cursor:grabbing; }
+    .model-caption { position:absolute; top:18px; left:24px; pointer-events:none; }
+    .model-caption strong { display:block; font-size:12px; font-weight:550; margin-top:4px; }
+    .compass { position:absolute; bottom:23px; left:25px; width:38px; height:38px; display:grid; place-items:center; color:#77908a; font-size:10px; border:1px solid #d4e1de; border-radius:50%; pointer-events:none; }
+    .camera { position:absolute; right:22px; bottom:20px; display:flex; gap:5px; }
+    .camera button { width:34px; height:34px; padding:0; font-size:17px; background:#ffffffeb; }
+    .camera #reset { width:auto; padding:0 10px; font-size:11px; }
+    .tooltip { position:absolute; pointer-events:none; background:#213a3e; color:white; font-size:11px; padding:6px 9px; border-radius:5px; max-width:230px; z-index:3; box-shadow:0 4px 15px #213a3e24; }
+    [hidden] { display:none !important; }
+    .stage-footer { display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; padding:0 23px 18px; }
+    .hint { font-size:10px; color:var(--muted); }
+    .legend { display:flex; gap:12px; flex-wrap:wrap; font-size:10px; color:#5f7471; }
+    .legend .dot { width:6px; height:6px; margin-right:4px; }
+    aside { background:#fff; border-left:1px solid var(--line); padding:24px 23px; max-height:740px; overflow-y:auto; scrollbar-width:thin; }
+    aside h2 { font-size:21px; font-weight:550; line-height:1.3; letter-spacing:-.5px; margin:7px 0 9px; }
+    aside h3 { font-size:11px; font-weight:650; margin:23px 0 10px; text-transform:uppercase; letter-spacing:1px; }
+    .directory { display:grid; gap:8px; margin-top:20px; }
+    .building-card { display:flex; align-items:center; text-align:left; gap:12px; width:100%; padding:13px 12px; }
+    .building-icon { width:30px; height:36px; background:color-mix(in srgb,var(--building),white 86%); color:var(--building); border:1px solid color-mix(in srgb,var(--building),white 63%); display:grid; place-items:center; border-radius:4px; font-size:16px; }
+    .building-card strong { display:block; font-size:12px; font-weight:600; }
+    .building-card small { display:block; font-size:10px; color:var(--muted); margin-top:2px; }
+    .arrow { margin-left:auto; color:#8aa09a; }
+    .services { display:grid; gap:6px; }
+    .services button { text-align:left; font-size:11px; }
+    .note { margin-top:19px; color:var(--muted); font-size:11px; line-height:1.6; }
+    .info-box { margin-top:20px; padding:12px; border-radius:7px; background:var(--soft); color:#5c726c; font-size:11px; }
+    .floor-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+    .floor-grid button { padding:8px 2px; font-size:11px; }
+    .floor-grid button.special { grid-column:span 5; text-align:left; padding:8px 10px; }
+    .space-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-top:12px; }
+    .space-grid button { padding:7px 1px; font-size:10px; }
+    .shop-list { display:grid; gap:5px; max-height:212px; overflow-y:auto; margin-top:12px; padding:2px; }
+    .shop-list button { text-align:left; font-size:11px; padding:7px 9px; }
+    .back { font-size:11px; padding:6px 9px; margin-bottom:13px; }
+    .meter-list { display:grid; gap:5px; margin-top:10px; }
+    .meter-list button { font-size:11px; padding:8px 9px; text-align:left; }
+    .meter-list small { float:right; color:var(--muted); font-size:9px; padding-top:2px; }
+    .meter-detail { margin-top:15px; padding:13px; border:1px solid var(--line); border-radius:7px; }
+    .meter-detail h3 { margin:4px 0 10px; font-size:13px; letter-spacing:0; text-transform:none; overflow-wrap:anywhere; }
+    dl { margin:0; }
+    dl div { display:flex; gap:10px; justify-content:space-between; padding:6px 0; border-bottom:1px solid #edf1ef; font-size:11px; }
+    dt { color:var(--muted); }
+    dd { margin:0; text-align:right; max-width:65%; overflow-wrap:anywhere; }
+    .breadcrumb { color:var(--muted); font-size:10px; }
+    footer { border-top:1px solid var(--line); padding:12px 27px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:10px; color:var(--muted); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(min-width:1400px) { canvas { height:650px; } aside { max-height:800px; } }
+    @media(max-width:1000px) { body { padding:14px; } .layout { grid-template-columns:minmax(0,1fr) 285px; } aside { padding:21px 18px; } .stats { gap:18px; } canvas { height:555px; } .toolbar { flex-wrap:wrap; } }
+    @media(max-width:760px) { body { padding:0; } #golf-explorer { border:0; border-radius:0; } .topbar { padding:14px 18px; } .top-actions { gap:10px; } .concept { display:none; } .brand { gap:9px; } .brand .overline { font-size:8px; } .intro { padding:22px 18px; align-items:flex-start; flex-direction:column; gap:17px; } h1 { font-size:30px; } .stats { gap:27px; } .stat strong { font-size:22px; } .tabs { padding:0 18px; } .tabs button { padding:11px 12px; } .layout { grid-template-columns:1fr; } .toolbar { padding:15px 16px 2px; } .toolbar select { max-width:190px; } canvas { height:480px; } aside { border-left:0; border-top:1px solid var(--line); max-height:none; padding:22px 20px; } .directory { grid-template-columns:1fr 1fr; } .building-card { gap:8px; padding:11px 8px; } .building-icon { display:none; } .space-grid { grid-template-columns:repeat(5,1fr); } .shop-list { max-height:250px; } .stage-footer { padding:0 18px 16px; } footer { padding:14px 18px; } }
+    @media(max-width:380px) { .brand .overline,.brand-divider { display:none; } .stats { width:100%; gap:12px; justify-content:space-between; } }
+    @media(prefers-reduced-motion:reduce) { button { transition:none; } }
+    .block-list { display:grid; gap:5px; max-height:308px; overflow-y:auto; margin:12px 0 0; padding:2px; scrollbar-width:thin; }
+    .block-list button { display:flex; align-items:center; gap:9px; text-align:left; font-size:11px; padding:8px; }
+    .block-code { display:grid; place-items:center; min-width:28px; height:27px; background:#e9f1ec; border-radius:4px; color:#417862; font-size:10px; font-weight:650; }
+    .group-summary { display:flex; justify-content:space-between; align-items:center; padding:12px; margin-top:18px; background:#edf4ef; border:1px solid #d9e7dc; border-radius:7px; }
+    .group-summary strong { font-size:12px; }
+    .quarters-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    .quarters-grid button { padding:9px 0; font-size:12px; }
+    .facility-title { font-size:17px; }
+    @media(max-width:760px) { .block-list { max-height:300px; } .stats { gap:clamp(10px,3vw,22px); } .stat span { max-width:82px; font-size:9px; } .toolbar select { max-width:min(190px,calc((100vw - 46px)/2)); } }
+  
+/* WeBill demo studio navigation */
+.demo-home { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; flex-shrink:0; padding:7px 12px; border:1px solid #faa919; border-radius:8px; background:#faa919; color:#404068; font:600 12px/1.2 ui-sans-serif,system-ui,sans-serif; text-decoration:none; white-space:nowrap; cursor:pointer; transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease; }
+.demo-home svg { width:16px; height:16px; }
+.demo-home:hover { background:#ffca57; border-color:#ffca57; color:#404068; box-shadow:0 0 0 3px #faa91933; text-decoration:none; }
+.demo-home:focus-visible { outline:3px solid #404068; outline-offset:3px; box-shadow:0 0 0 6px #fff; }
+@media(max-width:600px) { .topbar { flex-wrap:wrap; gap:12px; } .top-actions { flex-wrap:wrap; gap:8px; } }
+</style>
+</head>
+<body>
+<main id="golf-explorer">
+  <header class="topbar">
+    <div class="brand"><div class="wordmark">we<i>bill</i><span style="color:#117c70">.</span></div><span class="brand-divider"></span><span class="overline">Spatial explorer</span></div>
+    <div class="top-actions"><a class="demo-home" href="index.html" title="Back to the WeBill demo studio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3V10Zm6 10v-7h6v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span></a><span class="concept">Concept model</span><button type="button" id="download">↓ &nbsp; Download HTML</button></div>
+  </header>
+  <section class="intro" aria-labelledby="page-title">
+    <div><h1 id="page-title">Webill Golf Estate</h1><p>Sixteen towers. Life around the green.</p></div>
+    <div class="stats" aria-label="Estate totals"><div class="stat"><strong>16</strong><span>Residential blocks</span></div><div class="stat"><strong>14</strong><span>Storeys per block</span></div><div class="stat"><strong>6</strong><span>Service quarters</span></div><div class="stat"><strong>2</strong><span>Clubhouse + dining</span></div></div>
+  </section>
+  <nav class="tabs" aria-label="Explore the estate">
+    <button type="button" data-building="site" aria-pressed="true">Estate overview</button>
+    <button type="button" data-group="residential" aria-pressed="false"><i class="dot" style="--dot:#759d90"></i>Residential blocks</button>
+    <button type="button" data-group="quarters" aria-pressed="false"><i class="dot" style="--dot:#b5a188"></i>Service quarters Q1–Q6</button>
+    <button type="button" data-building="clubhouse" aria-pressed="false"><i class="dot" style="--dot:#739eae"></i>Clubhouse</button>
+    <button type="button" data-building="restaurant" aria-pressed="false"><i class="dot" style="--dot:#ccaa77"></i>Restaurant</button>
+  </nav>
+  <div class="layout">
+    <section class="stage" aria-label="Interactive estate model">
+      <div class="toolbar">
+        <div class="selectors"><label class="sr-only" for="building-select">Building</label><select id="building-select"></select><label class="sr-only" for="level-select">Level or service</label><select id="level-select"></select></div>
+        <button type="button" id="flows" aria-pressed="false">⌁ &nbsp; Utility routes</button>
+      </div>
+      <div class="model-wrap">
+        <div class="model-caption"><span class="overline" id="view-mode">Estate / 3D overview</span><strong id="view-caption">Sixteen blocks. One connected estate.</strong></div>
+        <canvas id="golf-canvas" tabindex="0" role="img" aria-describedby="model-help" aria-label="Rotatable 3D estate overview"></canvas>
+        <div id="tooltip" class="tooltip" hidden></div>
+        <div class="compass" aria-hidden="true">↗ N*</div>
+        <div class="camera" aria-label="Camera controls"><button type="button" id="rotate-left" aria-label="Rotate left">↶</button><button type="button" id="rotate-right" aria-label="Rotate right">↷</button><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="reset">Reset view</button></div>
+      </div>
+      <div class="stage-footer"><div id="legend" class="legend"></div><p id="model-help" class="hint">Drag to orbit · Scroll to zoom · Click to explore · Arrow keys rotate</p></div>
+    </section>
+    <aside id="details" aria-label="Selection details" aria-live="polite"></aside>
+  </div>
+  <footer><span>Schematic model · Demo meters and readings · *Illustrative orientation</span><a href="http://localhost:4000/portfolio/tree/01a0a5f8-1993-7e78-bfac-b93b5084231d" target="_blank" rel="noopener">Open estate tree ↗</a></footer>
+</main>
+<noscript>This interactive model requires JavaScript. Webill Golf Estate comprises 16 residential blocks, each with 14 storeys, service quarters Q1–Q6, a clubhouse, and a restaurant.</noscript>
+<script>
+(function golfDemo() {
+  'use strict';
+  // Standalone canvas renderer adapted from precinct.html. No CDN dependencies.
+  // Building names and utilities: lib/wb/demo/estates/golf/constants.ex and setup/factories/.
+  // Massing, amenity heights, utility placement, meter IDs and readings are illustrative.
+  const downloadSource = '<!doctype html>\n' + document.documentElement.outerHTML;
+  const root = document.getElementById('golf-explorer');
+  const canvas = document.getElementById('golf-canvas');
+  const ctx = canvas.getContext('2d');
+  const details = document.getElementById('details');
+  const buildingSelect = document.getElementById('building-select');
+  const levelSelect = document.getElementById('level-select');
+  const tooltip = document.getElementById('tooltip');
+  const utilities = [
+    {id:'water', name:'Water', color:'#3f97c1', unit:'kL', prefix:'W'},
+    {id:'electricity', name:'Electricity', color:'#d79e40', unit:'kWh', prefix:'E'},
+    {id:'alternative', name:'Alternative electricity', short:'Alternative', color:'#4caa87', unit:'kWh', prefix:'A'},
+    {id:'hot-water', name:'Hot water', color:'#d47f69', unit:'kL', prefix:'H'},
+    {id:'gas', name:'Gas', color:'#9888b7', unit:'kg', prefix:'G'}
+  ];
+  // Names and utility types follow lib/wb/demo/estates/golf/constants.ex and its factories.
+  // The requested 14-storey massing overrides the seed's seven paired apartment groups.
+  const residentialNames = [
+    "Gary Player Views",
+    "Ernie Else Vista",
+    "Phil Mickelson Pride",
+    "Tiger Woods Falls",
+    "Pil Mickleson Ciders",
+    "Rory Macilroy Fountain",
+    "Seve Ballasteros Terraces",
+    "Jack Nicklaus Tower",
+    "John Daly Pub",
+    "Sevy Ballestros Safari",
+    "VJ Singh Rotunda",
+    "Bill Hogan's Throne",
+    "Greg Norman Outback",
+    "Brice Keopke Glades",
+    "Jason Day Hills",
+    "Louis Oosthuisen Safari"
+];
+  const residential = residentialNames.map((name,i) => ({
+    id:'r'+String(i+1).padStart(2,'0'), code:'R'+String(i+1).padStart(2,'0'), name, short:'R'+String(i+1).padStart(2,'0'),
+    type:'Residential', color:['#82a59a','#8daeb1','#9db39a','#a1aaba'][i%4],
+    x:[-42,-26,22,38][i%4], z:-35+Math.floor(i/4)*22, w:6.5,d:7,story:1.15,
+    levels:Array.from({length:14},(_,n)=>({id:String(n+1),name:'Floor '+(n+1),short:String(n+1).padStart(2,'0')}))
+  }));
+  const quarters = Array.from({length:6},(_,i)=>({id:'q'+(i+1),code:'Q'+(i+1),name:'Service quarters Q'+(i+1),short:'Q'+(i+1),type:'Service quarters',color:'#bcaa91',x:-15+i*5.2,z:-43,w:4.2,d:5,story:2.5,levels:[{id:'ground',name:'Ground floor',short:'G'}]}));
+  const facilities = [
+    {id:'clubhouse',code:'CL',name:'WeBill Golf Resort Clubhouse',short:'Clubhouse',type:'Clubhouse',color:'#88aebb',x:-12,z:27,w:17,d:10,story:3.4,levels:[{id:'ground',name:'Clubhouse',short:'G'}]},
+    {id:'restaurant',code:'RT',name:'WeBill Value Restaurant',short:'Restaurant',type:'Restaurant',color:'#d1af7e',x:8,z:34,w:11,d:8,story:3,levels:[{id:'ground',name:'Restaurant',short:'G'}]}
+  ];
+  const buildings=[...residential,...quarters,...facilities];
+  const byId=Object.fromEntries(buildings.map(b=>[b.id,b]));
+  const state={building:'site',level:'all',space:null,meter:null,flows:false,yaw:-.48,pitch:.73,zoom:1};
+  const spaces=new Map(),levelSpaces=new Map();
+  const escapeHTML=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const selectedBuilding=()=>byId[state.building];
+  const levelKey=(b,l)=>b.id+':'+l;
+  const isCampus=()=>state.building==='site'&&['all','residential','quarters','landscape'].includes(state.level);
+  const visibleBuildings=()=>state.level==='residential'?residential:state.level==='quarters'?quarters:state.level==='landscape'?[]:buildings;
+  function addSpace(b,level,id,name,kind,types=utilities,role='Submeter') {
+    const s={id:levelKey(b,level)+':'+id,name,kind,building:b.id,level,short:id};
+    s.meters=types.map((u,i)=>({...u,id:b.code+'-'+level.toUpperCase()+'-'+id.toUpperCase()+'-'+u.prefix,role,reading:((spaces.size+1)*137.63+(i+1)*36.7).toFixed(2)}));
+    spaces.set(s.id,s);return s;
+  }
+  for(const b of buildings) {
+    if(b.type==='Residential') {
+      for(const l of b.levels) levelSpaces.set(levelKey(b,l.id),[addSpace(b,l.id,'residence','Level '+l.id+' residence','Residential space')]);
+      levelSpaces.set(levelKey(b,'common'),[addSpace(b,'common','common','Building common areas','Shared services',utilities.slice(0,2))]);
+      levelSpaces.set(levelKey(b,'check'),[addSpace(b,'check','check','Building check meters','Verification',utilities.slice(0,2),'Check meter')]);
+      levelSpaces.set(levelKey(b,'roof'),[addSpace(b,'roof','solar','Rooftop solar','Illustrative generation',[utilities[2]],'Generation meter')]);
+    } else {
+      levelSpaces.set(levelKey(b,'ground'),[addSpace(b,'ground',b.code,b.short,b.type,b.type==='Service quarters'?[utilities[1]]:utilities)]);
+    }
+  }
+  const site={id:'site',code:'GE'};
+  levelSpaces.set('site:supplies',[
+    addSpace(site,'supplies','bulk','Estate bulk supply','Supply boundary',[utilities[0],utilities[1],utilities[4]],'Bulk meter'),
+    addSpace(site,'supplies','check','Estate check meters','Verification',[utilities[0],utilities[1],utilities[4]],'Check meter')
+  ]);
+  levelSpaces.set('site:landscape',[addSpace(site,'landscape','grounds','Golf grounds & irrigation','Illustrative common services',utilities.slice(0,2))]);
+  function levelOptions() {
+    const b=selectedBuilding();
+    if(!b)return [['all','Entire estate'],['residential','Residential blocks'],['quarters','Service quarters Q1–Q6'],['landscape','Golf grounds & landscape'],['supplies','Bulk & check meters']];
+    if(b.type!=='Residential')return [['ground',b.type==='Service quarters'?'Quarters & meter':'Building & meters']];
+    return [['all','Entire building'],...b.levels.map(l=>[l.id,l.name]),['common','Shared common areas'],['check','Building check meters'],['roof','Roof / solar']];
+  }
+  const activeSpaces=()=>levelSpaces.get(state.building+':'+state.level)||[];
+  function resetCamera() {
+    state.yaw=-.48;state.pitch=isCampus()?.73:state.level==='all'?.56:.76;state.zoom=1;requestDraw();
+  }
+  function navigate(building,level='all',space=null) {
+    state.building=building;state.level=level;
+    if(byId[building]&&byId[building].type!=='Residential')state.level='ground';
+    state.space=space;state.meter=null;tooltip.hidden=true;
+    if(byId[building]?.type!=='Residential'&&building!=='site')state.space=activeSpaces()[0].id;
+    resetCamera();renderUI();requestDraw();
+  }
+  function selectSpace(id,meter=null) {state.space=id;state.meter=meter;renderPanel();requestDraw();}
+  function renderUI() {
+    buildingSelect.innerHTML='<option value="site">Entire estate</option>'+[['Residential blocks',residential],['Service quarters',quarters],['Clubhouse & restaurant',facilities]].map(([name,list])=>`<optgroup label="${name}">${list.map(b=>`<option value="${b.id}">${b.code} · ${escapeHTML(b.name)}</option>`).join('')}</optgroup>`).join('');
+    buildingSelect.value=state.building;
+    levelSelect.innerHTML=levelOptions().map(([id,name])=>`<option value="${id}">${name}</option>`).join('');levelSelect.value=state.level;
+    const b=selectedBuilding();
+    root.querySelectorAll('.tabs button').forEach(el=>{
+      const active=el.dataset.group?el.dataset.group===(b?.type==='Residential'?'residential':b?.type==='Service quarters'?'quarters':state.level):el.dataset.building===state.building&&(state.building!=='site'||!['residential','quarters'].includes(state.level));
+      el.setAttribute('aria-pressed',String(active));
+    });
+    document.getElementById('flows').setAttribute('aria-pressed',String(state.flows));
+    const levelName=levelOptions().find(([id])=>id===state.level)[1];
+    document.getElementById('view-mode').textContent=isCampus()?'Estate / 3D masterplan':state.level==='all'?'Residential / 14 storeys':'Building / 3D detail';
+    document.getElementById('view-caption').textContent=b?(b.short+' · '+(state.level==='all'?'14 storeys':levelName)):state.level==='all'?'Sixteen blocks. One connected estate.':levelName;
+    canvas.setAttribute('aria-label',`Rotatable 3D model: ${b?b.name:'Webill Golf Estate'}, ${levelName}. Use the Building and Level selectors or click a structure to explore.`);
+    const legend=state.flows?utilities.map(u=>({name:u.short||u.name,color:u.color})):[{name:'Residential',color:'#82a59a'},{name:'Q1–Q6',color:'#bcaa91'},{name:'Clubhouse',color:'#88aebb'},{name:'Restaurant',color:'#d1af7e'}];
+    document.getElementById('legend').innerHTML=legend.map(l=>`<span><i class="dot" style="--dot:${l.color}"></i>${l.name}</span>`).join('');
+    renderPanel();
+  }
+  function meterButtons(s) {
+    return `<div class="meter-list">${s.meters.map(m=>`<button type="button" data-space="${s.id}" data-meter="${m.id}" aria-pressed="${state.meter===m.id}"><i class="dot" style="--dot:${m.color}"></i>${m.name}<small>${m.unit}</small></button>`).join('')}</div>`;
+  }
+  function meterDetails(s) {
+    if(!s)return '';
+    let html=`<h3>${escapeHTML(s.name)}</h3><p class="muted">${s.kind} · Demo devices</p>${meterButtons(s)}`;
+    const m=s.meters.find(m=>m.id===state.meter);
+    if(m)html+=`<div class="meter-detail"><div class="overline">${m.role}</div><h3>${m.id}</h3><dl><div><dt>Utility</dt><dd>${m.name}</dd></div><div><dt>Location</dt><dd>${escapeHTML(s.name)}</dd></div><div><dt>Sample register</dt><dd>${Number(m.reading).toLocaleString('en-ZA',{minimumFractionDigits:2})} ${m.unit}</dd></div><div><dt>Billing</dt><dd>${m.role==='Check meter'?'Verification only':'Not connected'}</dd></div></dl><p class="note">Illustrative device and reading. ${m.role==='Check meter'?'Checks downstream consumption.':'No live account or tariff is connected.'}</p></div>`;
+    return html;
+  }
+  function blockDirectory() {
+    return `<div class="block-list">${residential.map(b=>`<button type="button" data-building="${b.id}"><span class="block-code">${b.code}</span><span>${escapeHTML(b.name)}</span><span class="arrow">↗</span></button>`).join('')}</div>`;
+  }
+  function quarterDirectory() {
+    return `<div class="quarters-grid">${quarters.map(b=>`<button type="button" data-building="${b.id}" aria-label="Explore ${b.short}">${b.short}</button>`).join('')}</div>`;
+  }
+  function renderPanel() {
+    const b=selectedBuilding(),ss=activeSpaces(),s=spaces.get(state.space);
+    let html='';
+    if(isCampus()&&state.level!=='landscape') {
+      const onlyRes=state.level==='residential',onlyQuarters=state.level==='quarters';
+      html=`<div class="overline">${onlyQuarters?'Service residences':onlyRes?'The residential collection':'The connected estate'}</div><h2>${onlyQuarters?'Service quarters Q1–Q6':onlyRes?'Sixteen blocks.':'Welcome to the green.'}</h2><p class="muted">${onlyQuarters?'Six separate residences with individual electricity meters. Select a quarter to explore.':onlyRes?'Fourteen storeys in every block. Choose a building to explore its levels, common areas, and meters.':'Explore the residential blocks, service quarters, clubhouse, and restaurant around the landscaped grounds.'}</p>`;
+      if(!onlyQuarters)html+=`<div class="group-summary"><strong>16 residential blocks</strong><span class="muted">14 storeys each</span></div>${blockDirectory()}`;
+      if(!onlyRes)html+=`<h3>Service quarters</h3>${quarterDirectory()}<h3>Meet & unwind</h3><div class="services">${facilities.map(f=>`<button type="button" data-building="${f.id}"><i class="dot" style="--dot:${f.color}"></i>${f.short}<span class="arrow"> →</span></button>`).join('')}</div>`;
+      html+=`<h3>Estate services</h3><div class="services"><button type="button" data-level="supplies">Bulk supply & check meters →</button><button type="button" data-level="landscape">Golf grounds & irrigation →</button></div><p class="note">${onlyQuarters?'Quarter layouts are schematic.':'R01–R16 identify the blocks in the model and directory. The estate layout and golf landscape are illustrative.'}</p>`;
+    } else if(b&&b.type==='Residential'&&state.level==='all') {
+      html=`<button type="button" class="back" data-group="residential">← Residential blocks</button><div class="overline">${b.code} / Residential / 14 storeys</div><h2>${escapeHTML(b.name)}</h2><p class="muted">Explore all 14 residential levels, shared common areas, building check meters, and rooftop solar.</p><h3>Choose a level</h3><div class="floor-grid">${[...b.levels].reverse().map(l=>`<button type="button" data-level="${l.id}" aria-label="Explore ${l.name}">${l.short}</button>`).join('')}</div><h3>Building services</h3><div class="services">${levelOptions().filter(([id])=>['common','check','roof'].includes(id)).map(([id,name])=>`<button type="button" data-level="${id}">${name} →</button>`).join('')}</div><div class="info-box">Each storey is represented by one selectable residential space. The model shows 224 residential storeys across the estate.</div><p class="note">Building names follow the estate directory. The 14-storey layout follows the requested model.</p>`;
+    } else {
+      const title=b&&b.type!=='Residential'?b.name:levelOptions().find(([id])=>id===state.level)[1];
+      const back=b?(b.type==='Residential'?`data-level="all"`:`data-group="${b.type==='Service quarters'?'quarters':'all'}"`):'data-level="all"';
+      html=`<button type="button" class="back" ${back}>← ${b?.type==='Residential'?b.code+' · All floors':'Estate overview'}</button><div class="breadcrumb">Webill Golf Estate${b?' / '+b.code:''}</div><h2>${escapeHTML(title)}</h2><p class="muted">${b?.type==='Service quarters'?'Individual service residence · Electricity metering':b?.type==='Clubhouse'?'Shared clubhouse overlooking the greens':b?.type==='Restaurant'?'Estate restaurant and dining terrace':state.level==='landscape'?'Illustrative golf landscape and shared irrigation':state.level==='roof'?'Illustrative solar generation':/^\d+$/.test(state.level)?'Residential space · Five utility types':'Shared estate utilities'}</p>`;
+      if(ss.length>1||!s||b?.type==='Residential')html+=`<h3>Explore spaces</h3><div class="services">${ss.map(space=>`<button type="button" data-space="${space.id}" aria-pressed="${space.id===state.space}">${escapeHTML(space.name)}</button>`).join('')}</div>`;
+      html+=s?meterDetails(s):'<p class="note">Select a space or a colored marker in the model to inspect its meters.</p>';
+      if(['landscape','roof'].includes(state.level))html+='<p class="note">Landscape design, solar equipment, and utility placement are schematic.</p>';
+    }
+    const focused=document.activeElement;
+    const focusKey=details.contains(focused)&&focused.dataset.space?{space:focused.dataset.space,meter:focused.dataset.meter}:null;
+    details.innerHTML=html;
+    if(focusKey)[...details.querySelectorAll('[data-space]')].find(el=>el.dataset.space===focusKey.space&&el.dataset.meter===focusKey.meter)?.focus({preventScroll:true});
+  }
+
+  // Orthographic projection and painter's algorithm, shared by every view.
+  let W=800,H=590,scale=10,offsetX=0,offsetY=0,center=[0,12,0],faces=[],labels=[],routes=[],hits=[],frame=0;
+  let paintGroup=0,paintLayer=0;
+  function project(p) {
+    const x=p[0]-center[0],y=p[1]-center[1],z=p[2]-center[2];
+    const a=x*Math.cos(state.yaw)-z*Math.sin(state.yaw),b=x*Math.sin(state.yaw)+z*Math.cos(state.yaw);
+    return [W/2+offsetX+a*scale,H/2+offsetY+(-y*Math.cos(state.pitch)+b*Math.sin(state.pitch))*scale,b*Math.cos(state.pitch)+y*Math.sin(state.pitch)];
+  }
+  function box(x,y,z,w,h,d,color,action=null,title='',stroke=false) {
+    const verts=[[x,y,z],[x+w,y,z],[x+w,y+h,z],[x,y+h,z],[x,y,z+d],[x+w,y,z+d],[x+w,y+h,z+d],[x,y+h,z+d]];
+    const views=[[[0,1,2,3],.82,-Math.cos(state.yaw)],[[4,7,6,5],.87,Math.cos(state.yaw)],[[0,3,7,4],.72,-Math.sin(state.yaw)],[[1,5,6,2],.94,Math.sin(state.yaw)],[[3,2,6,7],1.07,1]];
+    for (const [indices,shade,facing] of views) {
+      if(facing<=0) continue;
+      const ps=indices.map(i=>project(verts[i]));
+      faces.push({ps,depth:ps.reduce((n,p)=>n+p[2],0)/ps.length,color,shade,action,title,stroke,group:paintGroup,layer:paintLayer});
+    }
+  }
+  function label(text,p,color='#39524c',small=false) { labels.push({text,p:project(p),color,small}); }
+  function route(points,color) { routes.push({points:points.map(project),color}); }
+  function tinted(hex,amount) {
+    const n=parseInt(hex.slice(1),16);
+    return 'rgb('+[n>>16,(n>>8)&255,n&255].map(v=>Math.min(255,Math.round(v*amount))).join(',')+')';
+  }
+  function tree(x,z,size=1) {
+    paintGroup=project([x,0,z])[2];paintLayer=0;
+    box(x,-.02,z,.23,1.2*size,.23,'#9c9b81');
+    paintLayer=1;
+    box(x-.65*size,.75*size,z-.65*size,1.5*size,1.4*size,1.5*size,'#8fae95');
+    paintLayer=2;
+    box(x-.43*size,1.9*size,z-.43*size,1.05*size,.6*size,1.05*size,'#a0b89b');
+  }
+  function solar(x,y,z,w,d,action) {
+    for(let row=0;row<2;row++)for(let col=0;col<4;col++) {
+      const sw=(w-2)/4,sd=(d-2)/2;
+      box(x+1+col*sw,y+.2,z+1+row*sd,sw-.18,.13,sd-.25,'#537d86',action,'Rooftop solar',true);
+    }
+  }
+  function drawBuilding(b,overview) {
+    if(b.type!=='Residential')return drawFacility(b,overview);
+    const x=overview?b.x:-b.w/2,z=overview?b.z:-b.d/2,h=b.levels.length*b.story;
+    const choose=l=>()=>navigate(b.id,l);
+    paintGroup=project([x+b.w/2,0,z+b.d/2])[2];paintLayer=-2;
+    box(x-.4,-.22,z-.4,b.w+.8,.28,b.d+.8,'#c7d4c8',choose('all'),b.name);
+    box(x+1,0,z+b.d,b.w-2,.12,1.5,'#d9ded0',choose('common'),'Shared entrance');
+    for(let i=0;i<14;i++) {
+      const y=i*b.story,l=b.levels[i],act=overview?choose('all'):choose(l.id),title=b.name+' · '+l.name;
+      paintLayer=i*3;box(x,y,z,b.w,.13,b.d,'#e8eee2',act,title);
+      paintLayer++;box(x+.12,y+.13,z+.12,b.w-.24,b.story-.17,b.d-.24,b.color,act,title);
+      paintLayer++;
+      for(let c=1;c<4;c++) {
+        box(x+c*b.w/4,y+.14,z+b.d-.07,.05,b.story-.2,.05,'#dce5da',act,title);
+        box(x-.02,y+.14,z+c*b.d/4,.06,b.story-.2,.05,'#cbdcd2',act,title);
+      }
+      if(!overview&&(i%2===1||i===0))label(l.short,[x+b.w+1.4,y+.55,z+b.d],b.color,true);
+    }
+    paintLayer=43;box(x-.14,h,z-.14,b.w+.28,.2,b.d+.28,'#dbe6da',choose('roof'),'Roof / solar');
+    paintLayer++;solar(x,h+.2,z,b.w,b.d,choose('roof'));
+    if(overview)label(b.code,[x+b.w/2,h+1.6,z+b.d/2],'#3a6253');
+    if(state.flows) {
+      for(const [k,u] of utilities.entries()) {
+        const rx=x-.4-k*.26;
+        route([[rx,.5,z+b.d+.2],[rx,h-.4,z+b.d+.2]],u.color);
+        if(!overview)b.levels.forEach((l,i)=>route([[rx,i*b.story+.5,z+b.d+.2],[x+.3,i*b.story+.5,z+b.d+.2]],u.color));
+      }
+    }
+  }
+  function drawFacility(b,overview) {
+    const x=overview?b.x:-b.w/2,z=overview?b.z:-b.d/2,act=()=>navigate(b.id);
+    const s=levelSpaces.get(levelKey(b,'ground'))[0];
+    const action=overview?act:spaceAction(s);
+    paintGroup=project([x+b.w/2,0,z+b.d/2])[2];paintLayer=-1;
+    box(x-.6,-.2,z-.5,b.w+1.2,.23,b.d+2.5,'#dadbcb',action,b.name);
+    paintLayer=0;box(x,0,z,b.w,b.story,b.d,b.color,action,b.name);
+    paintLayer=1;
+    const count=b.type==='Service quarters'?2:Math.floor(b.w/2.3);
+    for(let i=0;i<count;i++)box(x+.45+i*(b.w-.7)/count,.55,z+b.d+.015,(b.w-.7)/count-.35,b.story-1,.04,'#7c9f9f',action,b.name);
+    paintLayer=2;box(x-.35,b.story,z-.35,b.w+.7,.23,b.d+.7,b.type==='Service quarters'?'#898f81':'#dde4d7',action,b.name);
+    paintLayer=3;
+    if(b.type==='Service quarters')box(x+.1,b.story+.23,z+.25,b.w-.2,.2,b.d-.5,'#a0a28d',action,b.name);
+    else {
+      solar(x+.5,b.story+.24,z+.3,b.w*.58,b.d-.5,action);
+      box(x+b.w*.68,b.story+.24,z+1,b.w*.22,.35,b.d-2,'#afc7c0',action,'Skylight');
+      // A shaded terrace distinguishes the shared facilities from the residential towers.
+      paintLayer=4;
+      for(const xx of [x+.6,x+b.w-.6])box(xx,0,z+b.d+2,.14,b.story-.4,.14,'#b6b59f',action,'Dining terrace');
+      box(x+.3,b.story-.35,z+b.d+.1,b.w-.6,.16,2.5,'#d6d3b9',action,'Covered terrace');
+      for(let i=0;i<3;i++)box(x+1.5+i*(b.w-3)/3,.4,z+b.d+.5,1,.12,1,'#adb7a0',action,'Outdoor seating');
+    }
+    if(!overview) {paintLayer=6;drawMeters(s,x+1,b.story+.65,z+b.d-1.2,b.w>7?1.8:1);}
+    if(!(overview&&b.type==='Service quarters'&&W<600&&state.level!=='quarters'))label(b.short,[x+b.w/2,b.story+(overview?1.7:3),z+b.d/2],b.type==='Service quarters'?'#786f5a':'#496b5a');
+    if(state.flows)s.meters.forEach((m,i)=>route([[x+.5+i*.5,.7,z+b.d],[x+.5+i*.5,.7,z+b.d+3]],m.color));
+  }
+  function groundShape(points,color,layer,action=null,title='') {
+    const ps=points.map(([x,z])=>project([x,-.02,z]));
+    faces.push({ps,color,shade:1,depth:0,action,title,stroke:false,group:-1000000,layer});
+  }
+  function oval(x,z,rx,rz,color,layer,action=null,title='') {
+    groundShape(Array.from({length:40},(_,i)=>[x+Math.cos(i*Math.PI/20)*rx,z+Math.sin(i*Math.PI/20)*rz]),color,layer,action,title);
+  }
+  function golfGrounds() {
+    const action=()=>navigate('site','landscape');
+    groundShape([[-13,-32],[-4,-35],[9,-30],[16,-21],[15,-11],[9,-3],[11,8],[14,17],[10,23],[-2,22],[-10,13],[-16,5],[-14,-6],[-17,-16]],'#aec59b',4,action,'Golf grounds & irrigation');
+    groundShape([[-7,-29],[1,-30],[9,-24],[11,-15],[5,-6],[4,5],[10,16],[6,19],[0,16],[-5,6],[-8,-3],[-6,-15]],'#c2d2ad',5,action,'Illustrative fairway');
+    oval(-2,-23,6,5,'#98b685',6,action,'Putting green');
+    oval(6,14,5,4.5,'#9bb888',6,action,'Putting green');
+    oval(-10,4,4.3,7,'#d1ddc5',6,action,'Pond edge');
+    oval(-10,4,3.6,6.2,'#91bcb9',7,action,'Landscape pond');
+    oval(11,-14,3,2,'#e6ddbd',7,action,'Sand bunker');
+    oval(0,16,2.7,1.6,'#e6ddbd',7,action,'Sand bunker');
+    for(const [x,z] of [[-2,-23],[6,14]]) {
+      paintGroup=project([x,0,z])[2];paintLayer=0;
+      box(x,0,z,.12,2,.12,'#f4f0d8',action,'Golf grounds');
+      paintLayer=1;box(x,1.65,z,.9,.4,.05,'#bc8c63',action,'Golf flag');
+    }
+    if(state.level==='landscape') {
+      const s=activeSpaces()[0];paintGroup=project([-4,0,25])[2];paintLayer=0;
+      box(-6,0,25,5,.7,2,'#b4c3a8',spaceAction(s),'Irrigation services');paintLayer=1;drawMeters(s,-5,.8,25.5,2);
+      label('Irrigation & common services',[-4,2.5,26]);
+    }
+  }
+  function drawEstate() {
+    paintGroup=-1000000;paintLayer=0;
+    if(state.level==='quarters') {
+      box(-17,-.6,-45,36,.3,11,'#d9e3d0');paintLayer++;
+      box(-16,-.28,-44,34,.2,9,'#e3e9d9');
+      for(const q of quarters) {groundShape([[q.x,-37.3],[q.x+4.2,-37.3],[q.x+4.2,-35],[q.x,-35]],'#bacaa6',2);drawFacility(q,true);}
+      for(let i=0;i<7;i++)tree(-16+i*5.3,-34.5,.65);
+      return;
+    }
+    box(-48,-.7,-47,97,.4,95,'#d9e3d1');paintLayer=1;
+    box(-46,-.29,-45,93,.2,91,'#e3e9d9');
+    // Loop drive and central landscaped corridor, all schematic rather than surveyed.
+    groundShape([[-45,-45],[46,-45],[46,44],[-45,44]],'#c6d1c2',2);
+    groundShape([[-43,-42],[44,-42],[44,41],[-43,41]],'#e1e7d6',3);
+    groundShape([[-18,-41],[-15,-41],[-15,43],[-18,43]],'#d4d8c7',3);
+    groundShape([[18,-41],[21,-41],[21,43],[18,43]],'#d4d8c7',3);
+    golfGrounds();
+    if(state.level!=='landscape') {
+      visibleBuildings().forEach(b=>drawBuilding(b,true));
+      if(W<600&&state.level==='all')label('Q1–Q6',[.5,5,-40],'#786f5a');
+      const bulkAction=()=>navigate('site','supplies');paintGroup=project([-40,0,42])[2];paintLayer=0;
+      box(-43,0,42,7,1.2,2,'#a3b19f',bulkAction,'Estate supply meters');paintLayer=1;
+      [utilities[0],utilities[1],utilities[4]].forEach((u,i)=>box(-42.5+i*2,1.3,42.3,1,.6,1,u.color,bulkAction,'Bulk & check meters'));
+    }
+    for(let i=0;i<15;i++) {tree(-45+i*6.3,46,.75);tree(-46,-41+i*6,.75);tree(47,-41+i*6,.75);}
+    for(let i=0;i<8;i++) {tree(-19,-32+i*8,.7);tree(20,-31+i*8,.7);}
+    if(state.flows)for(const [k,u] of utilities.entries()) {
+      const z=43+k*.35;route([[-41,.6,z],[42,.6,z]],u.color);
+      for(const b of visibleBuildings())route([[b.x+b.w/2,.6,z],[b.x+b.w/2,.6,b.z+b.d]],u.color);
+    }
+  }
+  function spaceAction(s) {return ()=>selectSpace(s.id);}
+  function drawMeters(s,x,y,z,spacing=.72) {
+    s.meters.forEach((m,i)=>{
+      const selected=state.meter===m.id;
+      box(x+i*spacing,y,z,.45,selected?.85:.52,.45,m.color,()=>selectSpace(s.id,m.id),m.name+' · '+s.name,true);
+      if(selected) label(m.name,[x+i*spacing,y+1.6,z],m.color,true);
+    });
+  }
+  function drawLevel() {
+    const b=selectedBuilding(),ss=activeSpaces();
+    if(b&&b.type!=='Residential') {drawFacility(b,false);return;}
+    if(state.level==='roof') {
+      paintGroup=-1000000;paintLayer=0;box(-8,-.3,-6,16,.3,12,'#c8d6c8');
+      paintGroup=0;paintLayer=0;solar(-7,0,-5,14,8,spaceAction(ss[0]));
+      paintGroup=project([0,0,4])[2];box(-3,0,4,6,1,1.6,'#a0baa7',spaceAction(ss[0]),'Solar inverter');
+      paintLayer=1;drawMeters(ss[0],0,1.1,4.5);label('Rooftop solar',[0,1,-7]);
+      if(state.flows)route([[0,1,4],[7,1,4],[7,-2,4]],utilities[2].color);
+      return;
+    }
+    if(b&&/^\d+$/.test(state.level)) {
+      const s=ss[0],choose=spaceAction(s);
+      paintGroup=-1000000;paintLayer=0;box(-9,-.3,-7,18,.35,14,'#cbd9ca');
+      paintGroup=0;paintLayer=0;
+      // A single level residence; internal partitions are an illustrative floor plan.
+      box(-8,.05,-6,16,.08,11.2,state.space===s.id?'#b5d6bf':'#d9e7d4',choose,s.name);
+      paintLayer=1;
+      box(-8,.13,-6,16,1.4,.18,b.color,choose,s.name);box(-8,.13,-6,.18,1.4,11.2,b.color,choose,s.name);
+      box(7.82,.13,-6,.18,1.4,11.2,b.color,choose,s.name);
+      box(-1.5,.13,-6,.15,1.1,6.5,b.color,choose,s.name);box(-8,.13,-.2,5.2,1.1,.15,b.color,choose,s.name);
+      box(2,.15,-3.5,4.4,.65,2.5,'#9fbab1',choose,'Residential space');
+      box(2.4,.81,-3.3,1.1,.2,2.1,'#e9e9d8',choose,'Residential space');
+      box(-6.8,.16,-4.8,2.1,.9,3.3,'#b2c4aa',choose,'Residential space');
+      box(-6,.18,1.5,3,.45,1.7,'#a4bab0',choose,'Residential space');
+      box(2,.13,1.5,3.8,.75,1.6,'#d2c9af',choose,'Residential space');
+      paintLayer=2;box(-7,.13,5.5,14,.35,1,'#a9bcab',choose,'Utility meter cabinet');
+      paintLayer=3;drawMeters(s,-5.8,.55,5.65,2.8);
+      label('Floor '+state.level+' · Residence',[0,1,0]);label('Utility meters',[0,1.8,6.5]);
+      if(state.flows)s.meters.forEach((m,i)=>route([[-5.8+i*2.8,.65,5.8],[-5.8+i*2.8,.65,-5]],m.color));
+      return;
+    }
+    paintGroup=-1000000;paintLayer=0;box(-13,-.35,-7,26,.4,14,'#cdd9d0');
+    ss.forEach((s,i)=>{
+      const x=ss.length===1?-5:-11+i*13;
+      paintGroup=project([x+5,0,0])[2];paintLayer=0;
+      box(x,0,-3,10,1.5,6,state.space===s.id?'#7bac9c':'#acbdb3',spaceAction(s),s.name,true);
+      paintLayer=1;drawMeters(s,x+1,1.6,1,2);label(s.name,[x+5,3.5,0]);
+    });
+  }
+  function fitScene() {
+    const b=selectedBuilding(),worldBounds=[];
+    function addBounds(lo,hi) {for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])worldBounds.push([x,y,z]);}
+    center=[0,0,0];
+    if(isCampus()) {
+      if(state.level==='quarters')addBounds([-18,0,-46],[20,6,-33]);
+      else if(state.level==='landscape')addBounds([-20,-1,-36],[19,6,29]);
+      else {
+        addBounds([-49,-1,-48],[50,0,49]);
+        visibleBuildings().forEach(b=>addBounds([b.x,0,b.z],[b.x+b.w,b.levels.length*b.story+3,b.z+b.d]));
+      }
+    } else if(b&&state.level==='all')addBounds([-b.w/2-3,0,-b.d/2-2],[b.w/2+4,b.levels.length*b.story+3,b.d/2+3]);
+    else if(b&&b.type!=='Residential')addBounds([-b.w/2-1,-1,-b.d/2-1],[b.w/2+1,b.story+5,b.d/2+4]);
+    else if(b&&/^\d+$/.test(state.level))addBounds([-10,-1,-8],[10,4,9]);
+    else addBounds([-14,-1,-8],[14,5,9]);
+    scale=1;offsetX=0;offsetY=0;
+    const bounds=worldBounds.map(project),xs=bounds.map(p=>p[0]),ys=bounds.map(p=>p[1]);
+    scale=Math.min((W-60)/(Math.max(...xs)-Math.min(...xs)),(H-128)/(Math.max(...ys)-Math.min(...ys)))*state.zoom;
+    offsetX=-(Math.max(...xs)+Math.min(...xs)-W)*scale/2;
+    offsetY=-(Math.max(...ys)+Math.min(...ys)-H)*scale/2+8;
+  }
+  function draw() {
+    frame=0;
+    const rect=canvas.getBoundingClientRect(); W=rect.width; H=rect.height;
+    if(!W||!H||!ctx)return;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const pw=Math.round(W*dpr),ph=Math.round(H*dpr);
+    if(canvas.width!==pw||canvas.height!==ph) {canvas.width=pw;canvas.height=ph;}
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H);
+    const gradient=ctx.createLinearGradient(0,0,0,H);gradient.addColorStop(0,'#f3f7f6');gradient.addColorStop(1,'#eaf0eb');
+    ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);
+    faces=[];labels=[];routes=[];hits=[];
+    fitScene();
+    ctx.strokeStyle='#dfe8e0';ctx.lineWidth=.6;
+    for(let i=-50;i<=50;i+=5) for(const pair of [[[i,-.8,-50],[i,-.8,50]],[[-50,-.8,i],[50,-.8,i]]]) {
+      const a=project(pair[0]),b=project(pair[1]);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    }
+    if(isCampus())drawEstate();
+    else if(state.level==='all')drawBuilding(selectedBuilding(),false);
+    else drawLevel();
+    faces.sort((a,b)=>a.group-b.group||a.layer-b.layer||a.depth-b.depth);
+    for(const f of faces) {
+      ctx.beginPath();f.ps.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+      ctx.fillStyle=tinted(f.color,f.shade);ctx.fill();
+      if(f.stroke) {ctx.strokeStyle='#edf3ec';ctx.lineWidth=.6;ctx.stroke();}
+      hits.push(f);
+    }
+    for(const r of routes) {
+      ctx.strokeStyle=r.color;ctx.lineWidth=1.8;ctx.setLineDash([5,3]);ctx.beginPath();r.points.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    const occupied=[];
+    for(const l of labels) {
+      const [x,anchorY]=l.p;
+      let y=anchorY;
+      ctx.font=(l.small?'10':'11')+'px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      const width=ctx.measureText(l.text).width+14,height=21,bb=[x-width/2,y-height/2,width,height];
+      if(x<width/2+5||x>W-width/2-5||y<52||y>H-53)continue;
+      const collides=()=>occupied.some(b=>bb[0]<b[0]+b[2]&&bb[0]+bb[2]>b[0]&&bb[1]<b[1]+b[3]&&bb[1]+bb[3]>b[1]);
+      if(!l.small)for(let attempts=0;collides()&&attempts<3&&y>80;attempts++) {y-=24;bb[1]-=24;}
+      if(collides())continue;
+      occupied.push(bb);
+      if(y!==anchorY) {ctx.strokeStyle='#afc0b7';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(x,anchorY);ctx.lineTo(x,y+height/2);ctx.stroke();}
+      ctx.fillStyle='#fffffff2';ctx.beginPath();ctx.roundRect(...bb,4);ctx.fill();
+      ctx.fillStyle=l.color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.text,x,y);
+    }
+  }
+  function requestDraw() { if(!frame)frame=requestAnimationFrame(draw); }
+  function inside(p,poly) {
+    let result=false;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++)if((poly[i][1]>p[1])!==(poly[j][1]>p[1])&&p[0]<(poly[j][0]-poly[i][0])*(p[1]-poly[i][1])/(poly[j][1]-poly[i][1])+poly[i][0])result=!result;
+    return result;
+  }
+  function hitAt(event) {
+    const rect=canvas.getBoundingClientRect(),p=[event.clientX-rect.left,event.clientY-rect.top];
+    // Stop at the frontmost opaque face, including non-interactive surfaces.
+    for(let i=hits.length-1;i>=0;i--)if(inside(p,hits[i].ps))return hits[i];
+    return null;
+  }
+  let drag=null;
+  canvas.addEventListener('pointerdown',e=>{
+    if(!e.isPrimary||e.button!==0)return;
+    drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};
+    canvas.setPointerCapture(e.pointerId);tooltip.hidden=true;
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(drag&&drag.id===e.pointerId) {
+      if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>4)drag.moved=true;
+      if(drag.moved) {state.yaw+=(e.clientX-drag.x)*.008;state.pitch=Math.max(.2,Math.min(1.2,state.pitch+(e.clientY-drag.y)*.006));canvas.classList.add('dragging');requestDraw();}
+      drag.x=e.clientX;drag.y=e.clientY;
+    } else if(e.pointerType!=='touch') {
+      const hit=hitAt(e);canvas.style.cursor=hit?.action?'pointer':'grab';
+      tooltip.hidden=!hit?.title;
+      if(hit?.title) {const rect=canvas.getBoundingClientRect();tooltip.textContent=hit.title;tooltip.style.left=Math.min(W-tooltip.offsetWidth-8,Math.max(8,e.clientX-rect.left+12))+'px';tooltip.style.top=Math.max(0,e.clientY-rect.top-35)+'px';}
+    }
+  });
+  function endDrag(e,cancel=false) {
+    if(!drag||drag.id!==e.pointerId)return;
+    const click=!cancel&&!drag.moved;drag=null;canvas.classList.remove('dragging');
+    if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);
+    if(click)hitAt(e)?.action?.();
+  }
+  canvas.addEventListener('pointerup',e=>endDrag(e));
+  canvas.addEventListener('pointercancel',e=>endDrag(e,true));
+  canvas.addEventListener('lostpointercapture',()=>{drag=null;canvas.classList.remove('dragging');});
+  canvas.addEventListener('pointerleave',()=>{tooltip.hidden=true;});
+  function zoom(factor) {state.zoom=Math.max(.55,Math.min(2.6,state.zoom*factor));requestDraw();}
+  canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-Math.max(-100,Math.min(100,e.deltaY))*.0015));},{passive:false});
+  canvas.addEventListener('keydown',e=>{
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0','Home'].includes(e.key))return;
+    e.preventDefault();
+    if(e.key==='ArrowLeft')state.yaw-=.15;
+    if(e.key==='ArrowRight')state.yaw+=.15;
+    if(e.key==='ArrowUp')state.pitch=Math.max(.2,state.pitch-.08);
+    if(e.key==='ArrowDown')state.pitch=Math.min(1.2,state.pitch+.08);
+    if(e.key==='+'||e.key==='=')zoom(1.15);
+    if(e.key==='-')zoom(1/1.15);
+    if(e.key==='0'||e.key==='Home')resetCamera();
+    requestDraw();
+  });
+  root.addEventListener('click',event=>{
+    const button=event.target.closest('button'); if(!button)return;
+    if(button.dataset.group)navigate('site',button.dataset.group);
+    else if(button.dataset.building)navigate(button.dataset.building);
+    else if(button.dataset.level)navigate(state.building,button.dataset.level);
+    else if(button.dataset.space)selectSpace(button.dataset.space,button.dataset.meter||null);
+  });
+  buildingSelect.addEventListener('change',()=>navigate(buildingSelect.value));
+  levelSelect.addEventListener('change',()=>navigate(state.building,levelSelect.value));
+  document.getElementById('flows').addEventListener('click',()=>{state.flows=!state.flows;renderUI();requestDraw();});
+  document.getElementById('rotate-left').addEventListener('click',()=>{state.yaw-=.22;requestDraw();});
+  document.getElementById('rotate-right').addEventListener('click',()=>{state.yaw+=.22;requestDraw();});
+  document.getElementById('zoom-in').addEventListener('click',()=>zoom(1.18));
+  document.getElementById('zoom-out').addEventListener('click',()=>zoom(1/1.18));
+  document.getElementById('reset').addEventListener('click',resetCamera);
+  document.getElementById('download').addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([downloadSource],{type:'text/html;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;a.download='golf.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  new ResizeObserver(requestDraw).observe(canvas);
+  resetCamera();renderUI();requestDraw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore The Precinct in 3D: The Nuvo Hotel, Office Blocks A and B, and The Commons Mall.">
+  <title>The Precinct · Webill Spatial Explorer</title>
+  <style>
+    :root { color-scheme: light; --ink:#213a3e; --muted:#6d7e80; --line:#dbe4e3; --accent:#117c70; --soft:#f3f7f6; --hotel:#528fad; --office-a:#659389; --office-b:#9690ad; --mall:#c6a06e; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:28px; background:#edf2f1; color:var(--ink); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    button,select,a { -webkit-tap-highlight-color:transparent; }
+    button,select { font:inherit; color:inherit; }
+    button { cursor:pointer; }
+    button,a,select,canvas { outline-offset:4px; }
+    :focus-visible { outline:2px solid var(--accent); }
+    button { background:white; border:1px solid var(--line); border-radius:7px; padding:9px 12px; transition:background .15s,border-color .15s; }
+    button:hover { background:var(--soft); border-color:#a6beb8; }
+    button[aria-pressed="true"] { border-color:var(--accent); color:#086356; background:#e8f3ef; }
+    button:disabled { opacity:.4; cursor:default; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    h1,h2,h3,p { margin:0; }
+    #precinct-explorer { max-width:1536px; margin:auto; border:1px solid #d2dfdc; border-radius:16px; overflow:hidden; background:white; box-shadow:0 15px 55px #193e3610; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:19px 27px; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:14px; }
+    .wordmark { font-size:23px; font-weight:760; letter-spacing:-1.2px; }
+    .wordmark i { color:var(--accent); font-style:normal; }
+    .brand-divider { height:20px; width:1px; background:var(--line); }
+    .overline { font-size:10px; font-weight:650; letter-spacing:1.7px; text-transform:uppercase; color:var(--muted); }
+    .top-actions { display:flex; align-items:center; gap:18px; font-size:12px; }
+    .concept { display:flex; align-items:center; gap:6px; color:var(--muted); }
+    .concept::before { content:""; width:6px; height:6px; border-radius:50%; background:#b5a071; }
+    .intro { display:flex; align-items:center; justify-content:space-between; gap:22px; padding:27px 28px 25px; }
+    h1 { font-size:34px; font-weight:600; line-height:1.2; letter-spacing:-1.15px; margin-bottom:7px; }
+    .muted { color:var(--muted); font-size:12px; }
+    .intro p { color:var(--muted); font-size:13px; }
+    .stats { display:flex; gap:30px; }
+    .stat strong { display:block; font-size:25px; font-weight:550; letter-spacing:-.8px; }
+    .stat span { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.9px; }
+    .tabs { display:flex; gap:0; padding:0 28px; border-bottom:1px solid var(--line); overflow-x:auto; }
+    .tabs button { border:0; border-bottom:2px solid transparent; border-radius:0; background:none; padding:13px 17px; white-space:nowrap; font-size:12px; color:var(--muted); }
+    .tabs button:first-child { padding-left:0; padding-right:23px; }
+    .tabs button[aria-pressed="true"] { color:var(--accent); border-bottom-color:var(--accent); }
+    .dot { display:inline-block; width:7px; height:7px; border-radius:2px; background:var(--dot,var(--accent)); margin-right:7px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) 318px; align-items:stretch; }
+    .stage { position:relative; min-width:0; background:#f3f7f6; }
+    .toolbar { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:18px 22px 4px; position:relative; z-index:1; }
+    .selectors { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .toolbar select { background:#ffffffdd; border:1px solid var(--line); border-radius:6px; padding:8px 24px 8px 10px; font-size:12px; max-width:210px; }
+    .toolbar button { font-size:11px; white-space:nowrap; }
+    .model-wrap { position:relative; }
+    canvas { display:block; width:100%; height:590px; touch-action:none; cursor:grab; }
+    canvas.dragging { cursor:grabbing; }
+    .model-caption { position:absolute; top:18px; left:24px; pointer-events:none; }
+    .model-caption strong { display:block; font-size:12px; font-weight:550; margin-top:4px; }
+    .compass { position:absolute; bottom:23px; left:25px; width:38px; height:38px; display:grid; place-items:center; color:#77908a; font-size:10px; border:1px solid #d4e1de; border-radius:50%; pointer-events:none; }
+    .camera { position:absolute; right:22px; bottom:20px; display:flex; gap:5px; }
+    .camera button { width:34px; height:34px; padding:0; font-size:17px; background:#ffffffeb; }
+    .camera #reset { width:auto; padding:0 10px; font-size:11px; }
+    .tooltip { position:absolute; pointer-events:none; background:#213a3e; color:white; font-size:11px; padding:6px 9px; border-radius:5px; max-width:230px; z-index:3; box-shadow:0 4px 15px #213a3e24; }
+    [hidden] { display:none !important; }
+    .stage-footer { display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; padding:0 23px 18px; }
+    .hint { font-size:10px; color:var(--muted); }
+    .legend { display:flex; gap:12px; flex-wrap:wrap; font-size:10px; color:#5f7471; }
+    .legend .dot { width:6px; height:6px; margin-right:4px; }
+    aside { background:#fff; border-left:1px solid var(--line); padding:24px 23px; max-height:740px; overflow-y:auto; scrollbar-width:thin; }
+    aside h2 { font-size:21px; font-weight:550; line-height:1.3; letter-spacing:-.5px; margin:7px 0 9px; }
+    aside h3 { font-size:11px; font-weight:650; margin:23px 0 10px; text-transform:uppercase; letter-spacing:1px; }
+    .directory { display:grid; gap:8px; margin-top:20px; }
+    .building-card { display:flex; align-items:center; text-align:left; gap:12px; width:100%; padding:13px 12px; }
+    .building-icon { width:30px; height:36px; background:color-mix(in srgb,var(--building),white 86%); color:var(--building); border:1px solid color-mix(in srgb,var(--building),white 63%); display:grid; place-items:center; border-radius:4px; font-size:16px; }
+    .building-card strong { display:block; font-size:12px; font-weight:600; }
+    .building-card small { display:block; font-size:10px; color:var(--muted); margin-top:2px; }
+    .arrow { margin-left:auto; color:#8aa09a; }
+    .services { display:grid; gap:6px; }
+    .services button { text-align:left; font-size:11px; }
+    .note { margin-top:19px; color:var(--muted); font-size:11px; line-height:1.6; }
+    .info-box { margin-top:20px; padding:12px; border-radius:7px; background:var(--soft); color:#5c726c; font-size:11px; }
+    .floor-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+    .floor-grid button { padding:8px 2px; font-size:11px; }
+    .floor-grid button.special { grid-column:span 5; text-align:left; padding:8px 10px; }
+    .space-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-top:12px; }
+    .space-grid button { padding:7px 1px; font-size:10px; }
+    .shop-list { display:grid; gap:5px; max-height:212px; overflow-y:auto; margin-top:12px; padding:2px; }
+    .shop-list button { text-align:left; font-size:11px; padding:7px 9px; }
+    .back { font-size:11px; padding:6px 9px; margin-bottom:13px; }
+    .meter-list { display:grid; gap:5px; margin-top:10px; }
+    .meter-list button { font-size:11px; padding:8px 9px; text-align:left; }
+    .meter-list small { float:right; color:var(--muted); font-size:9px; padding-top:2px; }
+    .meter-detail { margin-top:15px; padding:13px; border:1px solid var(--line); border-radius:7px; }
+    .meter-detail h3 { margin:4px 0 10px; font-size:13px; letter-spacing:0; text-transform:none; overflow-wrap:anywhere; }
+    dl { margin:0; }
+    dl div { display:flex; gap:10px; justify-content:space-between; padding:6px 0; border-bottom:1px solid #edf1ef; font-size:11px; }
+    dt { color:var(--muted); }
+    dd { margin:0; text-align:right; max-width:65%; overflow-wrap:anywhere; }
+    .breadcrumb { color:var(--muted); font-size:10px; }
+    footer { border-top:1px solid var(--line); padding:12px 27px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; font-size:10px; color:var(--muted); }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(min-width:1400px) { canvas { height:650px; } aside { max-height:800px; } }
+    @media(max-width:1000px) { body { padding:14px; } .layout { grid-template-columns:minmax(0,1fr) 285px; } aside { padding:21px 18px; } .stats { gap:18px; } canvas { height:555px; } .toolbar { flex-wrap:wrap; } }
+    @media(max-width:760px) { body { padding:0; } #precinct-explorer { border:0; border-radius:0; } .topbar { padding:14px 18px; } .top-actions { gap:10px; } .concept { display:none; } .brand { gap:9px; } .brand .overline { font-size:8px; } .intro { padding:22px 18px; align-items:flex-start; flex-direction:column; gap:17px; } h1 { font-size:30px; } .stats { gap:27px; } .stat strong { font-size:22px; } .tabs { padding:0 18px; } .tabs button { padding:11px 12px; } .layout { grid-template-columns:1fr; } .toolbar { padding:15px 16px 2px; } .toolbar select { max-width:190px; } canvas { height:480px; } aside { border-left:0; border-top:1px solid var(--line); max-height:none; padding:22px 20px; } .directory { grid-template-columns:1fr 1fr; } .building-card { gap:8px; padding:11px 8px; } .building-icon { display:none; } .space-grid { grid-template-columns:repeat(5,1fr); } .shop-list { max-height:250px; } .stage-footer { padding:0 18px 16px; } footer { padding:14px 18px; } }
+    @media(max-width:380px) { .brand .overline,.brand-divider { display:none; } .stats { width:100%; gap:12px; justify-content:space-between; } }
+    @media(prefers-reduced-motion:reduce) { button { transition:none; } }
+  
+/* WeBill demo studio navigation */
+.demo-home { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; flex-shrink:0; padding:7px 12px; border:1px solid #faa919; border-radius:8px; background:#faa919; color:#404068; font:600 12px/1.2 ui-sans-serif,system-ui,sans-serif; text-decoration:none; white-space:nowrap; cursor:pointer; transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease; }
+.demo-home svg { width:16px; height:16px; }
+.demo-home:hover { background:#ffca57; border-color:#ffca57; color:#404068; box-shadow:0 0 0 3px #faa91933; text-decoration:none; }
+.demo-home:focus-visible { outline:3px solid #404068; outline-offset:3px; box-shadow:0 0 0 6px #fff; }
+@media(max-width:600px) { .topbar { flex-wrap:wrap; gap:12px; } .top-actions { flex-wrap:wrap; gap:8px; } }
+</style>
+</head>
+<body>
+<main id="precinct-explorer">
+  <header class="topbar">
+    <div class="brand"><div class="wordmark">we<i>bill</i><span style="color:#117c70">.</span></div><span class="brand-divider"></span><span class="overline">Spatial explorer</span></div>
+    <div class="top-actions"><a class="demo-home" href="index.html" title="Back to the WeBill demo studio"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3V10Zm6 10v-7h6v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Home</span></a><span class="concept">Concept model</span><button type="button" id="download">↓ &nbsp; Download HTML</button></div>
+  </header>
+  <section class="intro" aria-labelledby="page-title">
+    <div><h1 id="page-title">The Precinct</h1><p>One connected place to stay, work, and explore.</p></div>
+    <div class="stats" aria-label="Precinct totals"><div class="stat"><strong>4</strong><span>Buildings</span></div><div class="stat"><strong>23</strong><span>Hotel levels</span></div><div class="stat"><strong>20 + 20</strong><span>Office levels</span></div><div class="stat"><strong>4</strong><span>Mall levels</span></div></div>
+  </section>
+  <nav class="tabs" aria-label="Explore buildings">
+    <button type="button" data-building="site" aria-pressed="true">Precinct overview</button>
+    <button type="button" data-building="hotel" aria-pressed="false"><span class="dot" style="--dot:var(--hotel)"></span>The Nuvo Hotel</button>
+    <button type="button" data-building="office-a" aria-pressed="false"><span class="dot" style="--dot:var(--office-a)"></span>Block A Office</button>
+    <button type="button" data-building="office-b" aria-pressed="false"><span class="dot" style="--dot:var(--office-b)"></span>Block B Office</button>
+    <button type="button" data-building="mall" aria-pressed="false"><span class="dot" style="--dot:var(--mall)"></span>The Commons Mall</button>
+  </nav>
+  <div class="layout">
+    <section class="stage" aria-label="Interactive precinct model">
+      <div class="toolbar">
+        <div class="selectors"><label class="sr-only" for="building-select">Building</label><select id="building-select"></select><label class="sr-only" for="level-select">Level or service</label><select id="level-select"></select></div>
+        <button type="button" id="flows" aria-pressed="false">⌁ &nbsp; Utility routes</button>
+      </div>
+      <div class="model-wrap">
+        <div class="model-caption"><span class="overline" id="view-mode">Precinct / 3D overview</span><strong id="view-caption">Four buildings. One shared precinct.</strong></div>
+        <canvas id="precinct-canvas" tabindex="0" role="img" aria-describedby="model-help" aria-label="Rotatable 3D precinct overview"></canvas>
+        <div id="tooltip" class="tooltip" hidden></div>
+        <div class="compass" aria-hidden="true">↗ N*</div>
+        <div class="camera" aria-label="Camera controls"><button type="button" id="rotate-left" aria-label="Rotate left">↶</button><button type="button" id="rotate-right" aria-label="Rotate right">↷</button><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="reset">Reset view</button></div>
+      </div>
+      <div class="stage-footer"><div id="legend" class="legend"></div><p id="model-help" class="hint">Drag to orbit · Scroll to zoom · Click to explore · Arrow keys rotate</p></div>
+    </section>
+    <aside id="details" aria-label="Selection details" aria-live="polite"></aside>
+  </div>
+  <footer><span>Schematic model · Demo meters and readings · *Illustrative orientation</span><a href="http://localhost:4000/portfolio/tree/01a0a5f9-f6d1-76b6-bad3-65481d6fb53e" target="_blank" rel="noopener">Open precinct tree ↗</a></footer>
+</main>
+<noscript>This interactive model requires JavaScript. The precinct comprises The Nuvo Hotel (23 levels), Block A Office (20 levels), Block B Office (20 levels), and The Commons Mall (4 levels).</noscript>
+<script>
+(function precinctDemo() {
+  'use strict';
+  // Standalone canvas renderer, adapted from webill-property-demo.html. No CDN dependencies.
+  // Hierarchy: lib/wb/demo/estates/precinct/constants.ex and setup/factories/make_*_units.ex.
+  // Massing, amenity heights, utility placement, meter IDs and readings are illustrative.
+  const downloadSource = '<!doctype html>\n' + document.documentElement.outerHTML;
+  const root = document.getElementById('precinct-explorer');
+  const canvas = document.getElementById('precinct-canvas');
+  const ctx = canvas.getContext('2d');
+  const details = document.getElementById('details');
+  const buildingSelect = document.getElementById('building-select');
+  const levelSelect = document.getElementById('level-select');
+  const tooltip = document.getElementById('tooltip');
+  const utilities = [
+    {id:'water', name:'Water', color:'#3f97c1', unit:'kL', prefix:'W'},
+    {id:'electricity', name:'Electricity', color:'#d79e40', unit:'kWh', prefix:'E'},
+    {id:'alternative', name:'Alternative electricity', short:'Alternative', color:'#4caa87', unit:'kWh', prefix:'A'},
+    {id:'hot-water', name:'Hot water', color:'#d47f69', unit:'kL', prefix:'H'},
+    {id:'gas', name:'Gas', color:'#9888b7', unit:'kg', prefix:'G'}
+  ];
+  const mallShops = {
+  "ground": [
+    {
+      "name": "Krispy Kreme",
+      "size": "small"
+    },
+    {
+      "name": "Doppio Zero",
+      "size": "small"
+    },
+    {
+      "name": "Kauai",
+      "size": "small"
+    },
+    {
+      "name": "The Nut Lady",
+      "size": "small"
+    },
+    {
+      "name": "Steers",
+      "size": "small"
+    },
+    {
+      "name": "Smooch & Illy Coffee",
+      "size": "small"
+    },
+    {
+      "name": "Debonairs Pizza",
+      "size": "small"
+    },
+    {
+      "name": "Deli One",
+      "size": "small"
+    },
+    {
+      "name": "Candy Kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Currency Exchange",
+      "size": "small"
+    },
+    {
+      "name": "ATMs",
+      "size": "small"
+    },
+    {
+      "name": "Medical Services Booth",
+      "size": "small"
+    },
+    {
+      "name": "Info Desk",
+      "size": "small"
+    },
+    {
+      "name": "Adidas",
+      "size": "medium"
+    },
+    {
+      "name": "Nike",
+      "size": "medium"
+    },
+    {
+      "name": "Levi's",
+      "size": "medium"
+    },
+    {
+      "name": "Swarovski",
+      "size": "medium"
+    },
+    {
+      "name": "Fossil",
+      "size": "medium"
+    },
+    {
+      "name": "Sunglass Hut",
+      "size": "medium"
+    },
+    {
+      "name": "L'Occitane",
+      "size": "medium"
+    },
+    {
+      "name": "The Body Shop",
+      "size": "medium"
+    },
+    {
+      "name": "Cross Trainer",
+      "size": "medium"
+    },
+    {
+      "name": "Exclusive Books",
+      "size": "medium"
+    },
+    {
+      "name": "Woolworths",
+      "size": "large"
+    },
+    {
+      "name": "Edgars",
+      "size": "large"
+    },
+    {
+      "name": "Ster-Kenikor",
+      "size": "large"
+    },
+    {
+      "name": "Checkers",
+      "size": "large"
+    },
+    {
+      "name": "McDonald's",
+      "size": "large"
+    },
+    {
+      "name": "KFC",
+      "size": "large"
+    }
+  ],
+  "first": [
+    {
+      "name": "Juicy Couture",
+      "size": "small"
+    },
+    {
+      "name": "La Senza",
+      "size": "small"
+    },
+    {
+      "name": "Silverspoon beauty kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Mobile phone accessories",
+      "size": "small"
+    },
+    {
+      "name": "Gift cards kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Shoe repair",
+      "size": "small"
+    },
+    {
+      "name": "Nail bar (SoHo)",
+      "size": "small"
+    },
+    {
+      "name": "Travel agency booth",
+      "size": "small"
+    },
+    {
+      "name": "Eyewear mini-outlet",
+      "size": "small"
+    },
+    {
+      "name": "Jewelry kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Photobooth",
+      "size": "small"
+    },
+    {
+      "name": "WiFi hotspot station",
+      "size": "small"
+    },
+    {
+      "name": "Children's toy popup",
+      "size": "small"
+    },
+    {
+      "name": "Café counter",
+      "size": "small"
+    },
+    {
+      "name": "Timberland",
+      "size": "medium"
+    },
+    {
+      "name": "Diesel",
+      "size": "medium"
+    },
+    {
+      "name": "Levi's outlet",
+      "size": "medium"
+    },
+    {
+      "name": "Aldo",
+      "size": "medium"
+    },
+    {
+      "name": "Coach",
+      "size": "medium"
+    },
+    {
+      "name": "Pandora",
+      "size": "medium"
+    },
+    {
+      "name": "Michael Kors",
+      "size": "medium"
+    },
+    {
+      "name": "Clairé Fine Jewelry",
+      "size": "medium"
+    },
+    {
+      "name": "Swatch",
+      "size": "medium"
+    },
+    {
+      "name": "Crocs",
+      "size": "medium"
+    },
+    {
+      "name": "H&M",
+      "size": "large"
+    },
+    {
+      "name": "Zara",
+      "size": "large"
+    },
+    {
+      "name": "Cotton On",
+      "size": "large"
+    },
+    {
+      "name": "Sportscene",
+      "size": "large"
+    },
+    {
+      "name": "Superdry",
+      "size": "large"
+    },
+    {
+      "name": "MAC Cosmetics",
+      "size": "large"
+    }
+  ],
+  "second": [
+    {
+      "name": "Smoothie bar",
+      "size": "small"
+    },
+    {
+      "name": "Ice cream kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Healthybowl stall",
+      "size": "small"
+    },
+    {
+      "name": "Juice bar",
+      "size": "small"
+    },
+    {
+      "name": "Vegan snacks",
+      "size": "small"
+    },
+    {
+      "name": "Coffee kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Spice shop",
+      "size": "small"
+    },
+    {
+      "name": "Popup dessert stall",
+      "size": "small"
+    },
+    {
+      "name": "Children's play zone (softplay)",
+      "size": "small"
+    },
+    {
+      "name": "Newsstand",
+      "size": "small"
+    },
+    {
+      "name": "Pharmacy booth",
+      "size": "small"
+    },
+    {
+      "name": "Mobile repair desk",
+      "size": "small"
+    },
+    {
+      "name": "ATM",
+      "size": "small"
+    },
+    {
+      "name": "Prayer room",
+      "size": "small"
+    },
+    {
+      "name": "Family rest area",
+      "size": "small"
+    },
+    {
+      "name": "Bukhara",
+      "size": "medium"
+    },
+    {
+      "name": "The Butcher Shop & Grill",
+      "size": "medium"
+    },
+    {
+      "name": "Green Fork Café",
+      "size": "medium"
+    },
+    {
+      "name": "Tashas",
+      "size": "medium"
+    },
+    {
+      "name": "Starbucks",
+      "size": "medium"
+    },
+    {
+      "name": "Mugg & Bean",
+      "size": "medium"
+    },
+    {
+      "name": "Superga outlet",
+      "size": "medium"
+    },
+    {
+      "name": "Jack's Corner",
+      "size": "medium"
+    },
+    {
+      "name": "Terracotta Bistro",
+      "size": "medium"
+    },
+    {
+      "name": "Vida e Caffè",
+      "size": "large"
+    },
+    {
+      "name": "Johannesburg Fish Market",
+      "size": "large"
+    },
+    {
+      "name": "Fishaways",
+      "size": "large"
+    },
+    {
+      "name": "Wimpy",
+      "size": "large"
+    },
+    {
+      "name": "Harvest Brew Café",
+      "size": "large"
+    },
+    {
+      "name": "Lekgotla",
+      "size": "large"
+    }
+  ],
+  "third": [
+    {
+      "name": "Mobile gaming kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Snack bar",
+      "size": "small"
+    },
+    {
+      "name": "Coffee station",
+      "size": "small"
+    },
+    {
+      "name": "Popcorn stand",
+      "size": "small"
+    },
+    {
+      "name": "Softdrink fountain",
+      "size": "small"
+    },
+    {
+      "name": "Candy floss cart",
+      "size": "small"
+    },
+    {
+      "name": "Photoprints booth",
+      "size": "small"
+    },
+    {
+      "name": "Charging station",
+      "size": "small"
+    },
+    {
+      "name": "Seating lounge",
+      "size": "small"
+    },
+    {
+      "name": "Info touchscreen",
+      "size": "small"
+    },
+    {
+      "name": "Arcade ticket booth",
+      "size": "small"
+    },
+    {
+      "name": "Wheelchair station",
+      "size": "small"
+    },
+    {
+      "name": "Lost & found desk",
+      "size": "small"
+    },
+    {
+      "name": "Mini souvenir kiosk",
+      "size": "small"
+    },
+    {
+      "name": "VR headset rental",
+      "size": "small"
+    },
+    {
+      "name": "Electronic games store",
+      "size": "medium"
+    },
+    {
+      "name": "VR experience zone",
+      "size": "medium"
+    },
+    {
+      "name": "Photostudio booth",
+      "size": "medium"
+    },
+    {
+      "name": "Gift shop",
+      "size": "medium"
+    },
+    {
+      "name": "Shady Lane Eyewear",
+      "size": "medium"
+    },
+    {
+      "name": "Sports accessories",
+      "size": "medium"
+    },
+    {
+      "name": "Gym popup",
+      "size": "medium"
+    },
+    {
+      "name": "The Sunroom",
+      "size": "medium"
+    },
+    {
+      "name": "Nail care kiosk",
+      "size": "medium"
+    },
+    {
+      "name": "Padel Indoor Courts",
+      "size": "large"
+    },
+    {
+      "name": "NetSet Padel outdoor",
+      "size": "large"
+    },
+    {
+      "name": "Game arcade",
+      "size": "large"
+    },
+    {
+      "name": "Bowling alley",
+      "size": "large"
+    },
+    {
+      "name": "Family entertainment zone",
+      "size": "large"
+    },
+    {
+      "name": "VIP cinema",
+      "size": "large"
+    }
+  ]
+};
+  const numberedLevels = count => Array.from({length:count}, (_,i) => ({id:String(i+1), name:'Floor '+(i+1), short:String(i+1).padStart(2,'0')}));
+  const buildings = [
+    {id:'hotel', name:'The Nuvo Hotel', type:'Hotel', code:'NH', color:'#70a0b6', x:-24, z:-15, w:10, d:10, story:1.48,
+      levels:[...numberedLevels(20), {id:'gym',name:'Gym',short:'GYM'}, {id:'restaurant',name:'Restaurant',short:'REST'}, {id:'penthouse',name:'Penthouse',short:'PH'}],
+      description:'20 room floors, a gym, restaurant, and penthouse. Lobby and basement are shared service areas.'},
+    {id:'office-a', name:'Block A Office', type:'Office', code:'OA', color:'#89b0a4', x:-6, z:-18, w:10, d:9, story:1.48,
+      levels:numberedLevels(20), description:'20 office levels with 10 suites per level. Lobby and basement serve the whole building.'},
+    {id:'office-b', name:'Block B Office', type:'Office', code:'OB', color:'#aaa3be', x:13, z:-15, w:10, d:9, story:1.48,
+      levels:numberedLevels(20), description:'20 office levels with 10 suites per level. Lobby and basement serve the whole building.'},
+    {id:'mall', name:'The Commons Mall', type:'Retail', code:'CM', color:'#d2b185', x:-8, z:9, w:30, d:12, story:1.8,
+      levels:['Ground','First','Second','Third'].map((name,i) => ({id:name.toLowerCase(),name:name+' floor',short:['G','01','02','03'][i]})),
+      description:'Four retail levels around a shared concourse. Shops, dining, leisure, and amenities follow the precinct demo directory.'}
+  ];
+  const byId = Object.fromEntries(buildings.map(b => [b.id,b]));
+  const state = {building:'site',level:'all',space:null,meter:null,flows:false,yaw:-.57,pitch:.53,zoom:1};
+  const spaces = new Map();
+  const levelSpaces = new Map();
+  const escapeHTML = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const selectedBuilding = () => byId[state.building];
+  const levelKey = (b,l) => b.id+':'+l;
+  function addSpace(b, level, id, name, kind, utilityTypes=utilities, role='Submeter') {
+    const key = levelKey(b,level)+':'+id;
+    const s = {id:key, name, kind, building:b.id, level, short:id, meters:[]};
+    s.meters = utilityTypes.map((u,index) => ({...u, id:b.code+'-'+level.toUpperCase()+'-'+id.toUpperCase()+'-'+u.prefix,
+      reading: ((spaces.size+1)*137.63+(index+1)*36.7).toFixed(2), role}));
+    spaces.set(key,s);
+    return s;
+  }
+  for (const b of buildings) {
+    for (const l of b.levels) {
+      let ss;
+      if (b.id==='mall') {
+        ss=mallShops[l.id].map((shop,i) => addSpace(b,l.id,String(i+1).padStart(2,'0'),shop.name,shop.size+' retail space'));
+        ss.push(addSpace(b,l.id,'amenities','Amenities','Common area'));
+      } else if (b.id==='hotel' && !/^\d+$/.test(l.id)) {
+        ss=[addSpace(b,l.id,l.id,l.name,'Hotel amenity')];
+      } else {
+        const count=b.id==='hotel'?20:10;
+        ss=Array.from({length:count},(_,i) => addSpace(b,l.id,String(i+1).padStart(2,'0'),(b.id==='hotel'?'Room ':'Suite ')+l.id+String(i+1).padStart(2,'0'),b.type==='Hotel'?'Hotel room':'Office suite'));
+      }
+      levelSpaces.set(levelKey(b,l.id),ss);
+      if(b.id!=='hotel'||/^\d+$/.test(l.id)) addSpace(b,l.id,'check','Floor check meters','Verification',utilities,'Check meter');
+    }
+    for (const common of (b.id==='mall'?['basement']:['lobby','basement'])) {
+      levelSpaces.set(levelKey(b,common),[addSpace(b,common,common,common==='lobby'?'Lobby & reception':'Basement services','Common area')]);
+    }
+    levelSpaces.set(levelKey(b,'roof'),[addSpace(b,'roof','solar','Rooftop solar','Illustrative generation',[utilities[2]],'Generation meter')]);
+  }
+  const site = {id:'site',code:'PR'};
+  levelSpaces.set('site:supplies',[
+    addSpace(site,'supplies','bulk','Precinct bulk supply','Supply boundary',utilities,'Bulk meter'),
+    addSpace(site,'supplies','check','Precinct check meters','Verification',utilities,'Check meter')
+  ]);
+  levelSpaces.set('site:energy',[
+    addSpace(site,'energy','generator','Shared generator','Illustrative generation',[utilities[2]],'Generation meter'),
+    addSpace(site,'energy','solar','Solar distribution','Illustrative generation',[utilities[2]],'Generation meter')
+  ]);
+  levelSpaces.set('site:parking',[addSpace(site,'parking','parking','Precinct parking','Common area',utilities.slice(0,2))]);
+  function levelOptions() {
+    const b=selectedBuilding();
+    if (!b) return [['all','Entire precinct'],['supplies','Bulk & check meters'],['energy','Shared energy'],['parking','Parking & landscape']];
+    return [['all','Entire building'],...b.levels.map(l => [l.id,l.name]),...(b.id==='mall'?[]:[['lobby','Lobby / shared area']]),['basement','Basement / services'],['roof','Roof / solar']];
+  }
+  const activeSpaces = () => levelSpaces.get(state.building+':'+state.level)||[];
+  function navigate(building,level='all',space=null) {
+    state.building=building; state.level=level; state.space=space; state.meter=null; state.zoom=1;
+    state.yaw=-.57; state.pitch=level==='all'?.53:.74;
+    tooltip.hidden=true;
+    renderUI(); requestDraw();
+  }
+  function selectSpace(id,meter=null) { state.space=id; state.meter=meter; renderPanel(); requestDraw(); }
+  function renderUI() {
+    buildingSelect.innerHTML='<option value="site">Entire precinct</option>'+buildings.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+    buildingSelect.value=state.building;
+    levelSelect.innerHTML=levelOptions().map(([id,name]) => `<option value="${id}">${name}</option>`).join('');
+    levelSelect.value=state.level;
+    root.querySelectorAll('.tabs [data-building]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.building===state.building)));
+    document.getElementById('flows').setAttribute('aria-pressed',String(state.flows));
+    const b=selectedBuilding();
+    const levelName=levelOptions().find(([id])=>id===state.level)[1];
+    document.getElementById('view-mode').textContent=state.level==='all'?(b?'Building / 3D overview':'Precinct / 3D overview'):'Level / 3D cutaway';
+    document.getElementById('view-caption').textContent=b?b.name+(state.level==='all'?' · '+b.levels.length+' levels':' · '+levelName):state.level==='all'?'Four buildings. One shared precinct.':levelName;
+    canvas.setAttribute('aria-label',`Rotatable 3D model: ${b?b.name:'The Precinct'}, ${levelName}. Use Building and Level selectors to explore, or arrow keys to rotate and plus/minus to zoom.`);
+    document.getElementById('legend').innerHTML=(state.flows?utilities.map(u=>({name:u.short||u.name,color:u.color})):buildings.map(b=>({name:b.id==='hotel'?'Hotel':b.id==='mall'?'Mall':b.id==='office-a'?'Block A':'Block B',color:b.color}))).map(i=>`<span><i class="dot" style="--dot:${i.color}"></i>${i.name}</span>`).join('');
+    renderPanel();
+  }
+  function meterButtons(s) {
+    return `<div class="meter-list">${s.meters.map(m=>`<button type="button" data-space="${escapeHTML(s.id)}" data-meter="${escapeHTML(m.id)}" aria-pressed="${state.meter===m.id}"><i class="dot" style="--dot:${m.color}"></i>${m.name}<small>${m.unit}</small></button>`).join('')}</div>`;
+  }
+  function renderPanel() {
+    const b=selectedBuilding(), ss=activeSpaces(), s=spaces.get(state.space);
+    let html='';
+    if (state.building==='site'&&state.level==='all') {
+      html=`<div class="overline">The connected precinct</div><h2>A place for everything.</h2><p class="muted">Explore a building, then choose a level to discover its spaces and utility connections.</p><div class="directory">${buildings.map((b,i)=>`<button type="button" class="building-card" data-building="${b.id}" style="--building:${b.color}"><span class="building-icon">${['▥','▤','▤','▰'][i]}</span><span><strong>${b.name}</strong><small>${b.levels.length} ${b.id==='mall'?'storeys':'levels'} · ${b.type}</small></span><span class="arrow">↗</span></button>`).join('')}</div><h3>Shared infrastructure</h3><div class="services"><button type="button" data-level="supplies">Bulk supply & check meters <span class="arrow">→</span></button><button type="button" data-level="energy">Solar & backup generation <span class="arrow">→</span></button><button type="button" data-level="parking">Parking & landscape <span class="arrow">→</span></button></div><div class="info-box">67 primary levels across four buildings. Lobbies, basements, and roofs are explored separately.</div><p class="note">Building hierarchy follows the precinct demo. Architecture, positions, and utility routes are schematic.</p>`;
+    } else if (b&&state.level==='all') {
+      html=`<button type="button" class="back" data-building="site">← Precinct overview</button><div class="overline">${b.type} / ${b.levels.length} levels</div><h2>${b.name}</h2><p class="muted">${b.description}</p><h3>Choose a level</h3><div class="floor-grid">${[...b.levels].reverse().map(l=>`<button type="button" data-level="${l.id}" class="${/^\d+$/.test(l.id)?'':'special'}" aria-label="Explore ${l.name}">${/^\d+$/.test(l.id)?l.short:l.name+' →'}</button>`).join('')}</div><h3>Building services</h3><div class="services">${levelOptions().filter(([id])=>['lobby','basement','roof'].includes(id)).map(([id,name])=>`<button type="button" data-level="${id}">${name} <span class="arrow">→</span></button>`).join('')}</div><p class="note">${b.id==='hotel'?'For this model, Gym and Restaurant sit above floors 1–20, with Penthouse at the top. Amenity heights are illustrative.':'Select a level in the model or use the directory above.'}</p>`;
+    } else {
+      const title=levelOptions().find(([id])=>id===state.level)[1];
+      const isMall=b?.id==='mall'&&b.levels.some(l=>l.id===state.level);
+      const numbered=b&&/^\d+$/.test(state.level);
+      html=`<button type="button" class="back" data-level="all">← ${b?b.name:'Precinct overview'}</button><div class="breadcrumb">The Precinct${b?' / '+b.name:''}</div><h2>${title}</h2><p class="muted">${ss.length} ${ss.length===1?'space':'spaces'} · ${state.level==='roof'||state.level==='energy'?'Illustrative generation':numbered?'Shared utility riser and floor check meters':isMall?'Retail directory and common amenities':'Shared precinct services'}</p><h3>${isMall?'Shops & amenities':numbered?b.type==='Hotel'?'Rooms':'Office suites':'Explore spaces'}</h3><div class="${numbered?'space-grid':isMall?'shop-list':'services'}">${ss.map(space=>`<button type="button" data-space="${escapeHTML(space.id)}" aria-label="${escapeHTML(space.name)}" aria-pressed="${space.id===state.space}">${numbered?space.name.replace(/Room |Suite /,''):escapeHTML(space.name)}</button>`).join('')}</div>`;
+      const check=b&&spaces.get(levelKey(b,state.level)+':check');
+      if (check) html+=`<div class="services" style="margin-top:10px"><button type="button" data-space="${check.id}" aria-pressed="${state.space===check.id}">◎ &nbsp; Floor check meters</button></div>`;
+      if (s) {
+        html+=`<h3>${escapeHTML(s.name)}</h3><p class="muted">${escapeHTML(s.kind)} · Demo devices</p>${meterButtons(s)}`;
+        const m=s.meters.find(m=>m.id===state.meter);
+        if (m) html+=`<div class="meter-detail"><div class="overline">${m.role}</div><h3>${escapeHTML(m.id)}</h3><dl><div><dt>Utility</dt><dd>${m.name}</dd></div><div><dt>Location</dt><dd>${escapeHTML(s.name)}</dd></div><div><dt>Sample register</dt><dd>${Number(m.reading).toLocaleString('en-ZA',{minimumFractionDigits:2})} ${m.unit}</dd></div><div><dt>Billing</dt><dd>${m.role==='Check meter'?'Verification only':'Not connected'}</dd></div></dl><p class="note">Illustrative device and reading. ${m.role==='Check meter'?'Checks downstream consumption.':'No live account or tariff is connected.'}</p></div>`;
+      } else html+='<p class="note">Select a space to inspect its meters. Colored markers in the model open individual utilities.</p>';
+      if (state.level==='roof'||state.level==='energy') html+='<p class="note">Generation equipment and connections are concept features; capacity and placement are not surveyed.</p>';
+    }
+    // Keep keyboard focus on controls that are recreated after meter/space selection.
+    const focused=document.activeElement;
+    const focusKey=details.contains(focused)&&focused.dataset.space?{space:focused.dataset.space,meter:focused.dataset.meter}:null;
+    details.innerHTML=html;
+    if(focusKey) [...details.querySelectorAll('[data-space]')].find(el=>el.dataset.space===focusKey.space&&el.dataset.meter===focusKey.meter)?.focus({preventScroll:true});
+  }
+
+  // Orthographic projection and painter's algorithm, shared by every view.
+  let W=800,H=590,scale=10,offsetX=0,offsetY=0,center=[0,12,0],faces=[],labels=[],routes=[],hits=[],frame=0;
+  let paintGroup=0,paintLayer=0;
+  function project(p) {
+    const x=p[0]-center[0],y=p[1]-center[1],z=p[2]-center[2];
+    const a=x*Math.cos(state.yaw)-z*Math.sin(state.yaw),b=x*Math.sin(state.yaw)+z*Math.cos(state.yaw);
+    return [W/2+offsetX+a*scale,H/2+offsetY+(-y*Math.cos(state.pitch)+b*Math.sin(state.pitch))*scale,b*Math.cos(state.pitch)+y*Math.sin(state.pitch)];
+  }
+  function box(x,y,z,w,h,d,color,action=null,title='',stroke=false) {
+    const verts=[[x,y,z],[x+w,y,z],[x+w,y+h,z],[x,y+h,z],[x,y,z+d],[x+w,y,z+d],[x+w,y+h,z+d],[x,y+h,z+d]];
+    const views=[[[0,1,2,3],.82,-Math.cos(state.yaw)],[[4,7,6,5],.87,Math.cos(state.yaw)],[[0,3,7,4],.72,-Math.sin(state.yaw)],[[1,5,6,2],.94,Math.sin(state.yaw)],[[3,2,6,7],1.07,1]];
+    for (const [indices,shade,facing] of views) {
+      if(facing<=0) continue;
+      const ps=indices.map(i=>project(verts[i]));
+      faces.push({ps,depth:ps.reduce((n,p)=>n+p[2],0)/ps.length,color,shade,action,title,stroke,group:paintGroup,layer:paintLayer});
+    }
+  }
+  function label(text,p,color='#39524c',small=false) { labels.push({text,p:project(p),color,small}); }
+  function route(points,color) { routes.push({points:points.map(project),color}); }
+  function tinted(hex,amount) {
+    const n=parseInt(hex.slice(1),16);
+    return 'rgb('+[n>>16,(n>>8)&255,n&255].map(v=>Math.min(255,Math.round(v*amount))).join(',')+')';
+  }
+  function tree(x,z,size=1) {
+    paintGroup=project([x,0,z])[2];paintLayer=0;
+    box(x,-.02,z,.23,1.2*size,.23,'#9c9b81');
+    paintLayer=1;
+    box(x-.65*size,.75*size,z-.65*size,1.5*size,1.4*size,1.5*size,'#8fae95');
+    paintLayer=2;
+    box(x-.43*size,1.9*size,z-.43*size,1.05*size,.6*size,1.05*size,'#a0b89b');
+  }
+  function solar(x,y,z,w,d,action) {
+    for(let row=0;row<2;row++)for(let col=0;col<4;col++) {
+      const sw=(w-2)/4,sd=(d-2)/2;
+      box(x+1+col*sw,y+.2,z+1+row*sd,sw-.18,.13,sd-.25,'#537d86',action,'Rooftop solar',true);
+    }
+  }
+  function drawBuilding(b,overview) {
+    const x=overview?b.x:-b.w/2,z=overview?b.z:-b.d/2;
+    const choose=l=>()=>navigate(b.id,l);
+    const height=b.levels.length*b.story;
+    paintGroup=project([x+b.w/2,0,z+b.d/2])[2];paintLayer=-2;
+    box(x-.4,-.24,z-.4,b.w+.8,.3,b.d+.8,'#c6ceca',overview?choose('all'):null,b.name);
+    if (b.id!=='mall') {
+      // A shallow entry apron is outside the 23/20 primary-level counts.
+      box(x+1,-.02,z+b.d,b.w-2,.3,2.4,'#d5dbd6',choose('lobby'),'Lobby');
+      box(x+2,.9,z+b.d-.1,b.w-4,.18,1.6,b.color,choose('lobby'),'Lobby entrance');
+    }
+    b.levels.forEach((l,i)=>{
+      const y=i*b.story;
+      const act=overview?choose('all'):choose(l.id);
+      const title=b.name+' · '+l.name;
+      const col=l.id==='penthouse'?'#b7cbd0':b.color;
+      paintLayer=i*3;
+      box(x,y,z,b.w,.18,b.d,'#e6ece6',act,title);
+      paintLayer=i*3+1;
+      box(x+.14,y+.18,z+.14,b.w-.28,b.story-.26,b.d-.28,col,act,title);
+      paintLayer=i*3+2;
+      const cols=b.id==='mall'?10:5;
+      for(let c=1;c<cols;c++) {
+        box(x+c*b.w/cols,y+.2,z+b.d-.08,.055,b.story-.3,.045,'#d3dedb',act,title);
+        box(x-.01,y+.2,z+c*b.d/cols,.05,b.story-.3,.055,'#c5d3d1',act,title);
+      }
+      if(!overview&&(i%2===0||i===b.levels.length-1||!/^\d+$/.test(l.id))) label(l.short,[x+b.w+1.7,y+b.story/2,z+b.d],b.color,true);
+    });
+    paintLayer=b.levels.length*3;
+    box(x-.12,height,z-.12,b.w+.24,.25,b.d+.24,'#dce4de',choose('roof'),'Roof / solar');
+    paintLayer++;
+    if(b.id==='mall') {
+      box(x+b.w*.35,height+.26,z+2,b.w*.3,.7,b.d-4,'#a6c4c5',choose('roof'),'Atrium skylight',true);
+      solar(x+.2,height+.3,z+.2,b.w*.3,b.d-.4,choose('roof'));
+      solar(x+b.w*.69,height+.3,z+.2,b.w*.3,b.d-.4,choose('roof'));
+    } else {
+      solar(x,height+.25,z,b.w,b.d,choose('roof'));
+      box(x+b.w-2,height+.28,z+.4,1.3,.85,1.3,'#a6b4b0',choose('roof'),'Roof services');
+    }
+    if(overview) label(b.name,[x+b.w/2,height+(b.id==='office-a'?5.5:2.4),z+b.d/2]);
+    if(state.flows) {
+      utilities.forEach((u,k)=>{
+        const rx=x-.8-k*.36;
+        route([[rx,.6,z+b.d+.5],[rx,height-.4,z+b.d+.5]],u.color);
+        b.levels.forEach((l,i)=>route([[rx,i*b.story+.7,z+b.d+.5],[x+.4,i*b.story+.7,z+b.d+.5]],u.color));
+      });
+    }
+  }
+  function drawParking(overview) {
+    const x=overview?-24:-13,z=overview?8:-9,w=overview?12:26,d=overview?17:18;
+    const action=()=>navigate('site','parking');
+    paintGroup=-999990;paintLayer=0;
+    box(x,-.14,z,w,.17,d,'#aab7b2',overview?action:null,'Parking');
+    for(let row=0;row<6;row++) {
+      const zz=z+.7+row*(d-1.2)/6;
+      for(let side=0;side<2;side++) {
+        const xx=x+.5+side*(w-4.1);
+        paintGroup=-999990;paintLayer=1;
+        box(xx,.045,zz,3.2,.025,.05,'#edf0e8',overview?action:null,'Parking');
+        if((row+side)%3!==1) {
+          paintGroup=project([xx+1.55,0,zz+1])[2];paintLayer=0;
+          box(xx+.3,.08,zz+.4,2.5,.48,1.25,['#e6e8df','#6f9098','#bcb9a9'][(row+side)%3],overview?action:null,'Parking');
+          paintLayer=1;
+          box(xx+.9,.56,zz+.5,1.2,.3,1.05,'#7f9594',overview?action:null,'Parking');
+        }
+      }
+    }
+    if(overview) label('Parking',[x+w/2,.4,z+d+1.5],'#74867c',true);
+  }
+  function drawPrecinct() {
+    // Disjoint structures sort by footprint depth; their parts sort from foundation to roof.
+    // Ground layers always precede structures, avoiding large-plane occlusion artifacts.
+    paintGroup=-1000000;paintLayer=0;
+    box(-29,-.7,-23,58,.4,51,'#dbe5db');
+    paintLayer++;
+    box(-27,-.28,-21,54,.18,47,'#e8ede5');
+    paintLayer++;
+    box(-27,-.08,2,54,.05,4,'#c9d1c9');
+    box(6,-.08,-20,4,.06,45,'#c9d1c9');
+    box(-10,-.05,7,34,.05,18,'#e2dfd0');
+    drawParking(true);
+    for(let i=0;i<8;i++) tree(-25+i*7,25.2,.72);
+    for(let z=-17;z<=0;z+=5) tree(-27,z,.85);
+    for(let z=-18;z<=18;z+=6) tree(25,z,.9);
+    for(let i=0;i<4;i++) tree(-10+i*4,6.5,.65);
+    const supplyAction=()=>navigate('site','supplies');
+    paintGroup=project([-21,0,-20])[2];paintLayer=0;
+    box(-25,.05,-21,8,1.2,2.1,'#a5b3aa',supplyAction,'Bulk supply & check meters');
+    paintLayer=1;
+    utilities.forEach((u,i)=>box(-24.6+i*1.4,1.3,-20.6,.8,.45,1.1,u.color,supplyAction,'Bulk supply & check meters'));
+    paintGroup=project([17,0,-20])[2];paintLayer=0;
+    box(14,.04,-21,6,1.2,2.7,'#9a99af',()=>navigate('site','energy'),'Shared energy centre');
+    buildings.forEach(b=>drawBuilding(b,true));
+    if(state.flows) utilities.forEach((u,k)=>{
+      const z=3+k*.4;
+      route([[-23,.5,-19],[-23,.5,z],[24,.5,z]],u.color);
+      buildings.forEach(b=>route([[b.x+b.w/2,.5,z],[b.x+b.w/2,.5,b.z+b.d/2]],u.color));
+    });
+  }
+  function spaceAction(s) {return ()=>selectSpace(s.id);}
+  function drawMeters(s,x,y,z,spacing=.72) {
+    s.meters.forEach((m,i)=>{
+      const selected=state.meter===m.id;
+      box(x+i*spacing,y,z,.45,selected?.85:.52,.45,m.color,()=>selectSpace(s.id,m.id),m.name+' · '+s.name,true);
+      if(selected) label(m.name,[x+i*spacing,y+1.6,z],m.color,true);
+    });
+  }
+  function drawLevel() {
+    const b=selectedBuilding(),ss=activeSpaces();
+    if(state.level==='roof'&&b) {
+      paintGroup=-1000000;paintLayer=0;
+      box(-10,-.35,-7,20,.4,14,'#c9d4ce');
+      paintGroup=0;paintLayer=0;
+      solar(-9,0,-6,18,10,spaceAction(ss[0]));
+      paintGroup=project([0,0,5.5])[2];
+      box(-3,.05,5,6,1.2,1.3,'#a4bfb0',spaceAction(ss[0]),'Solar inverter');
+      paintLayer=1;
+      drawMeters(ss[0],-.2,1.3,5.3);
+      label('Solar array',[0,.5,-8]); label('Inverter & generation meter',[0,2.7,5.5]);
+      if(state.flows) route([[0,1,5],[8,1,5],[8,-2,5]],utilities[2].color);
+      return;
+    }
+    if(state.level==='parking') { drawParking(false); paintGroup=project([0,0,0])[2];paintLayer=2;drawMeters(ss[0],-1,1,0,1.3); return; }
+    const normalFloor=b&&b.levels.some(l=>l.id===state.level);
+    if(!normalFloor) {
+      paintGroup=-1000000;paintLayer=0;
+      box(-13,-.35,-7,26,.4,14,'#cdd9d0');
+      ss.forEach((s,i)=>{
+        const x=ss.length===1?-5:-11+i*13;
+        paintGroup=project([x+5,0,0])[2];paintLayer=0;
+        box(x,0,-3,10,1.6,6,state.space===s.id?'#7bac9c':'#acbdb3',spaceAction(s),s.name,true);
+        paintLayer=1;
+        drawMeters(s,x+1,1.7,1,1.7); label(s.name,[x+5,3.7,0]);
+        if(state.flows) s.meters.forEach((m,j)=>route([[x+1+j*1.7,1.8,1],[x+1+j*1.7,1.8,6]],m.color));
+      });
+      return;
+    }
+    const columns=ss.length>20?8:ss.length>10?10:ss.length>1?5:1;
+    const rows=Math.ceil(ss.length/columns),cellW=ss.length===1?13:3.8,cellD=ss.length===1?9:5;
+    const width=columns*cellW,depth=rows*cellD+3;
+    paintGroup=-1000000;paintLayer=0;
+    box(-width/2-.5,-.35,-depth/2-.5,width+1,.35,depth+1,'#c6d3cb');
+    const corridorZ=-depth/2+Math.ceil(rows/2)*cellD;
+    paintLayer=1;
+    box(-width/2,0,corridorZ,width,.045,3,'#e7e8db');
+    ss.forEach((s,i)=>{
+      const row=Math.floor(i/columns),col=i%columns;
+      const x=-width/2+col*cellW+.12,z=-depth/2+row*cellD+(row>=Math.ceil(rows/2)?3:0)+.12;
+      paintGroup=project([x+cellW/2,0,z+cellD/2])[2];paintLayer=0;
+      box(x,.05,z,cellW-.24,1.3,cellD-.24,state.space===s.id?'#5eae9d':b.color,spaceAction(s),s.name,true);
+      // Small utility cabinets allow direct meter selection without obscuring the room label.
+      paintLayer=1;
+      drawMeters(s,x+.18,1.4,z+cellD-.95,(cellW-.7)/5);
+      label(ss.length===1?s.name:s.short,[x+(cellW-.24)/2,1.8,z+cellD/2],state.space===s.id?'#0a6958':'#34554e',true);
+      if(state.flows) s.meters.forEach((m,k)=>{
+        const mx=x+.18+k*(cellW-.7)/5;
+        route([[mx,1.5,z+cellD-.8],[mx,1.5,corridorZ+.35+k*.42]],m.color);
+      });
+    });
+    const check=spaces.get(levelKey(b,state.level)+':check');
+    if(check) {
+      paintGroup=project([0,0,corridorZ+1.4])[2];paintLayer=0;
+      box(-2,.1,corridorZ+.3,4,.65,2.25,'#96aaa0',spaceAction(check),'Floor check meters');
+      paintLayer=1;
+      drawMeters(check,-1.65,.8,corridorZ+.9,.72);
+      label('CHECK / RISER',[0,2.1,corridorZ+1.2],'#3a6759',true);
+    }
+    if(state.flows) utilities.forEach((u,k)=>route([[-width/2-1,1.5,corridorZ+.35+k*.42],[width/2+1,1.5,corridorZ+.35+k*.42]],u.color));
+    label(b.name+' · '+b.levels.find(l=>l.id===state.level).name,[0,.1,depth/2+2.1]);
+  }
+  function fitScene() {
+    const b=selectedBuilding();
+    let points,worldBounds=[];
+    function addBounds(lo,hi) {
+      for(const x of [lo[0],hi[0]])for(const y of [lo[1],hi[1]])for(const z of [lo[2],hi[2]])worldBounds.push([x,y,z]);
+    }
+    if(state.level==='all') {
+      center=b?[0,b.levels.length*b.story/2,0]:[0,12,1];
+      points=b?[[ -b.w/2-4,0,-b.d/2-3],[b.w/2+4,b.levels.length*b.story+5,b.d/2+4]]:[[-30,-1,-24],[30,39,29]];
+      if(!b) {
+        addBounds([-30,-1,-24],[30,0,29]);
+        buildings.forEach(building=>addBounds([building.x,0,building.z],[building.x+building.w,building.levels.length*building.story+6,building.z+building.d]));
+      }
+    } else {
+      center=[0,0,0];
+      const n=activeSpaces().length;
+      const halfW=n>20?17:n>10?21:n>1?15:15;
+      points=[[-halfW,-1,-11],[halfW,6,14]];
+      if(b&&b.levels.some(l=>l.id===state.level)) {
+        const columns=n>20?8:n>10?10:n>1?5:1;
+        const width=columns*(n===1?13:3.8),depth=Math.ceil(n/columns)*(n===1?9:5)+3;
+        points=[[-width/2-1,-1,-depth/2-1],[width/2+1,4,depth/2+4]];
+      }
+    }
+    scale=1;offsetX=0;offsetY=0;
+    if(!worldBounds.length)addBounds(points[0],points[1]);
+    const bounds=worldBounds.map(project);
+    const xs=bounds.map(p=>p[0]),ys=bounds.map(p=>p[1]);
+    scale=Math.min((W-70)/(Math.max(...xs)-Math.min(...xs)),(H-130)/(Math.max(...ys)-Math.min(...ys)))*state.zoom;
+    offsetX=-(Math.max(...xs)+Math.min(...xs)-W)*scale/2;
+    offsetY=-(Math.max(...ys)+Math.min(...ys)-H)*scale/2+8;
+  }
+  function draw() {
+    frame=0;
+    const rect=canvas.getBoundingClientRect(); W=rect.width; H=rect.height;
+    if(!W||!H||!ctx)return;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const pw=Math.round(W*dpr),ph=Math.round(H*dpr);
+    if(canvas.width!==pw||canvas.height!==ph) {canvas.width=pw;canvas.height=ph;}
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,W,H);
+    const gradient=ctx.createLinearGradient(0,0,0,H);gradient.addColorStop(0,'#f3f7f6');gradient.addColorStop(1,'#eaf0eb');
+    ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);
+    faces=[];labels=[];routes=[];hits=[];
+    fitScene();
+    ctx.strokeStyle='#dfe8e0';ctx.lineWidth=.6;
+    for(let i=-50;i<=50;i+=5) for(const pair of [[[i,-.8,-50],[i,-.8,50]],[[-50,-.8,i],[50,-.8,i]]]) {
+      const a=project(pair[0]),b=project(pair[1]);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke();
+    }
+    if(state.level==='all'&&state.building==='site')drawPrecinct();
+    else if(state.level==='all')drawBuilding(selectedBuilding(),false);
+    else drawLevel();
+    faces.sort((a,b)=>a.group-b.group||a.layer-b.layer||a.depth-b.depth);
+    for(const f of faces) {
+      ctx.beginPath();f.ps.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+      ctx.fillStyle=tinted(f.color,f.shade);ctx.fill();
+      if(f.stroke) {ctx.strokeStyle='#edf3ec';ctx.lineWidth=.6;ctx.stroke();}
+      hits.push(f);
+    }
+    for(const r of routes) {
+      ctx.strokeStyle=r.color;ctx.lineWidth=1.8;ctx.setLineDash([5,3]);ctx.beginPath();r.points.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    const occupied=[];
+    for(const l of labels) {
+      const [x,anchorY]=l.p;
+      let y=anchorY;
+      ctx.font=(l.small?'10':'11')+'px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+      const width=ctx.measureText(l.text).width+14,height=21,bb=[x-width/2,y-height/2,width,height];
+      if(x<width/2+5||x>W-width/2-5||y<52||y>H-53)continue;
+      const collides=()=>occupied.some(b=>bb[0]<b[0]+b[2]&&bb[0]+bb[2]>b[0]&&bb[1]<b[1]+b[3]&&bb[1]+bb[3]>b[1]);
+      if(!l.small)for(let attempts=0;collides()&&attempts<3&&y>80;attempts++) {y-=24;bb[1]-=24;}
+      if(collides())continue;
+      occupied.push(bb);
+      if(y!==anchorY) {ctx.strokeStyle='#afc0b7';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(x,anchorY);ctx.lineTo(x,y+height/2);ctx.stroke();}
+      ctx.fillStyle='#fffffff2';ctx.beginPath();ctx.roundRect(...bb,4);ctx.fill();
+      ctx.fillStyle=l.color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.text,x,y);
+    }
+  }
+  function requestDraw() { if(!frame)frame=requestAnimationFrame(draw); }
+  function inside(p,poly) {
+    let result=false;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++)if((poly[i][1]>p[1])!==(poly[j][1]>p[1])&&p[0]<(poly[j][0]-poly[i][0])*(p[1]-poly[i][1])/(poly[j][1]-poly[i][1])+poly[i][0])result=!result;
+    return result;
+  }
+  function hitAt(event) {
+    const rect=canvas.getBoundingClientRect(),p=[event.clientX-rect.left,event.clientY-rect.top];
+    // Stop at the frontmost opaque face, including non-interactive surfaces.
+    for(let i=hits.length-1;i>=0;i--)if(inside(p,hits[i].ps))return hits[i];
+    return null;
+  }
+  let drag=null;
+  canvas.addEventListener('pointerdown',e=>{
+    if(!e.isPrimary||e.button!==0)return;
+    drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};
+    canvas.setPointerCapture(e.pointerId);tooltip.hidden=true;
+  });
+  canvas.addEventListener('pointermove',e=>{
+    if(drag&&drag.id===e.pointerId) {
+      if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>4)drag.moved=true;
+      if(drag.moved) {state.yaw+=(e.clientX-drag.x)*.008;state.pitch=Math.max(.2,Math.min(1.2,state.pitch+(e.clientY-drag.y)*.006));canvas.classList.add('dragging');requestDraw();}
+      drag.x=e.clientX;drag.y=e.clientY;
+    } else if(e.pointerType!=='touch') {
+      const hit=hitAt(e);canvas.style.cursor=hit?.action?'pointer':'grab';
+      tooltip.hidden=!hit?.title;
+      if(hit?.title) {const rect=canvas.getBoundingClientRect();tooltip.textContent=hit.title;tooltip.style.left=Math.min(W-tooltip.offsetWidth-8,Math.max(8,e.clientX-rect.left+12))+'px';tooltip.style.top=Math.max(0,e.clientY-rect.top-35)+'px';}
+    }
+  });
+  function endDrag(e,cancel=false) {
+    if(!drag||drag.id!==e.pointerId)return;
+    const click=!cancel&&!drag.moved;drag=null;canvas.classList.remove('dragging');
+    if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);
+    if(click)hitAt(e)?.action?.();
+  }
+  canvas.addEventListener('pointerup',e=>endDrag(e));
+  canvas.addEventListener('pointercancel',e=>endDrag(e,true));
+  canvas.addEventListener('lostpointercapture',()=>{drag=null;canvas.classList.remove('dragging');});
+  canvas.addEventListener('pointerleave',()=>{tooltip.hidden=true;});
+  function zoom(factor) {state.zoom=Math.max(.55,Math.min(2.6,state.zoom*factor));requestDraw();}
+  canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-Math.max(-100,Math.min(100,e.deltaY))*.0015));},{passive:false});
+  function resetCamera() {state.yaw=-.57;state.pitch=state.level==='all'?.53:.74;state.zoom=1;requestDraw();}
+  canvas.addEventListener('keydown',e=>{
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0','Home'].includes(e.key))return;
+    e.preventDefault();
+    if(e.key==='ArrowLeft')state.yaw-=.15;
+    if(e.key==='ArrowRight')state.yaw+=.15;
+    if(e.key==='ArrowUp')state.pitch=Math.max(.2,state.pitch-.08);
+    if(e.key==='ArrowDown')state.pitch=Math.min(1.2,state.pitch+.08);
+    if(e.key==='+'||e.key==='=')zoom(1.15);
+    if(e.key==='-')zoom(1/1.15);
+    if(e.key==='0'||e.key==='Home')resetCamera();
+    requestDraw();
+  });
+  root.addEventListener('click',event=>{
+    const button=event.target.closest('button'); if(!button)return;
+    if(button.dataset.building)navigate(button.dataset.building);
+    else if(button.dataset.level)navigate(state.building,button.dataset.level);
+    else if(button.dataset.space)selectSpace(button.dataset.space,button.dataset.meter||null);
+  });
+  buildingSelect.addEventListener('change',()=>navigate(buildingSelect.value));
+  levelSelect.addEventListener('change',()=>navigate(state.building,levelSelect.value));
+  document.getElementById('flows').addEventListener('click',()=>{state.flows=!state.flows;renderUI();requestDraw();});
+  document.getElementById('rotate-left').addEventListener('click',()=>{state.yaw-=.22;requestDraw();});
+  document.getElementById('rotate-right').addEventListener('click',()=>{state.yaw+=.22;requestDraw();});
+  document.getElementById('zoom-in').addEventListener('click',()=>zoom(1.18));
+  document.getElementById('zoom-out').addEventListener('click',()=>zoom(1/1.18));
+  document.getElementById('reset').addEventListener('click',resetCamera);
+  document.getElementById('download').addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([downloadSource],{type:'text/html;charset=utf-8'}));
+    const a=document.createElement('a');a.href=url;a.download='precinct.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  new ResizeObserver(requestDraw).observe(canvas);
+  renderUI();requestDraw();
+})();
+</script>
+</body>
+</html>
