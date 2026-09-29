@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Webill Golf Estate · Utility Story</title>
 <meta name="description" content="A narrative utility dashboard for the Webill Golf Estate: what we consume, what we pay, what we recover, where we lose, when it happens and what to do about it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ── WeBill tokens (from wb_ui app.css / site dashboards) ─────────────────── */
 :root {
@@ -12,23 +15,23 @@
   --navy-2: #4e4e7d;      /* hover-brand */
   --gold: #faa919;        /* --brand-text */
   --charcoal: #404041;    /* dark header bar, body text */
-  --ink: #1f2937;
-  --muted: #66758f;       /* card labels */
-  --axis: #64748b;
-  --active: #1f8fff;      /* dashboard-tab-active */
+  --ink: #404041;
+  --muted: #6b6b73;       /* card labels */
+  --axis: #6b6b73;
+  --active: #0091FF;      /* dashboard-tab-active */
   --line: #dbe4ef;        /* tablist border */
   --line-2: #e2e8f0;      /* card borders */
   --grid: #eef2f7;
-  --bg: #f8f9fb;          /* base-100 */
+  --bg: #f5f5f6;          /* base-100 */
   --bg-2: #f1f5f9;
   --card: #ffffff;
   --elect: #C09000; --water: #447CBF; --gas: #B0501E; --alt: #1B9E84;
   --units: #5A5EB8; --facilities: #D48A17; --common: #2AA0A0; --losses: #C2553D;
   --peak: #B4232C; --standard: #C99400; --off: #5B8DD6;
-  --paid: #5A5EB8; --billed: #1F8FFF; --collected: #1B9E84;
+  --paid: #404068; --billed: #0091FF; --collected: #1B9E84;
   --good: #10b981; --warn: #f59e0b; --bad: #ef4444; --dim: #cbd5e1;
   --shadow: 0 1px 2px rgb(15 23 42 / .05);
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font: Roboto, ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 * { box-sizing: border-box; }
 html { color-scheme: light; }
@@ -67,7 +70,7 @@ h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; border: 0; background: none; border-bottom: 2px solid transparent; padding: 14px 11px 12px; color: var(--muted); font-size: 13px; font-weight: 700; transition: color .18s, border-color .18s; }
 .tab .n { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--bg-2); color: var(--muted); font-size: 10px; font-weight: 700; }
-.tab:hover { color: #36415c; }
+.tab:hover { color: #404041; }
 .tab.active { color: var(--active); border-bottom-color: var(--active); }
 .tab.active .n { background: var(--active); color: #fff; }
 .period { display: flex; align-items: center; gap: 6px; padding: 8px 0; flex-shrink: 0; }
@@ -243,10 +246,10 @@ footer { max-width: 1280px; margin: 24px auto 0; padding: 18px 24px; font-size: 
 }
 
 /* WeBill demo studio navigation */
-.demo-home { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; flex-shrink:0; padding:7px 12px; border:1px solid #faa919; border-radius:8px; background:#faa919; color:#404068; font:600 12px/1.2 ui-sans-serif,system-ui,sans-serif; text-decoration:none; white-space:nowrap; cursor:pointer; transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease; }
+.demo-home { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; flex-shrink:0; padding:7px 12px; border:1px solid #faa919; border-radius:8px; background:#faa919; color:#404041; font:600 12px/1.2 Roboto,ui-sans-serif,system-ui,sans-serif; text-decoration:none; white-space:nowrap; cursor:pointer; transition:background-color .15s ease,border-color .15s ease,box-shadow .15s ease; }
 .demo-home svg { width:16px; height:16px; }
-.demo-home:hover { background:#ffca57; border-color:#ffca57; color:#404068; box-shadow:0 0 0 3px #faa91933; text-decoration:none; }
-.demo-home:focus-visible { outline:3px solid #404068; outline-offset:3px; box-shadow:0 0 0 6px #fff; }
+.demo-home:hover { background:#ffb83a; border-color:#ffb83a; color:#404041; box-shadow:0 0 0 3px #faa91933; text-decoration:none; }
+.demo-home:focus-visible { outline:3px solid #0091FF; outline-offset:3px; box-shadow:0 0 0 6px #fff; }
 .demo-home-row { max-width:1280px; margin:0 auto 12px; }
 </style>
 </head>
