@@ -178,11 +178,19 @@
   .studio-link:focus-visible{outline:3px solid #faa919;outline-offset:3px;}
   h1 em{color:#FAA919;background:none;background-image:none;padding:0;}
   .band{background:#404068;}
-  .cta{background:#404068;}
+  .cta{background:#404041;}
   .claims{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0;margin-top:26px;}
   .claim{font-family:inherit;font-size:13px;letter-spacing:0;text-transform:none;color:#404041;background:none;border:0;border-left:1px solid var(--hair-strong);border-radius:0;padding:2px 16px;line-height:1.35;}
   .claim:first-child{padding-left:0;border-left:0;}
   .claim i{display:none;}
+
+  /* title-case labels (remove all-caps) */
+  .mast .tag{text-transform:none;letter-spacing:.02em;margin-left:auto;text-align:right;}
+  .statement .st-head .k{text-transform:none;letter-spacing:.02em;}
+  .st-foot .p{text-transform:none;letter-spacing:.02em;}
+  .s-head .note{text-transform:none;letter-spacing:.02em;}
+  .col h3{text-transform:none;letter-spacing:.02em;}
+  .cta .next .k{text-transform:none;letter-spacing:.02em;}
 </style>
 </head>
 <body>
@@ -190,7 +198,7 @@
 <header class="mast">
   <div class="wrap">
     <a class="studio-link" href="index.html">Demo studio</a>
-    <div class="tag">Client overview &nbsp;·&nbsp; <b>Refuse &amp; Waste Management</b> &nbsp;·&nbsp; October 2026</div>
+    <div class="tag">Client overview &nbsp;·&nbsp; <b>Refuse &amp; Waste Management</b></div>
   </div>
 </header>
 
@@ -251,7 +259,7 @@
           </div>
         </div>
         <div class="st-foot">
-          <span class="n">Illustrative structure — rates are set by each municipality.</span>
+          <span class="n">Illustrative structure — rates are<br />set by each municipality.</span>
           <span class="p">Cost-reflective</span>
         </div>
       </figure>
@@ -373,7 +381,7 @@
     </div>
     <div class="sig">
       <span class="tagline">Read | Rate | Recover | Recommend</span>
-      <span class="contact">webill.net &nbsp;·&nbsp; [contact name, email &amp; phone]</span>
+      <span class="contact">webill.net</span>
     </div>
   </div>
 </footer>

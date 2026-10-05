@@ -208,6 +208,9 @@ footer { max-width: 1080px; margin: 24px auto 0; padding: 18px 24px; font-size: 
 .seg button:not(.active):hover{background:#eef0f3;color:var(--ink)}
 .home-trigger{transition:border-color .15s,background-color .15s}
 .home-trigger:hover{border-color:#cbd5e1;background-color:#f8fafc}
+
+.cc-tip{position:fixed;background:#0091FF;color:#fff;font-size:11px;line-height:1.3;padding:6px 9px;border-radius:6px;text-align:left;pointer-events:none;z-index:99999;white-space:nowrap;box-shadow:0 6px 16px rgba(0,145,255,.32);opacity:0;transition:opacity .12s}
+.cc-tip.show{opacity:1}
 </style>
 </head>
 <body>
@@ -915,4 +918,5 @@ requestAnimationFrame(() => Object.values(charts).forEach(c => c.resize()));
   ["meter-pick", "muni-select", "building-select", "level-select"].forEach(id => enhanceSelect(document.getElementById(id)));
 })();
 </script>
+<script>(function(){var tip=document.createElement('div');tip.className='cc-tip';document.body.appendChild(tip);function bind(el){var txt=el.getAttribute('title');if(txt){el.setAttribute('data-tip',txt);el.removeAttribute('title');}el.addEventListener('mouseenter',function(){var t=el.getAttribute('data-tip');if(!t)return;tip.textContent=t;tip.classList.add('show');var r=el.getBoundingClientRect(),tw=tip.offsetWidth,L=Math.min(r.left,window.innerWidth-tw-8);tip.style.left=Math.max(8,L)+'px';tip.style.top=(r.bottom+8)+'px';});el.addEventListener('mouseleave',function(){tip.classList.remove('show');});el.addEventListener('click',function(){tip.classList.remove('show');});}document.querySelectorAll('[title]').forEach(bind);})();</script>
 </body></html>

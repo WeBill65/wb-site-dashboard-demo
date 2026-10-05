@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Explore Webill Golf Estate: 16 residential blocks of 14 storeys, service quarters Q1–Q6, a clubhouse, and restaurant.">
-  <title>Webill Golf Estate · Webill Spatial Explorer</title>
+  <meta name="description" content="Explore WeBill Golf Estate: 16 residential blocks of 14 storeys, service quarters Q1–Q6, a clubhouse, and restaurant.">
+  <title>WeBill Golf Estate · WeBill Spatial Explorer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -132,16 +132,32 @@
 .toolbar .home-menu { width: min(220px, 46vw); }
 
 @media(max-width:600px) { .topbar { flex-wrap:wrap; gap:12px; } .top-actions { flex-wrap:wrap; gap:8px; } }
+
+/* ---- label/tooltip/dropdown refinements ---- */
+.tooltip { display:none; }
+.overline, .stat span, aside h3 { text-transform:none; letter-spacing:.3px; }
+.home-trigger { background:#404068 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.4.6 6 5.2 10.6.6 12 2 6 8 0 2z'/%3E%3C/svg%3E") no-repeat right 12px center; color:#fff; border-color:#404068; }
+.home-trigger:hover { background:#FAA919 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23404041' d='M1.4.6 6 5.2 10.6.6 12 2 6 8 0 2z'/%3E%3C/svg%3E") no-repeat right 12px center; color:#404041; border-color:#FAA919; }
+
+.concept-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-top:10px}
+.concept-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:#faa919}
+#download{background:#404068;color:#fff;border-color:#404068}
+#download:hover{background:#0091FF;border-color:#0091FF}
+.cc-tip{position:fixed;background:#0091FF;color:#fff;font-size:11px;line-height:1.3;padding:6px 9px;border-radius:6px;text-align:left;pointer-events:none;z-index:99999;white-space:nowrap;box-shadow:0 6px 16px rgba(0,145,255,.32);opacity:0;transition:opacity .12s}
+.cc-tip.show{opacity:1}
+
+.back{transition:color .15s}
+.back:hover,.breadcrumb:hover{color:#FAA919}
 </style>
 </head>
 <body>
 <main id="golf-explorer">
   <header class="topbar">
-    <div class="brand"><a class="studio-link" href="index.html">Demo studio</a><span class="brand-divider"></span><span class="overline">Spatial explorer</span></div>
-    <div class="top-actions"><span class="concept">Concept model</span><button type="button" id="download">↓ &nbsp; Download HTML</button></div>
+    <div class="brand"><a class="studio-link" href="index.html">Demo studio</a></div>
+    <div class="top-actions"><button type="button" id="download">↓ &nbsp; Download HTML</button></div>
   </header>
   <section class="intro" aria-labelledby="page-title">
-    <div><h1 id="page-title">Webill Golf Estate</h1><p>Sixteen towers. Life around the green.</p></div>
+    <div><h1 id="page-title">WeBill Golf Estate</h1><p>Sixteen towers. Life around the green.</p><span class="concept-tag">Concept model</span></div>
     <div class="stats" aria-label="Estate totals"><div class="stat"><strong>16</strong><span>Residential blocks</span></div><div class="stat"><strong>14</strong><span>Storeys per block</span></div><div class="stat"><strong>6</strong><span>Service quarters</span></div><div class="stat"><strong>2</strong><span>Clubhouse + dining</span></div></div>
   </section>
   <nav class="tabs" aria-label="Explore the estate">
@@ -169,7 +185,7 @@
     <aside id="details" aria-label="Selection details" aria-live="polite"></aside>
   </div>
 </main>
-<noscript>This interactive model requires JavaScript. Webill Golf Estate comprises 16 residential blocks, each with 14 storeys, service quarters Q1–Q6, a clubhouse, and a restaurant.</noscript>
+<noscript>This interactive model requires JavaScript. WeBill Golf Estate comprises 16 residential blocks, each with 14 storeys, service quarters Q1–Q6, a clubhouse, and a restaurant.</noscript>
 <script>
 (function golfDemo() {
   'use strict';
@@ -283,7 +299,7 @@
     const levelName=levelOptions().find(([id])=>id===state.level)[1];
     document.getElementById('view-mode').textContent=isCampus()?'Estate / 3D masterplan':state.level==='all'?'Residential / 14 storeys':'Building / 3D detail';
     document.getElementById('view-caption').textContent=b?(b.short+' · '+(state.level==='all'?'14 storeys':levelName)):state.level==='all'?'Sixteen blocks. One connected estate.':levelName;
-    canvas.setAttribute('aria-label',`Rotatable 3D model: ${b?b.name:'Webill Golf Estate'}, ${levelName}. Use the Building and Level selectors or click a structure to explore.`);
+    canvas.setAttribute('aria-label',`Rotatable 3D model: ${b?b.name:'WeBill Golf Estate'}, ${levelName}. Use the Building and Level selectors or click a structure to explore.`);
     const legend=state.flows?utilities.map(u=>({name:u.short||u.name,color:u.color})):[{name:'Residential',color:'#82a59a'},{name:'Q1–Q6',color:'#bcaa91'},{name:'Clubhouse',color:'#88aebb'},{name:'Restaurant',color:'#d1af7e'}];
     document.getElementById('legend').innerHTML=legend.map(l=>`<span><i class="dot" style="--dot:${l.color}"></i>${l.name}</span>`).join('');
     renderPanel();
@@ -318,7 +334,7 @@
     } else {
       const title=b&&b.type!=='Residential'?b.name:levelOptions().find(([id])=>id===state.level)[1];
       const back=b?(b.type==='Residential'?`data-level="all"`:`data-group="${b.type==='Service quarters'?'quarters':'all'}"`):'data-level="all"';
-      html=`<button type="button" class="back" ${back}>← ${b?.type==='Residential'?b.code+' · All floors':'Estate overview'}</button><div class="breadcrumb">Webill Golf Estate${b?' / '+b.code:''}</div><h2>${escapeHTML(title)}</h2><p class="muted">${b?.type==='Service quarters'?'Individual service residence · Electricity metering':b?.type==='Clubhouse'?'Shared clubhouse overlooking the greens':b?.type==='Restaurant'?'Estate restaurant and dining terrace':state.level==='landscape'?'Illustrative golf landscape and shared irrigation':state.level==='roof'?'Illustrative solar generation':/^\d+$/.test(state.level)?'Residential space · Five utility types':'Shared estate utilities'}</p>`;
+      html=`<button type="button" class="back" ${back}>← ${b?.type==='Residential'?b.code+' · All floors':'Estate overview'}</button><div class="breadcrumb">WeBill Golf Estate${b?' / '+b.code:''}</div><h2>${escapeHTML(title)}</h2><p class="muted">${b?.type==='Service quarters'?'Individual service residence · Electricity metering':b?.type==='Clubhouse'?'Shared clubhouse overlooking the greens':b?.type==='Restaurant'?'Estate restaurant and dining terrace':state.level==='landscape'?'Illustrative golf landscape and shared irrigation':state.level==='roof'?'Illustrative solar generation':/^\d+$/.test(state.level)?'Residential space · Five utility types':'Shared estate utilities'}</p>`;
       if(ss.length>1||!s||b?.type==='Residential')html+=`<h3>Explore spaces</h3><div class="services">${ss.map(space=>`<button type="button" data-space="${space.id}" aria-pressed="${space.id===state.space}">${escapeHTML(space.name)}</button>`).join('')}</div>`;
       html+=s?meterDetails(s):'<p class="note">Select a space or a colored marker in the model to inspect its meters.</p>';
       if(['landscape','roof'].includes(state.level))html+='<p class="note">Landscape design, solar equipment, and utility placement are schematic.</p>';
@@ -592,8 +608,8 @@
       if(collides())continue;
       occupied.push(bb);
       if(y!==anchorY) {ctx.strokeStyle='#afc0b7';ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(x,anchorY);ctx.lineTo(x,y+height/2);ctx.stroke();}
-      ctx.fillStyle='#fffffff2';ctx.beginPath();ctx.roundRect(...bb,4);ctx.fill();
-      ctx.fillStyle=l.color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.text,x,y);
+      ctx.fillStyle='#0091ff';ctx.beginPath();ctx.roundRect(...bb,4);ctx.fill();
+      ctx.fillStyle='#ffffff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.text,x,y);
     }
   }
   function requestDraw() { if(!frame)frame=requestAnimationFrame(draw); }
@@ -772,5 +788,6 @@
   ["meter-pick", "muni-select", "building-select", "level-select"].forEach(id => enhanceSelect(document.getElementById(id)));
 })();
 </script>
+<script>(function(){var tip=document.createElement('div');tip.className='cc-tip';document.body.appendChild(tip);function bind(el){var txt=el.getAttribute('title');if(txt){el.setAttribute('data-tip',txt);el.removeAttribute('title');}el.addEventListener('mouseenter',function(){var t=el.getAttribute('data-tip');if(!t)return;tip.textContent=t;tip.classList.add('show');var r=el.getBoundingClientRect(),tw=tip.offsetWidth,L=Math.min(r.left,window.innerWidth-tw-8);tip.style.left=Math.max(8,L)+'px';tip.style.top=(r.bottom+8)+'px';});el.addEventListener('mouseleave',function(){tip.classList.remove('show');});el.addEventListener('click',function(){tip.classList.remove('show');});}document.querySelectorAll('[title]').forEach(bind);})();</script>
 </body>
 </html>
