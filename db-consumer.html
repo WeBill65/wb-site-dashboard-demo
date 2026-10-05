@@ -12,7 +12,7 @@
 :root {
   --navy: #404068; --gold: #FAA919; --charcoal: #404041; --ink: #404041; --muted: #6b6b73; --axis: #6b6b73; --active: #0091FF;
   --line: #e4e4e7; --line-2: #e8e8ec; --grid: #eeeeef; --bg: #f5f5f6; --bg-2: #f2f2f4; --card: #ffffff;
-  --elect: #C09000; --water: #447CBF; --gas: #B0501E; --alt: #1B9E84;
+  --elect: #C09000; --water: #447CBF; --gas: #6F301B; --alt: #7C3AED;
   --peak: #B4232C; --standard: #C99400; --off: #5B8DD6;
   --good: #10b981; --warn: #f59e0b; --bad: #ef4444; --dim: #cbd5e1;
   --shadow: 0 3px 5px #40404108;
@@ -43,8 +43,8 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 .appbar h1 .brand { color: var(--gold); }
 .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; border: 1px solid; }
 .badge.ELECTRICITY { background: #FFF6DB; color: #C09000; border-color: rgb(192 144 0 / .4); }
-.badge.WATER { background: #EAF2FF; color: #447CBF; border-color: rgb(68 124 191 / .4); }
-.badge.GAS { background: #F5EDE9; color: #6F301B; border-color: rgb(111 48 27 / .4); }
+.badge.WATER { background: color-mix(in srgb, #447CBF 12%, #fff); color: #447CBF; border-color: rgb(68 124 191 / .4); }
+.badge.GAS { background: color-mix(in srgb, #6F301B 12%, #fff); color: #6F301B; border-color: rgb(111 48 27 / .4); }
 .appbar .sub { font-size: 12px; margin-top: 3px; } .appbar .sub .dim { color: rgb(255 255 255 / .5); }
 .pills { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); }
@@ -58,7 +58,10 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 .home-select { position: absolute; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
 .home-trigger { display: block; width: 100%; min-height: 36px; max-width: 100%; padding: 8px 32px 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23404041' d='M1.4.6 6 5.2 10.6.6 12 2 6 8 0 2z'/%3E%3C/svg%3E") no-repeat right 12px center; color: #404041; font-size: 13px; text-align: left; }
 .home-trigger:focus-visible { outline: 2px solid var(--active); outline-offset: 2px; }
-.home-list { position: absolute; z-index: 50; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); min-width: 100%; width: max-content; max-width: min(560px, 86vw); margin: 0; padding: 4px 0; list-style: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 20px rgb(64 64 65 / .14); }
+.home-list { position: absolute; z-index: 50; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); min-width: 100%; width: max-content; max-width: min(560px, 86vw); max-height: min(32rem, 70vh); overflow: auto; margin: 0; padding: 4px 0; list-style: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 20px rgb(64 64 65 / .14); }
+.tools .home-menu { width: auto; }
+.tools .home-trigger { width: auto; white-space: nowrap; }
+.tools .home-list { left: auto; right: 0; transform: none; }
 .home-list[hidden] { display: none; }
 .home-list button { display: block; width: 100%; border: 0; background: #fff; color: #404041; text-align: center; padding: 8px 16px; font-size: 13px; font-weight: 400; line-height: 1.35; }
 .home-list button:hover, .home-list button:focus-visible { background: #0091FF; color: #fff; outline: none; }
@@ -75,11 +78,11 @@ main { max-width: 1080px; margin: 0 auto; padding: 8px 24px 88px; }
 .chapter { display: none; padding: 28px 0 56px; border-top: 0; }
 .chapter.active { display: block; }
 .chapter:first-of-type { padding-top: 28px; }
-.chapter h2 { font-size: 28px; line-height: 1.28; font-weight: 600; color: var(--navy); margin: 0; max-width: 34em; letter-spacing: -0.02em; }
+.chapter h2 { font-size: 28px; line-height: 1.28; font-weight: 600; color: var(--navy); margin: 0; max-width: 24em; letter-spacing: -0.02em; }
 .lead { font-size: 17px; line-height: 1.65; color: var(--ink); max-width: none; margin: 14px 0 28px; }
 .lead b { color: var(--ink); font-weight: 600; }
 .lead .hi { background: #fff7e6; border-bottom: 2px solid var(--gold); padding: 0 2px; }
-.course { margin: 10px 0 0; max-width: none; font-size: 20px; line-height: 1.35; font-weight: 500; color: var(--navy); letter-spacing: -0.015em; }
+.course { margin: 10px 0 0; max-width: 28em; font-size: 20px; line-height: 1.35; font-weight: 500; color: var(--navy); letter-spacing: -0.015em; }
 .course:empty { display: none; }
 .reads { display: flex; flex-wrap: wrap; gap: 10px 32px; list-style: none; margin: 22px 0 0; padding: 16px 0 0; border-top: 1px solid var(--line); max-width: none; }
 .reads li { font-size: 16px; line-height: 1.35; color: var(--ink); }
@@ -207,13 +210,15 @@ body.drawer-open .scrim { opacity: 1; pointer-events: auto; } body.drawer-open .
 @media print { .storynav, .scrim, .drawer, .tools, .picker { display: none !important; } .chapter { display: block !important; break-inside: avoid; } body { background: #fff; } }
 
 /* ── consumer story additions ─────────────────────────────────────────────── */
-:root { --hot: #7C3AED; --solar: #1B9E84; --common: #64748B; }
+:root { --hot: #ED1C24; --solar: #7C3AED; --common: #64748B; }
 .badge.POSTPAID, .badge.PREPAID, .badge.WALLET { background: transparent; color: var(--gold); border-color: rgb(250 169 25 / .55); }
 .acct { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.6fr); gap: 20px; }
 .acct.read { grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr); }
 @media (max-width: 860px) { .acct, .acct.read { grid-template-columns: 1fr; } }
 .billgroup { border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden; margin-top: 10px; background: #fff; }
-.billgroup .bg-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f7f7f8; border-bottom: 1px solid var(--line-2); font-weight: 700; color: var(--ink); font-size: 13px; }
+.billgroup .bg-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: color-mix(in srgb, var(--c) 12%, #fff); border-bottom: 1px solid var(--line-2); font-weight: 700; color: var(--ink); font-size: 13px; }
+.billgroup[data-util="ELECTRICITY"] .bg-head { background: #FFF6DB; }
+.billgroup[data-util="COMMON"] .bg-head { background: #f7f7f8; }
 .billgroup .bg-head .amt { font-variant-numeric: tabular-nums; }
 .billgroup .bg-head .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; background: var(--c); vertical-align: -1px; }
 .billgroup .ln { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 12px 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; align-items: start; }
@@ -365,7 +370,7 @@ var eo={},no={};var io,ro=function(){function t(t,e,n){var i=this;this._sleepAft
     <p class="lead" id="bl-lead"></p>
     <div class="acct read">
       <div class="card">
-        <div class="card-head"><div><h3 id="bl-title">Your bill</h3><div class="sub">Tap a line for what it means. Amounts include VAT.</div></div><div class="tools"><select id="bl-month" class="tbtn" style="padding:4px 8px"></select></div></div>
+        <div class="card-head"><div><h3 id="bl-title">Your bill</h3><div class="sub">Tap a line for what it means. Amounts include VAT.</div></div><div class="tools"><div class="home-menu"><select id="bl-month" class="home-select" tabindex="-1" aria-hidden="true"></select><button type="button" class="home-trigger" id="bl-month-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Bill month"></button><ul class="home-list" id="bl-month-list" role="listbox" aria-label="Bill month" hidden></ul></div></div></div>
         <div id="bl-groups"></div>
         <div class="billtotal" id="bl-total"></div>
       </div>
@@ -514,9 +519,9 @@ const D = window.DATA;
 const VAT = D.meta.vat;
 const PAL = { navy: "#404068", gold: "#FAA919", muted: "#6b6b73", axis: "#6b6b73", grid: "#eeeeef", dim: "#cbd5e1", good: "#10b981", warn: "#f59e0b", bad: "#ef4444", ink: "#404041", blue: "#0091FF" };
 const UT = {
-  ELECTRICITY: { label: "Electricity", color: "#C09000", unit: "kWh" }, ALT: { label: "Solar electricity", color: "#1B9E84", unit: "kWh" },
-  WATER: { label: "Water", color: "#447CBF", unit: "kL" }, HOT: { label: "Hot water", color: "#7C3AED", unit: "kL" },
-  GAS: { label: "Gas", color: "#B0501E", unit: "kg" }, COMMON: { label: "Common areas", color: "#64748B", unit: null },
+  ELECTRICITY: { label: "Electricity", color: "#C09000", unit: "kWh" }, ALT: { label: "Solar electricity", color: "#7C3AED", unit: "kWh" },
+  WATER: { label: "Water", color: "#447CBF", unit: "kL" }, HOT: { label: "Hot water", color: "#ED1C24", unit: "kL" },
+  GAS: { label: "Gas", color: "#6F301B", unit: "kg" }, COMMON: { label: "Common areas", color: "#64748B", unit: null },
 };
 const ORDER = ["ELECTRICITY", "ALT", "WATER", "HOT", "GAS", "COMMON"];
 const PART = { energy: "Energy used", fixed: "Fixed charges", volume: "Water used", levy: "Demand levy", sewage: "Effluent", share: "Your share" };
@@ -637,6 +642,7 @@ function renderNow() {
 function renderBill() {
   const c = C(); const cm = complete(); if (!state.billMonth || !cm.some(m => m.month === state.billMonth)) state.billMonth = cm[cm.length - 1].month;
   const sel = el("bl-month"); sel.innerHTML = cm.slice().reverse().map(m => `<option value="${m.month}" ${m.month === state.billMonth ? "selected" : ""}>${fmt.mon(m.month)}</option>`).join("");
+  syncMenu(sel.closest(".home-menu"));
   const row = cm.find(m => m.month === state.billMonth); const idx = c.monthly.findIndex(m => m.month === row.month); const prev = c.monthly[idx - 1];
   const fixedPct = row.fixed / row.total * 100; const biggest = ORDER.map(u => [u, row.by_utility[u] || 0]).sort((a, b) => b[1] - a[1])[0];
   el("bl-headline").textContent = `Your ${fmt.monS(row.month)} bill was ${fmt.r(row.total)}`;
@@ -644,7 +650,7 @@ function renderBill() {
   el("bl-lead").innerHTML = h`Every line below comes straight from a meter or a tariff. <b>${fmt.r(row.total - row.fixed)}</b> follows what your home actually used; <b>${fmt.r(row.fixed)}</b> arrives every month whatever you do — service and capacity fees for your electricity connection, the solar service fee, the water demand levy and the effluent charge. Your <b>${c.common_share_pct}% share of the building's common areas</b> (${fmt.r(row.by_utility.COMMON || 0)}) covers the passages, lifts, lights and garden. VAT at 15% is added at the end.${prev ? h` Compared with ${fmt.monS(prev.month)} the bill moved by <b>${fmt.r(row.total - prev.total)}</b>.` : ""}`;
   el("bl-title").textContent = `Your ${fmt.mon(row.month)} bill`;
   const groups = ORDER.filter(u => row.lines.some(l => l.utility === u));
-  el("bl-groups").innerHTML = groups.map(u => { const lines = row.lines.filter(l => l.utility === u); return `<div class="billgroup"><div class="bg-head"><span><i class="sw" style="--c:${UT[u].color}"></i>${UT[u].label}${u !== "COMMON" && lines[0].volume != null ? ` <span style="color:#6b6b73;font-weight:500">· ${fmt.n(lines[0].volume, UT[u].unit === "kL" ? 1 : 0)} ${UT[u].unit}</span>` : ""}</span><span class="amt">${fmt.r(row.by_utility[u])}</span></div>${lines.map(l => `<div class="ln"><div><div class="nm">${PART[l.part] || l.part}${l.volume != null && l.part !== "share" ? ` — ${fmt.n(l.volume, l.unit === "kL" ? 1 : 0)} ${l.unit}` : ""}</div><div class="ex">${l.plain}</div></div><div class="amt">${fmt.r(l.amount)}</div></div>`).join("")}</div>`; }).join("");
+  el("bl-groups").innerHTML = groups.map(u => { const lines = row.lines.filter(l => l.utility === u); return `<div class="billgroup" data-util="${u}" style="--c:${UT[u].color}"><div class="bg-head"><span><i class="sw"></i>${UT[u].label}${u !== "COMMON" && lines[0].volume != null ? ` <span style="color:#6b6b73;font-weight:500">· ${fmt.n(lines[0].volume, UT[u].unit === "kL" ? 1 : 0)} ${UT[u].unit}</span>` : ""}</span><span class="amt">${fmt.r(row.by_utility[u])}</span></div>${lines.map(l => `<div class="ln"><div><div class="nm">${PART[l.part] || l.part}${l.volume != null && l.part !== "share" ? ` — ${fmt.n(l.volume, l.unit === "kL" ? 1 : 0)} ${l.unit}` : ""}</div><div class="ex">${l.plain}</div></div><div class="amt">${fmt.r(l.amount)}</div></div>`).join("")}</div>`; }).join("");
   el("bl-total").innerHTML = `<span>Total for ${fmt.monS(row.month)} <span style="color:#6b6b73;font-weight:500;font-size:12px">· of which VAT ${fmt.r(row.vat)}</span></span><span class="amt">${fmt.r(row.total)}</span>`;
   // movers
   if (prev) {
@@ -696,7 +702,7 @@ function renderRhythm() {
   const hoursLab = Array.from({ length: 24 }, (_, i) => fmt.hh(i));
   mk("rh-elec", { tooltip: Object.assign({}, BASE.tooltip, { axisPointer: { type: "line" }, formatter: p => `<b>${p[0].axisValue}</b><br>${p.map(x => `${x.marker}${x.seriesName}: <b>${fmt.n(x.value, 2)} kWh</b>`).join("<br>")}` }), legend: BASE.legend, grid: Object.assign({}, BASE.grid, { bottom: 40 }),
     xAxis: Object.assign({}, BASE.axisX, { data: hoursLab, axisLabel: { fontSize: 10, color: PAL.axis, interval: 2 } }), yAxis: BASE.axisY("kWh/h"),
-    series: [line("Weekday", pe.weekday, UT.ELECTRICITY.color, { showSymbol: false, areaStyle: { color: UT.ELECTRICITY.color, opacity: .10 }, markArea: { silent: true, data: [[{ xAxis: "01:00", itemStyle: { color: "rgba(64,64,104,0.06)" }, label: { show: true, formatter: "night", position: "insideTop", fontSize: 10, color: PAL.axis } }, { xAxis: "04:00" }], [{ xAxis: "10:00", itemStyle: { color: "rgba(27,158,132,0.08)" }, label: { show: true, formatter: "solar hours", position: "insideTop", fontSize: 10, color: UT.ALT.color } }, { xAxis: "15:00" }]] } }), line("Weekend", pe.weekend, PAL.axis, { showSymbol: false, lineStyle: { width: 2, type: "dashed", color: PAL.axis } })] });
+    series: [line("Weekday", pe.weekday, UT.ELECTRICITY.color, { showSymbol: false, areaStyle: { color: UT.ELECTRICITY.color, opacity: .10 }, markArea: { silent: true, data: [[{ xAxis: "01:00", itemStyle: { color: "rgba(64,64,104,0.06)" }, label: { show: true, formatter: "night", position: "insideTop", fontSize: 10, color: PAL.axis } }, { xAxis: "04:00" }], [{ xAxis: "10:00", itemStyle: { color: "rgba(124,58,237,0.08)" }, label: { show: true, formatter: "solar hours", position: "insideTop", fontSize: 10, color: UT.ALT.color } }, { xAxis: "15:00" }]] } }), line("Weekend", pe.weekend, PAL.axis, { showSymbol: false, lineStyle: { width: 2, type: "dashed", color: PAL.axis } })] });
   mk("rh-water", { tooltip: Object.assign({}, BASE.tooltip, { axisPointer: { type: "line" }, formatter: p => `<b>${p[0].axisValue}</b><br>${p.map(x => `${x.marker}${x.seriesName}: <b>${fmt.n(x.value)} L</b>`).join("<br>")}` }), legend: BASE.legend, grid: Object.assign({}, BASE.grid, { bottom: 40 }),
     xAxis: Object.assign({}, BASE.axisX, { data: hoursLab, axisLabel: { fontSize: 10, color: PAL.axis, interval: 2 } }), yAxis: BASE.axisY("litres/h"),
     series: [line("Weekday", pw.weekday.map(v => Math.round(v * 1000)), UT.WATER.color, { showSymbol: false, areaStyle: { color: UT.WATER.color, opacity: .10 } }), line("Weekend", pw.weekend.map(v => Math.round(v * 1000)), PAL.axis, { showSymbol: false, lineStyle: { width: 2, type: "dashed", color: PAL.axis } })] });
@@ -887,31 +893,41 @@ function drillMeter(t, body) {
 /* ── wiring ─────────────────────────────────────────────────────────────── */
 function renderAll() { closeDrill(); state.billMonth = null; renderHeader(); renderNow(); renderBill(); renderWhere(); renderRhythm(); renderCompare(); renderPay(); renderNotice(); renderDo(); }
 el("who-pick").innerHTML = D.consumers.map((c, i) => `<option value="${i}">${c.name} · ${c.unit} · ${c.billing_mode.toLowerCase()}</option>`).join("");
-function syncHomeMenu() {
-  const sel = el("who-pick");
-  el("who-list").innerHTML = [...sel.options].map(o => `<li role="none"><button type="button" role="option" data-value="${o.value}" aria-selected="${o.selected ? "true" : "false"}">${o.textContent}</button></li>`).join("");
+function syncMenu(menu) {
+  if (!menu) return;
+  const sel = menu.querySelector("select");
+  const list = menu.querySelector(".home-list");
+  const trigger = menu.querySelector(".home-trigger");
+  list.innerHTML = [...sel.options].map(o => `<li role="none"><button type="button" role="option" data-value="${o.value}" aria-selected="${o.selected ? "true" : "false"}">${o.textContent}</button></li>`).join("");
   const current = sel.options[sel.selectedIndex];
-  el("who-trigger").textContent = current ? current.textContent : "";
+  trigger.textContent = current ? current.textContent : "";
 }
-function closeHomeMenu() { el("who-list").hidden = true; el("who-trigger").setAttribute("aria-expanded", "false"); }
-el("who-trigger").addEventListener("click", () => {
-  const list = el("who-list");
-  const open = list.hidden;
-  list.hidden = !open;
-  el("who-trigger").setAttribute("aria-expanded", open ? "true" : "false");
-});
-el("who-list").addEventListener("click", e => {
-  const btn = e.target.closest("button[data-value]");
+function closeMenu(menu) {
+  menu.querySelector(".home-list").hidden = true;
+  menu.querySelector(".home-trigger").setAttribute("aria-expanded", "false");
+}
+document.addEventListener("click", e => {
+  const menu = e.target.closest(".home-menu");
+  document.querySelectorAll(".home-menu").forEach(m => { if (m !== menu) closeMenu(m); });
+  if (!menu) return;
+  const trigger = e.target.closest(".home-trigger");
+  if (trigger && menu.contains(trigger)) {
+    const list = menu.querySelector(".home-list");
+    const open = list.hidden;
+    list.hidden = !open;
+    trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    return;
+  }
+  const btn = e.target.closest(".home-list button[data-value]");
   if (!btn) return;
-  const sel = el("who-pick");
+  const sel = menu.querySelector("select");
   sel.value = btn.dataset.value;
   sel.dispatchEvent(new Event("change"));
-  closeHomeMenu();
+  closeMenu(menu);
 });
-document.addEventListener("click", e => { if (!e.target.closest(".home-menu")) closeHomeMenu(); });
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeHomeMenu(); });
-el("who-pick").addEventListener("change", e => { state.i = +e.target.value; renderAll(); syncHomeMenu(); window.scrollTo({ top: 0, behavior: "smooth" }); });
-syncHomeMenu();
+document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".home-menu").forEach(closeMenu); });
+el("who-pick").addEventListener("change", e => { state.i = +e.target.value; renderAll(); syncMenu(el("who-pick").closest(".home-menu")); window.scrollTo({ top: 0, behavior: "smooth" }); });
+syncMenu(el("who-pick").closest(".home-menu"));
 function showChapter(id, replace) {
   const target = document.getElementById(id) ? id : "ch-now";
   document.querySelectorAll(".chapter").forEach(s => {
