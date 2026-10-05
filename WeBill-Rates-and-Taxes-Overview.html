@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" /><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WeBill — Municipal Rates &amp; Taxes, billed on one platform</title>
+<meta name="description" content="WeBill extends its utility-billing platform to municipal property rates and taxes — one auditable rates engine alongside water, electricity and gas." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#faa919;
+    --amber:#404041;
+    --charcoal:#404041;
+    --ink:#404041;
+    --muted:#6b6b73;
+    --paper:#FFFFFF;
+    --neutral:#f5f5f6;
+    --tint:#fff7e6;
+    --hair:#e4e4e7;
+    --hair-strong:#d4d4d8;
+    --sans:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --display:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --mono:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --pad:clamp(20px,5vw,72px);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--charcoal);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--yellow); outline-offset:3px;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--pad);}
+
+  /* ---------- masthead ---------- */
+  .mast{border-bottom:1px solid var(--hair); background:var(--paper);}
+  .mast .wrap{display:flex; align-items:center; justify-content:space-between; gap:24px; padding-top:22px; padding-bottom:20px;}
+  .mast img{width:132px;}
+  .mast .tag{
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--muted); white-space:nowrap;
+  }
+  .mast .tag b{color:var(--charcoal); font-weight:600;}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative; overflow:hidden;}
+  .hero::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(180deg,var(--neutral) 0%,rgba(245,246,247,0) 62%);
+    z-index:0;
+  }
+  .hero .wrap{position:relative; z-index:1; padding-top:clamp(44px,7vw,84px); padding-bottom:clamp(40px,6vw,72px);}
+  .hero-grid{display:grid; grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr); gap:clamp(28px,4.5vw,64px); align-items:start;}
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:11px; font-weight:500; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--amber);
+  }
+  .eyebrow::before{content:""; width:26px; height:2.5px; background:var(--yellow); display:block;}
+  h1{
+    font-family:var(--display); font-weight:700; letter-spacing:-.026em;
+    font-size:clamp(34px,5.1vw,60px); line-height:1.03; margin:18px 0 0; color:var(--ink);
+  }
+  /* Brand yellow as a FILL (never as text): charcoal type over a yellow marker band — 11.5:1 */
+  h1 em{
+    font-style:normal; color:var(--ink);
+    background-image:linear-gradient(180deg,transparent 64%,var(--yellow) 64%);
+    background-repeat:no-repeat; padding:0 .07em;
+  }
+  .hero .sub{
+    font-family:var(--display); font-weight:600; font-size:clamp(16px,1.6vw,20px);
+    color:var(--charcoal); margin-top:18px; line-height:1.3;
+  }
+  .hero .lede{margin:20px 0 0; font-size:clamp(15px,1.15vw,16.5px); color:#6b6b73; max-width:52ch;}
+  .hero .lede b{color:var(--ink); font-weight:600;}
+
+  .claims{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;}
+  .claim{
+    font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--charcoal); background:var(--paper); border:1px solid var(--hair-strong);
+    border-radius:2px; padding:7px 11px;
+  }
+  .claim i{font-style:normal; color:var(--amber);}
+
+  /* ---------- signature: the rates statement ---------- */
+  .statement{
+    background:var(--paper); border:1px solid var(--hair-strong); border-radius:4px;
+    box-shadow:0 18px 40px -28px rgba(35,38,42,.42);
+    overflow:hidden;
+  }
+  .statement .st-head{
+    background:var(--charcoal); color:#fff; padding:14px 18px;
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  }
+  .statement .st-head .t{font-family:var(--display); font-weight:600; font-size:13.5px; letter-spacing:.01em;}
+  .statement .st-head .t span{color:var(--yellow);}
+  .statement .st-head .k{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#c7c8d7; white-space:nowrap;}
+  .st-body{padding:8px 18px 4px;}
+  .st-row{
+    display:grid; grid-template-columns:1fr auto; gap:16px; align-items:baseline;
+    padding:9px 0; border-bottom:1px dotted var(--hair);
+  }
+  .st-row:last-of-type{border-bottom:none;}
+  .st-row .l{font-size:13.5px; color:#6b6b73; line-height:1.35;}
+  .st-row .l small{display:block; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.05em; margin-top:2px;}
+  .st-row .v{font-family:var(--mono); font-size:14px; font-weight:500; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .st-row.sub .l{padding-left:14px;}
+  .st-row.sub .l::before{content:"×"; position:absolute; margin-left:-14px; color:var(--amber); font-family:var(--mono);}
+  .st-row.sub{position:relative;}
+  .st-row.net{
+    background:var(--tint); margin:6px -18px 0; padding:14px 18px; border-bottom:none;
+    border-top:2px solid var(--yellow);
+  }
+  .st-row.net .l{font-family:var(--display); font-weight:600; font-size:13px; color:var(--charcoal);}
+  .st-row.net .l small{font-family:var(--mono); font-weight:400;}
+  .st-row.net .v{font-size:19px; font-weight:600; color:var(--charcoal);}
+  .st-foot{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:14px 18px; border-top:1px solid var(--hair); background:var(--paper);
+  }
+  .st-foot .n{font-family:var(--mono); font-size:10.5px; color:var(--muted); letter-spacing:.03em;}
+  .st-foot .p{font-family:var(--mono); font-size:10.5px; color:var(--amber); letter-spacing:.12em; text-transform:uppercase; font-weight:600;}
+
+  /* ---------- band ---------- */
+  .band{background:var(--charcoal); color:#fff;}
+  .band .wrap{padding-top:26px; padding-bottom:26px;}
+  .band p{
+    margin:0; font-family:var(--display); font-weight:600;
+    font-size:clamp(17px,2.1vw,25px); line-height:1.24; letter-spacing:-.014em;
+  }
+  .band p span{color:var(--yellow);}
+
+  /* ---------- sections ---------- */
+  section{padding-top:clamp(48px,6vw,78px);}
+  .s-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:2px solid var(--ink); padding-bottom:12px;}
+  .s-head h2{
+    margin:0; font-family:var(--display); font-weight:600; letter-spacing:-.014em;
+    font-size:clamp(19px,2.3vw,27px); line-height:1.14; color:var(--ink);
+  }
+  .s-head .note{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap;}
+
+  /* capabilities as ledger line-items */
+  .ledger{display:grid; grid-template-columns:repeat(2,minmax(0,1fr));}
+  .item{
+    padding:26px 30px 28px 0; border-bottom:1px solid var(--hair);
+    display:grid; grid-template-columns:1fr; gap:8px;
+  }
+  .ledger .item:nth-child(odd){padding-right:34px;}
+  .ledger .item:nth-child(even){padding-left:34px; border-left:1px solid var(--hair);}
+  .item .h{
+    font-family:var(--display); font-weight:600; font-size:clamp(15.5px,1.5vw,18px);
+    letter-spacing:-.01em; color:var(--ink); margin:0; display:flex; align-items:baseline; gap:9px;
+  }
+  .item .h::before{content:""; flex:0 0 auto; width:9px; height:9px; background:var(--yellow); margin-top:1px;}
+  .item p{margin:0; font-size:14.5px; color:#6b6b73; line-height:1.55; max-width:46ch;}
+
+  /* compliance strip */
+  .strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:2px solid var(--ink);}
+  .strip .c{padding:22px 20px 4px 0; border-bottom:1px solid var(--hair);}
+  .strip .c + .c{padding-left:20px; border-left:1px solid var(--hair);}
+  .strip .k{
+    font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--amber); margin:0 0 8px;
+  }
+  .strip p{margin:0 0 18px; font-size:13.5px; color:#6b6b73; line-height:1.5;}
+
+  /* two-column: audience + rollout */
+  .cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.12fr); gap:clamp(28px,4vw,60px); align-items:start;}
+  .col h3{
+    margin:0 0 18px; font-family:var(--mono); font-size:11px; font-weight:600;
+    letter-spacing:.2em; text-transform:uppercase; color:var(--muted);
+  }
+  .aud{list-style:none; margin:0; padding:0;}
+  .aud li{border-top:1px solid var(--hair); padding:16px 0 17px; display:grid; grid-template-columns:auto 1fr; gap:14px;}
+  .aud li::before{content:""; width:8px; height:8px; background:var(--yellow); margin-top:8px;}
+  .aud b{font-family:var(--display); font-weight:600; font-size:15px; color:var(--ink); display:block; margin-bottom:4px; letter-spacing:-.008em;}
+  .aud span{font-size:14px; color:#6b6b73;}
+
+  .steps{list-style:none; margin:0; padding:0; counter-reset:s;}
+  .steps li{
+    counter-increment:s; border-top:1px solid var(--hair); padding:15px 0 16px;
+    display:grid; grid-template-columns:38px 1fr; gap:14px; align-items:start;
+  }
+  .steps li::before{
+    content:counter(s,decimal-leading-zero);
+    font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--amber);
+    letter-spacing:.06em; padding-top:2px;
+  }
+  .steps b{font-family:var(--display); font-weight:600; font-size:14.5px; color:var(--ink); display:block; margin-bottom:3px; letter-spacing:-.006em;}
+  .steps span{font-size:13.8px; color:#6b6b73;}
+
+  /* ---------- footer / cta ---------- */
+  .cta{margin-top:clamp(48px,6vw,80px); background:var(--ink); color:#fff;}
+  .cta .wrap{padding-top:clamp(40px,5vw,60px); padding-bottom:clamp(36px,4.5vw,54px);}
+  .cta-grid{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr); gap:clamp(26px,4vw,56px); align-items:end;}
+  .cta h2{
+    margin:0; font-family:var(--display); font-weight:700; letter-spacing:-.022em;
+    font-size:clamp(24px,3.3vw,40px); line-height:1.1;
+  }
+  .cta h2 span{color:var(--yellow);}
+  .cta p{margin:18px 0 0; font-size:14.5px; color:#c7c8d7; max-width:46ch; line-height:1.6;}
+  .cta p b{color:#fff; font-weight:600;}
+  .cta .next{border-left:2px solid var(--yellow); padding-left:20px;}
+  .cta .next .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--yellow); margin:0 0 10px;}
+  .cta .next p{font-size:13.8px; color:#c7c8d7; margin:0;}
+  .sig{margin-top:34px; padding-top:20px; border-top:1px solid #4e4e7d; display:flex; flex-wrap:wrap; gap:10px 26px; align-items:center; justify-content:space-between;}
+  .sig .tagline{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#fff;}
+  .sig .contact{font-family:var(--mono); font-size:11px; color:#9a9aa3; letter-spacing:.03em;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:940px){
+    .hero-grid{grid-template-columns:1fr;}
+    .statement{max-width:520px;}
+    .ledger{grid-template-columns:1fr;}
+    .ledger .item:nth-child(odd){padding-right:0;}
+    .ledger .item:nth-child(even){padding-left:0; border-left:none;}
+    .strip{grid-template-columns:1fr 1fr;}
+    .strip .c + .c{padding-left:0; border-left:none;}
+    .cols{grid-template-columns:1fr;}
+    .cta-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){
+    .strip{grid-template-columns:1fr;}
+    .mast .wrap{flex-direction:column; align-items:flex-start; gap:12px;}
+    .mast .tag{white-space:normal;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+
+  /* ---------- print: doubles as the one-pager ---------- */
+  @media print{
+    @page{size:A4; margin:13mm;}
+    body{font-size:10.5pt;}
+    .hero::before{display:none;}
+    .statement{box-shadow:none;}
+    section{padding-top:22px; break-inside:avoid;}
+    .item,.strip .c,.aud li,.steps li{break-inside:avoid;}
+    .cta{margin-top:26px;}
+    .mast{padding-top:0;}
+  }
+
+  /* dashboard identity: dark surfaces -> navy */
+  .statement .st-head{background:#404041;}
+  .band{background:#404041;}
+
+  /* ===== header / palette / claims refinements ===== */
+  .mast .wrap{align-items:center;}
+  .studio-link{color:#404041;font-size:11px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;text-decoration:none;line-height:1;display:inline-flex;align-items:center;}
+  .studio-link:hover{border-bottom:1px solid #faa919;}
+  .studio-link:focus-visible{outline:3px solid #faa919;outline-offset:3px;}
+  h1 em{color:#FAA919;background:none;background-image:none;padding:0;}
+  .band{background:#404068;}
+  .cta{background:#404068;}
+  .claims{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0;margin-top:26px;}
+  .claim{font-family:inherit;font-size:13px;letter-spacing:0;text-transform:none;color:#404041;background:none;border:0;border-left:1px solid var(--hair-strong);border-radius:0;padding:2px 16px;line-height:1.35;}
+  .claim:first-child{padding-left:0;border-left:0;}
+  .claim i{display:none;}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="studio-link" href="index.html">Demo studio</a>
+    <div class="tag">Client overview &nbsp;·&nbsp; <b>Municipal Rates &amp; Taxes</b> &nbsp;·&nbsp; October 2026</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <div>
+        <span class="eyebrow">The offering</span>
+        <h1>Municipal Rates &amp; Taxes,<br />billed on <em>one platform</em></h1>
+        <p class="sub">The same platform as water, electricity and gas.</p>
+        <p class="lede">WeBill is extending its utility-billing platform to <b>property rates and taxes</b> — a property tax calculated from a municipality's valuation roll and its cent-in-the-rand, then qualified by the relief in its Rates Policy. Rates are billed on the same account, the same meter-to-cash cycle and the same audit trail that already run your utilities, so one vendor carries the whole municipal revenue stack.</p>
+        <div class="claims">
+          <span class="claim"><i>◆</i> One engine</span>
+          <span class="claim"><i>◆</i> One account</span>
+          <span class="claim"><i>◆</i> One audit trail</span>
+          <span class="claim"><i>◆</i> Full provenance</span>
+        </div>
+      </div>
+
+      <figure class="statement" aria-label="Illustrative municipal rates statement">
+        <div class="st-head">
+          <div class="t">Rates line · <span>explained end to end</span></div>
+          <div class="k">Illustrative</div>
+        </div>
+        <div class="st-body">
+          <div class="st-row">
+            <div class="l">Market value<small>Valuation roll · versioned</small></div>
+            <div class="v">R 1 200 000</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Less statutory exclusion<small>First R15 000 · residential</small></div>
+            <div class="v">− R 15 000</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Rateable value</div>
+            <div class="v">R 1 185 000</div>
+          </div>
+          <div class="st-row sub">
+            <div class="l">Residential randage<small>Cent-in-the-rand · ratio-checked</small></div>
+            <div class="v">0.0068</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Annual rates</div>
+            <div class="v">R 8 058.00</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Monthly rates<small>Annual ÷ 12</small></div>
+            <div class="v">R 671.50</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Less pensioner rebate<small>50% · means-tested</small></div>
+            <div class="v">− R 335.75</div>
+          </div>
+          <div class="st-row net">
+            <div class="l">Net monthly rates<small>Every input stored on the line</small></div>
+            <div class="v">R 335.75</div>
+          </div>
+        </div>
+        <div class="st-foot">
+          <span class="n">Illustrative figures only — tariffs are set by each municipality.</span>
+          <span class="p">Reproducible</span>
+        </div>
+      </figure>
+
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <p>From valuation roll to clearance certificate — <span>one defensible, auditable rates engine.</span></p>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="s-head">
+        <h2>What the offering covers</h2>
+        <span class="note">Six capabilities</span>
+      </div>
+      <div class="ledger">
+        <article class="item">
+          <h3 class="h">Property rates billing</h3>
+          <p>Rateable value × cent-in-the-rand, differentiated by property category and qualified by relief — calculated on one versioned engine, not a spreadsheet.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Valuation roll management</h3>
+          <p>Import, version and reconcile general and supplementary rolls, with validity tracked against the statutory period and exceptions flagged before a roll goes live.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Relief &amp; rebates</h3>
+          <p>Exemptions, reductions, means-tested owner rebates and indigent relief — each with eligibility, expiry and re-verification, and revenue foregone reported separately from bad debt.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Section 118 clearance</h3>
+          <p>Compute the two-year figure and issue clearance figures and certificates — the flagship workflow for conveyancers and managing agents on property transfers.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Objections &amp; appeals</h3>
+          <p>Valuation objections and billing queries run as cases with timers, document capture and an outcome recorded against the property — recalculating automatically when a value changes.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">One consolidated account</h3>
+          <p>Rates, refuse and utilities on a single monthly invoice, with a plain-language explanation behind every charge line and one audit trail across the lot.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="s-head">
+        <h2>Compliance is built in, not bolted on</h2>
+        <span class="note">Enforced in the engine</span>
+      </div>
+      <div class="strip">
+        <div class="c">
+          <p class="k">MPRA s19</p>
+          <p>Rate-ratio guardrail: every category randage is validated against the prescribed maximum before a resolution is published.</p>
+        </div>
+        <div class="c">
+          <p class="k">Roll validity</p>
+          <p>Tracked to the statutory period — four years for a metro, five for a local municipality — with alerts before expiry.</p>
+        </div>
+        <div class="c">
+          <p class="k">Provenance</p>
+          <p>Each line stores its roll, category and tariff version, so any charge can be reproduced and defended later.</p>
+        </div>
+        <div class="c">
+          <p class="k">mSCOA</p>
+          <p>Revenue classified to national reporting format, with VAT indicators, without re-keying.</p>
+        </div>
+        <div class="c">
+          <p class="k">POPIA</p>
+          <p>Owner and means-test data purpose-limited, access-controlled and access-logged.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cols">
+        <div class="col">
+          <h3>Who it's for</h3>
+          <ul class="aud">
+            <li><span><b>Municipalities</b>Metro and local — rates and utilities on one platform, with ratio-validated resolutions and arrears and interest reported by account and by stream.</span></li>
+            <li><span><b>Managing agents</b>One consolidated account per property, and clearance status without chasing the municipal office.</span></li>
+            <li><span><b>Property portfolios &amp; body corporates</b>Sectional-title units rated on their own value, relief applied where it qualifies, and a single view across the whole portfolio.</span></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>How we work with you</h3>
+          <ol class="steps">
+            <li><span><b>Configure</b>Your categories, randages and relief rules set up together with your team.</span></li>
+            <li><span><b>Import &amp; reconcile</b>Your roll and property data imported, then reconciled against the prior version before anything bills.</span></li>
+            <li><span><b>Parallel run</b>We bill alongside your current process and prove the numbers agree before you switch.</span></li>
+            <li><span><b>Go live</b>One statement per property, one audit trail, on the same platform as your utilities.</span></li>
+            <li><span><b>Extend</b>Add clearance certificates, special rating areas and analytics as you're ready.</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="cta">
+  <div class="wrap">
+    <div class="cta-grid">
+      <div>
+        <h2>Let's put rates and taxes on the <span>same platform</span> as everything else.</h2>
+        <p><b>Bring your rates policy and your current bill</b> to a short working session — we'll show you the calculation line by line, on your own property data.</p>
+      </div>
+      <div class="next">
+        <p class="k">Next step</p>
+        <p>A short working session on your rates policy and current bill. We can run a parallel billing cycle on your own data before you commit to anything.</p>
+      </div>
+    </div>
+    <div class="sig">
+      <span class="tagline">Read | Rate | Recover | Recommend</span>
+      <span class="contact">webill.net &nbsp;·&nbsp; [contact name, email &amp; phone]</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

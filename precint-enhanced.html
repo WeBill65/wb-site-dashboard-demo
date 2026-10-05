@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Explore The Precinct: four buildings, 67 primary levels, shops, rooms, offices and five connected utility systems in an offline WebGL explorer.">
+<title>The Precinct | WeBill Spatial Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#404041;--muted:#6b6b73;--green:#404068;--line:#e4e4e7;--paper:#ffffff;--bg:#f5f5f6;--water:#369cf4;--electricity:#e8a130;--generator:#a38aea;--solar:#27b79a;font-family:Roboto,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);font-synthesis:none}*{box-sizing:border-box}body{margin:0;background:var(--bg);overflow:hidden}button,input{font:inherit}button{color:inherit;cursor:pointer}button:focus-visible,input:focus-visible,canvas:focus-visible{outline:3px solid #0091ff;outline-offset:3px}button{border:0;background:none}button:disabled{opacity:.45;cursor:not-allowed}.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:middle}.app{height:100dvh;display:flex;flex-direction:column}.topbar{height:78px;flex:none;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#ffffff;padding:0 25px;gap:18px;z-index:20}.brand{font-size:30px;letter-spacing:-1.5px;font-weight:750;color:#404068;display:flex;align-items:center}.brand span{font-weight:400}.brand i{display:block;width:8px;height:8px;border-radius:50%;background:#faa919;margin:15px 0 0 3px}.brand-meta{border-left:1px solid var(--line);padding-left:25px;margin-left:22px}.brand-meta strong{display:block;font-weight:550;font-size:13px}.brand-meta small{font-size:11px;color:var(--muted);display:block;margin-top:4px}.header-left{display:flex;align-items:center}.top-actions{display:flex;align-items:center;gap:8px}.demo-pill{font-size:10px;letter-spacing:1.1px;color:#6b6b73;border:1px solid #e4e4e7;border-radius:99px;padding:9px 12px;background:#f8f8f8;margin-right:9px}.demo-pill i{display:inline-block;width:6px;height:6px;border-radius:99px;background:#faa919;margin-right:6px}.icon-button{width:36px;height:36px;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center;background:white}.icon-button:hover{background:#ededed}.workspace{flex:1;min-height:0;display:grid;grid-template-columns:222px minmax(0,1fr) 298px}.nav{background:#fbfbfb;border-right:1px solid var(--line);padding:23px 16px 16px;overflow:auto;z-index:15}.eyebrow{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;font-weight:650;color:var(--muted)}.nav h2{font-size:18px;font-weight:550;letter-spacing:-.6px;margin:7px 0 20px}.search{position:relative;margin-bottom:22px}.search .icon{position:absolute;left:10px;top:11px;width:15px;color:#85858d}.search input{width:100%;height:38px;font-size:10px;border:1px solid var(--line);background:#ffffff;border-radius:8px;padding:8px 9px 8px 32px;color:var(--ink)}.nav-section{margin:21px 7px 11px}.nav-button{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:11px 10px;border-radius:8px;font-size:11px;margin:3px 0;color:#6b6b73;transition:.15s}.nav-button:hover{background:#ededed}.nav-button.active{background:#e6e6e8;color:#404068;font-weight:600}.nav-button .icon{width:17px;height:17px}.nav-button .count{margin-left:auto;font-size:9px;opacity:.65}.level-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:9px 6px}.level-grid button{height:31px;border:1px solid var(--line);background:#ffffff;border-radius:5px;font-size:10px}.level-grid button.active{background:var(--ink);border-color:var(--ink);color:#ffffff}.level-note{font-size:9px;line-height:1.6;color:var(--muted);margin:9px 7px 22px}.layers{border-top:1px solid var(--line);padding-top:18px;margin:18px 7px 0}.layer{display:flex;align-items:center;gap:8px;font-size:11px;margin-top:13px;cursor:pointer}.layer input{accent-color:var(--green);width:13px;height:13px;margin:0}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dot,var(--green));flex:none}.layer small{margin-left:auto;font-size:9px;color:var(--muted)}.nav-footer{font-size:9px;line-height:1.7;color:#85858d;margin:24px 7px 0}.stage{position:relative;overflow:hidden;min-width:0;background:#e6e6e8}.stage canvas#scene{display:block;position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}.stage.walk canvas#scene{cursor:crosshair}.stage-header{position:absolute;left:26px;top:26px;right:20px;pointer-events:none;z-index:3}.breadcrumb{font-size:9px;letter-spacing:.8px;color:#6b6b73;margin-bottom:9px}.stage-header h1{font-size:27px;font-weight:450;letter-spacing:-1.1px;margin:0;color:#404068}.stage-subtitle{font-size:10px;color:#6b6b73;margin-top:7px}.viewbar{position:absolute;left:24px;top:117px;display:flex;align-items:center;gap:6px;z-index:6;flex-wrap:wrap;right:18px}.seg{display:flex;border:1px solid #d6d6da;border-radius:8px;padding:3px;background:#ffffffde;box-shadow:0 2px 6px #40406810}.seg button{display:flex;align-items:center;gap:6px;font-size:10px;padding:7px 10px;border-radius:5px}.seg button.active{background:#404068;color:#ffffff}.seg button .icon{width:13px;height:13px}.tool{height:34px;display:flex;align-items:center;gap:6px;background:#ffffffeb;border:1px solid #d6d6da;border-radius:8px;padding:0 10px;font-size:10px;box-shadow:0 2px 6px #40406809}.tool.active{background:#e8e8ec;border-color:#404068;color:#404068}.tool .icon{width:14px;height:14px}.camera-tools{position:absolute;right:18px;top:185px;z-index:6;display:grid;gap:6px}.camera-tools button{width:33px;height:33px;display:grid;place-items:center;border:1px solid #d6d6da;border-radius:7px;background:#fffffff0}.camera-tools .icon{width:15px;height:15px}.stage-foot{position:absolute;bottom:19px;left:24px;right:20px;display:flex;gap:8px;align-items:flex-end;justify-content:space-between;z-index:5;pointer-events:none}.view-help{font-size:9px;color:#6b6b73;background:#fbfbfbed;border:1px solid #d6d6da;border-radius:7px;padding:9px 11px;line-height:1.8;max-width:330px}.view-help strong{font-weight:600}.view-help kbd{font:8px Roboto,sans-serif;border:1px solid #d6d6da;padding:2px 4px;border-radius:3px;margin-right:3px}.minimap{pointer-events:auto;width:137px;background:#ffffffed;border:1px solid #d6d6da;border-radius:11px;padding:10px;box-shadow:0 4px 20px #4040410c;flex:none}.minimap .eyebrow{font-size:7px;display:flex;justify-content:space-between;margin-bottom:5px}.minimap canvas{width:115px;height:92px;display:block;cursor:pointer;touch-action:manipulation}.map-note{font-size:7px;color:var(--muted);text-align:center;margin-top:4px}.marker-layer{position:absolute;inset:0;pointer-events:none;z-index:4}.hotspot{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;white-space:nowrap;background:#ffffffef;border:1px solid #d6d6da;border-radius:7px;padding:7px 10px;font-size:9px;box-shadow:0 4px 13px #40406815;display:flex;align-items:center;gap:6px;transition:opacity .15s}.hotspot::after{content:'';position:absolute;bottom:-10px;width:1px;height:10px;background:#9a9aa3;left:50%}.hotspot:hover{border-color:#404068;background:#ffffff}.hotspot b{font-weight:550}.hotspot small{font-size:8px;color:var(--muted)}.inspector{padding:25px 21px 20px;overflow:auto;background:#ffffff;border-left:1px solid var(--line);z-index:10}.inspector h2{font-size:23px;line-height:1.2;letter-spacing:-.8px;font-weight:500;margin:11px 0 9px}.inspector h3{font-size:12px;font-weight:600;margin:24px 0 12px}.inspector p{font-size:11px;line-height:1.75;color:#6b6b73;margin:0}.inspector .lead{font-size:12px;line-height:1.7}.tag{font-size:8px;display:inline-flex;align-items:center;gap:5px;background:#eeeeef;border:1px solid #d6d6da;padding:5px 7px;border-radius:5px;color:#6b6b73;margin-top:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:24px 0 8px}.stat{border:1px solid var(--line);border-radius:9px;padding:14px 12px;background:#f9f9f9}.stat strong{display:block;font-size:28px;font-weight:400;letter-spacing:-1px}.stat span{font-size:9px;color:var(--muted);margin-top:5px;display:block}.systems{display:grid;gap:1px}.system{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #eaeaea;gap:9px;font-size:10px}.system .icon{width:15px;height:15px;color:var(--muted)}.system small{font-size:9px;margin-left:auto;color:var(--muted)}.primary,.secondary{width:100%;display:flex;justify-content:center;align-items:center;gap:8px;padding:12px;border-radius:7px;font-size:11px;margin-top:10px}.primary{background:#404068;color:white}.primary:hover{background:#353557}.secondary{border:1px solid var(--line);background:#f7f7f8}.secondary:hover{background:#eaeaea}.primary .icon,.secondary .icon{width:15px;height:15px}.note{padding:12px;border-radius:7px;background:#f2f2f4;font-size:9px;color:#6b6b73;line-height:1.7;margin-top:21px;border:1px solid #e6e6e8}.back{font-size:10px;display:flex;align-items:center;gap:6px;color:#85858d;padding:0;margin-bottom:21px}.back .icon{width:13px;height:13px}.space-list,.asset-list{display:grid;gap:7px;margin-top:15px}.space-card,.asset-card{display:flex;align-items:center;gap:9px;text-align:left;border:1px solid var(--line);border-radius:8px;padding:11px;font-size:10px;background:#ffffff;width:100%;transition:.15s}.space-card:hover,.asset-card:hover{border-color:#404068;background:#f5f5f6}.space-card strong,.asset-card strong{font-size:11px;font-weight:550;display:block}.space-card small,.asset-card small{font-size:9px;color:var(--muted);display:block;margin-top:4px}.space-card .arrow,.asset-card .arrow{margin-left:auto;color:#9a9aa3;font-size:16px}.asset-card.active{border-color:#404068;background:#eeeeef}.space-badge{height:30px;min-width:35px;border-radius:5px;background:#e9e9e9;display:grid;place-items:center;font-size:10px;color:#6b6b73}.asset-icon{width:31px;height:31px;border-radius:7px;background:var(--tint,#ededed);display:grid;place-items:center;color:var(--color,#404068)}.reading{background:#f5f5f6;border:1px solid #d6d6da;border-radius:10px;padding:19px 15px;margin:21px 0 15px}.reading .eyebrow{font-size:8px}.reading .value{font-size:29px;font-weight:450;letter-spacing:-1px;margin-top:10px;white-space:nowrap}.reading .value small{font-size:12px;letter-spacing:0;margin-left:4px;color:var(--muted)}.reading p{font-size:8px;margin-top:8px}dl{margin:10px 0}dl div{padding:10px 0;border-bottom:1px solid #e9e9e9}dt{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.65px}dd{font-size:11px;line-height:1.65;margin:4px 0 0;overflow-wrap:anywhere}.path{border-left:2px solid var(--line);margin:16px 0 6px 4px;padding-left:15px;display:grid;gap:12px}.path div{position:relative;font-size:10px;line-height:1.4}.path div::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);position:absolute;left:-20px;top:3px;border:2px solid #ffffff}.path small{display:block;font-size:8px;color:var(--muted);margin-top:2px}.result-item{display:block;width:100%;text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);font-size:10px}.result-item small{display:block;font-size:9px;margin-top:4px;color:var(--muted)}.search-summary{font-size:9px;color:var(--muted);margin:10px 5px}.footer{height:29px;flex:none;background:#fbfbfb;border-top:1px solid var(--line);font-size:8px;color:#85858d;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}.footer span:last-child{color:#6b6b73}.toast{position:absolute;left:50%;bottom:165px;transform:translateX(-50%);background:#404068ee;color:#ffffff;font-size:11px;line-height:1.5;padding:11px 16px;border-radius:8px;z-index:40;max-width:85%;opacity:0;transition:opacity .2s;pointer-events:none}.toast.show{opacity:1}.crosshair{display:none;position:absolute;left:50%;top:50%;height:5px;width:5px;border:1px solid white;border-radius:50%;box-shadow:0 0 0 1px #40406877;pointer-events:none}.stage.walk .crosshair{display:block}.walk-pad{display:none;position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:8;grid-template-columns:repeat(3,31px);grid-template-rows:repeat(2,31px);gap:4px}.stage.walk .walk-pad{display:grid}.walk-pad button{background:#f7f7f8eb;border:1px solid #d6d6da;border-radius:6px;font-size:15px;touch-action:none}.walk-pad button:first-child{grid-column:2}.walk-pad button:nth-child(2){grid-column:1;grid-row:2}.walk-pad button:nth-child(3){grid-column:2;grid-row:2}.walk-pad button:nth-child(4){grid-column:3;grid-row:2}.tour-strip{position:absolute;left:24px;right:24px;bottom:166px;background:#fffffff5;border:1px solid #d6d6da;box-shadow:0 4px 20px #4040681a;border-radius:9px;z-index:8;padding:12px 14px;align-items:center;gap:13px;display:flex}.tour-strip[hidden]{display:none}.tour-strip strong{font-size:11px;font-weight:600;display:block}.tour-strip p{font-size:9px;color:var(--muted);margin:4px 0 0;line-height:1.5}.tour-strip .step{font-size:9px;color:#404068;white-space:nowrap}.tour-strip .tour-copy{flex:1}.tour-strip .tour-next{padding:8px 12px;border-radius:5px;background:var(--ink);color:#ffffff;font-size:10px;white-space:nowrap}.tour-strip .tour-close{font-size:18px;color:#85858d}.error{position:absolute;z-index:30;inset:170px 25px auto;padding:25px;background:#fff7ed;border:1px solid #f0d4a0;border-radius:12px}.error h2{font-size:19px}.error p{font-size:12px;line-height:1.6}.error[hidden]{display:none}.loading{position:absolute;z-index:31;inset:0;background:#e6e6e8;display:grid;place-items:center;font-size:12px;color:#6b6b73}.loading[hidden]{display:none}.loading div{text-align:center}.loading b{display:block;font-size:27px;font-weight:450;margin-bottom:10px;letter-spacing:-1px}dialog{border:1px solid var(--line);border-radius:14px;max-width:510px;width:calc(100% - 35px);padding:30px;box-shadow:0 20px 90px #40404155;color:var(--ink)}dialog::backdrop{background:#40406855;backdrop-filter:blur(4px)}dialog h2{font-size:23px;font-weight:500;margin:0 0 12px}dialog p{font-size:12px;line-height:1.85;color:var(--muted)}dialog strong{color:var(--ink)}dialog .close-dialog{position:absolute;right:15px;top:12px;font-size:25px;color:var(--muted)}.mobile-menu{display:none}.night .stage-header h1{color:#e4e4e7}.night .breadcrumb,.night .stage-subtitle{color:#c7c8d7}
+@media(min-width:1550px){.workspace{grid-template-columns:240px minmax(0,1fr) 320px}.nav{padding:28px 20px}.inspector{padding:30px 25px}.stage-header{left:32px;top:30px}.viewbar{left:30px;top:124px}.stage-header h1{font-size:32px}}
+@media(max-width:1120px){.workspace{grid-template-columns:190px minmax(0,1fr) 260px}.nav{padding:20px 11px}.inspector{padding:23px 16px}.viewbar{gap:4px;left:16px;top:112px}.stage-header{left:18px}.tool{padding:0 7px;font-size:9px}.seg button{padding:7px 8px}.brand-meta{padding-left:18px;margin-left:18px}.view-help{max-width:190px}.minimap{width:120px;padding:8px}.minimap canvas{width:102px;height:86px}.stage-foot{left:16px;right:13px}.stage.walk .view-help{max-width:148px}.stage.walk .minimap{display:none}.camera-tools{top:192px;right:13px}.topbar{padding:0 18px}.demo-pill{font-size:8px;padding:8px}}
+@media(max-width:900px){.workspace{grid-template-columns:minmax(0,1fr) 260px}.nav{position:fixed;left:0;top:65px;bottom:29px;width:230px;box-shadow:10px 0 30px #40406822;transform:translateX(-110%);transition:.2s}.nav.open{transform:translateX(0)}.mobile-menu{display:grid}.topbar{height:65px;padding:0 15px}.brand{font-size:27px}.brand-meta{margin-left:14px;padding-left:14px}.demo-pill{display:none}.stage-header h1{font-size:24px}.top-actions{gap:5px}.tour-strip{left:15px;right:15px}.footer{padding:0 12px}.stage.walk .walk-pad{left:auto;right:19px;transform:none}}
+@media(max-width:600px){.workspace{display:block;position:relative}.stage{position:absolute;inset:0 0 235px}.inspector{position:absolute;bottom:0;left:0;right:0;height:235px;border-left:0;border-top:1px solid var(--line);padding:17px 19px}.inspector h2{font-size:20px;margin:7px 0}.inspector .stats{display:flex;margin:12px 0}.stat{flex:1;padding:9px 12px}.stat strong{font-size:22px}.inspector .lead{font-size:11px}.brand-meta{display:none}.topbar{height:59px}.nav{top:59px;bottom:25px}.footer{height:25px;font-size:7px}.footer span:last-child{display:none}.stage-header{left:15px;top:17px}.stage-header h1{font-size:22px}.breadcrumb{font-size:8px}.stage-subtitle{font-size:8px;margin-top:5px}.viewbar{top:89px;left:13px;gap:4px}.viewbar .tool{height:30px;padding:0 7px;font-size:8px}.viewbar .seg button{font-size:9px;padding:5px 6px}.camera-tools{top:135px;right:12px}.camera-tools button{width:29px;height:29px}.camera-tools button:nth-child(4){display:none}.stage-foot{bottom:10px;left:12px;right:10px}.view-help{font-size:8px;padding:6px 8px;max-width:200px}.minimap{width:83px;padding:6px}.minimap canvas{width:70px;height:58px}.map-note{display:none}.minimap .eyebrow{font-size:6px}.hotspot{font-size:8px;padding:5px 7px}.hotspot small{display:none}.tour-strip{bottom:90px;padding:10px;gap:7px}.tour-strip p{font-size:8px}.tour-strip .step{font-size:8px}.tour-strip .tour-next{font-size:9px;padding:7px}.toast{bottom:110px;font-size:10px}.stage.walk .walk-pad{bottom:13px;right:17px}.stage.walk .view-help{max-width:220px}.inspector .back{margin-bottom:10px}.inspector .note{margin-top:13px}.inspector .reading{margin:12px 0}.error{inset:125px 15px auto;padding:15px}.error h2{font-size:16px}.error p{font-size:10px}}
+.stage.walk .stage-header{top:0;left:0;right:0;padding:26px 26px 48px;background:linear-gradient(180deg,#f5f5f6f5,#f5f5f6d9 65%,#f5f5f600)}.night .stage.walk .stage-header{background:linear-gradient(180deg,#404068f5,#404068d9 65%,#40406800)}@media(max-width:600px){.stage.walk .stage-header{padding:17px 15px 45px}}
+
+[hidden]{display:none!important}.workspace{grid-template-columns:238px minmax(0,1fr) 306px}.nav h2{margin-bottom:17px}.nav-button .count{white-space:nowrap}.building-dot{width:8px;height:8px;border-radius:2px;flex:none}.building-select{width:100%;margin:10px 0 6px;border:1px solid var(--line);border-radius:7px;padding:9px 8px;background:#ffffff;color:var(--ink);font:11px inherit}.level-grid .special{grid-column:span 5;text-align:left;padding:0 8px}.level-grid button:hover{border-color:var(--green)}.section-title{display:flex;justify-content:space-between;align-items:center}.section-title button{font-size:9px;color:var(--green)}.nav-footer{margin-top:20px}.stage-header h1{font-size:26px}.stage-subtitle{line-height:1.5;max-width:90%}.stage-header{right:18px}.viewbar{top:124px}.camera-tools{top:192px}.inspector h2,.hotspot b{overflow-wrap:anywhere}.reading .value{font-size:27px;white-space:normal}.meter-id{font-size:19px!important;letter-spacing:-.4px!important}.building-cards{display:grid;gap:8px;margin-top:19px}.building-card{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid var(--line);border-radius:8px;padding:12px;width:100%}.building-card:hover{background:#f5f5f6;border-color:#404068}.building-card strong{display:block;font-size:11px;font-weight:600}.building-card small{display:block;color:var(--muted);font-size:9px;margin-top:4px}.building-card .arrow{margin-left:auto}.model-legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:5px;font-size:8px}.model-legend span{display:flex;align-items:center;gap:4px}.space-list{max-height:none}.inspector .level-grid{margin:15px 0}.results-heading{font-size:9px;color:var(--muted);margin:14px 5px 6px}.download-button{font-size:10px;border:1px solid var(--line);border-radius:7px;padding:10px 12px}.download-button:hover{background:#ededed}.minimap canvas:focus-visible{outline-offset:2px}.footer{font-size:8px}.nav input:focus-visible,.building-select:focus-visible{outline:2px solid var(--green);outline-offset:2px}.night .stage-header{text-shadow:0 1px 4px #40406888}.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}a.demo-home{display:flex;align-items:center;justify-content:center;color:var(--green);text-decoration:none}a.demo-home:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+@media(min-width:1550px){.workspace{grid-template-columns:250px minmax(0,1fr) 330px}}
+@media(max-width:1120px){.workspace{grid-template-columns:210px minmax(0,1fr) 270px}.viewbar{top:122px}.stage-header h1{font-size:23px}.brand-meta{padding-left:15px;margin-left:15px}.download-button{padding:9px;font-size:9px}}
+@media(max-width:900px){.workspace{grid-template-columns:minmax(0,1fr) 260px}.nav{width:250px}.demo-home{display:none!important}.topbar{gap:8px}.download-button span{display:none}.download-button{width:36px;height:36px;padding:0;font-size:17px}.brand-meta strong{font-size:12px}.brand-meta small{font-size:9px}}
+@media(max-width:600px){.app{min-height:740px}body{overflow:auto}.workspace{display:block}.stage{bottom:250px}.inspector{height:250px}.stage-header h1{font-size:21px}.stage-subtitle{font-size:9px}.viewbar{top:98px;right:9px}.camera-tools{top:179px}.camera-tools button:nth-child(4){display:grid}.stage-foot{bottom:10px}.minimap{width:94px}.minimap canvas{width:81px;height:65px}.view-help{max-width:190px}.tour-strip{bottom:93px}.hotspot{font-size:8px}.stage.walk .walk-pad{right:12px}.footer{font-size:7px}.top-actions{gap:4px}.topbar{padding:0 10px}.icon-button{width:32px;height:32px}.download-button{width:32px;height:32px}.footer span:first-child{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.brand{font-size:26px}.inspector .building-cards{grid-template-columns:1fr 1fr}.building-card{padding:9px;gap:6px}.building-card .arrow{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.nav{transition:none}.toast{transition:none}}
+.studio-link{color:var(--green);font-size:11px;letter-spacing:2px;font-weight:700;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center}.studio-link:hover{color:var(--green);border-bottom:1px solid #FAA919}.studio-link:focus-visible{outline:3px solid #0091ff;outline-offset:5px}.brand{gap:14px}.brand-divider{height:20px;width:1px;background:var(--line)}.overline{font-size:10px;font-weight:650;letter-spacing:1.7px;text-transform:uppercase;color:var(--muted)}
+.tool,.seg button,.camera-tools button,.walk-pad button,.tour-next,.tour-close,.result-item,.close-dialog,.section-title button,.building-select{transition:background .15s,border-color .15s,color .15s}
+.tool:not(.active):hover{background:#eeeeef;border-color:#c8c8ce}
+.seg button:not(.active):hover{background:#e9e9e9}
+.camera-tools button:hover{background:#eeeeef;border-color:#c8c8ce}
+.walk-pad button:hover{background:#e4e4e7;border-color:#c8c8ce}
+.tour-next:hover{background:#2f2f30}
+.tour-close:hover{color:var(--green)}
+.result-item:hover{background:#f2f2f4}
+.close-dialog:hover{color:var(--green)}
+.section-title button:hover{text-decoration:underline}
+.building-select:hover{border-color:#c8c8ce}</style></head><body>
+<div class="app" id="app"><header class="topbar"><div class="header-left"><button class="icon-button mobile-menu" id="menu" aria-label="Open precinct navigation" aria-controls="navigation" aria-expanded="false"></button><div class="brand" style="margin-left:8px"><a class="studio-link" href="index.html" aria-label="Back to Demo Studio home">Demo Studio</a><span class="brand-divider"></span><span class="overline">Spatial explorer</span></div></div><div class="top-actions"><span class="demo-pill"><i></i>FOUR BUILDINGS · ONE PRECINCT</span><a class="icon-button demo-home" href="index.html" aria-label="Back to the WeBill demo studio" title="Demo studio">⌂</a><button class="download-button" id="download" aria-label="Download standalone HTML">↓ <span>Download HTML</span></button><button class="icon-button" id="snapshot" aria-label="Save a picture of this 3D view" title="Save scene image"></button><button class="icon-button" id="fullscreen" aria-label="Toggle full screen" title="Full screen"></button><button class="icon-button" id="help" aria-label="How to explore" title="How to explore"></button></div></header>
+<div class="workspace"><aside class="nav" id="navigation" aria-label="Precinct navigation"><div class="eyebrow">Your precinct</div><h2>Every place. Connected.</h2><div class="search"><span id="search-icon"></span><input id="search" type="search" placeholder="Building, space or meter..." aria-label="Search buildings, spaces and meters" autocomplete="off" aria-controls="search-results"></div><div id="search-results" hidden></div><div id="nav-body"><button class="nav-button active" data-loc="site" id="site-nav"></button><div class="nav-section eyebrow">Four connected buildings</div><div id="building-nav"></div><div id="level-navigation" hidden><div class="nav-section eyebrow" id="level-heading">Explore levels</div><label class="visually-hidden" for="level-select">Choose a level or service</label><select class="building-select" id="level-select"></select><div class="level-grid" id="floor-grid"></div><div class="level-note" id="level-note"></div><div id="building-services"></div></div><div class="nav-section eyebrow">Shared infrastructure</div><button class="nav-button" data-loc="site:supplies" id="supplies-nav"></button><button class="nav-button" data-loc="site:energy" id="energy-nav"></button><button class="nav-button" data-loc="site:parking" id="parking-nav"></button><div class="layers"><div class="eyebrow">Utility layers</div><div id="utility-layers"></div></div><div class="nav-footer">Original precinct directory and sample meters.<br>Conceptual geometry and utility routes.<br>No live telemetry or billing connection.</div></div></aside>
+<main class="stage" id="stage"><canvas id="scene" tabindex="0" aria-label="Interactive three-dimensional precinct. Use the navigation and asset buttons for keyboard access."></canvas><div class="stage-header"><div class="breadcrumb" id="breadcrumb">PROPERTY / SITE OVERVIEW</div><h1 id="view-title">Four buildings. One connected precinct.</h1><div class="stage-subtitle" id="view-subtitle">Explore the building, its spaces and the utilities that connect them.</div></div><div class="viewbar"><div class="seg"><button id="orbit" class="active" aria-pressed="true"></button><button id="walk" aria-pressed="false"></button></div><button class="tool" id="cutaway" aria-pressed="false"></button><button class="tool" id="routes" aria-pressed="false"></button><button class="tool active" id="labels" aria-pressed="true"></button></div><div class="camera-tools"><button id="home-view" aria-label="Reset camera" title="Reset camera"></button><button id="zoom-in" aria-label="Zoom in" title="Zoom in"></button><button id="zoom-out" aria-label="Zoom out" title="Zoom out"></button><button id="plan-view" aria-label="View floor or site from above" title="Top-down view"></button><button id="day-night" aria-label="Switch to twilight lighting" title="Day / twilight"></button></div><div class="marker-layer" id="markers"></div><div class="crosshair"></div><div class="walk-pad" aria-label="Walk controls"><button data-move="w" aria-label="Walk forward">&#8593;</button><button data-move="a" aria-label="Walk left">&#8592;</button><button data-move="s" aria-label="Walk backward">&#8595;</button><button data-move="d" aria-label="Walk right">&#8594;</button></div><div class="stage-foot"><div class="view-help" id="view-help"></div><div class="minimap"><div class="eyebrow"><span id="map-title">Precinct plan</span><span>N &#8593;</span></div><canvas width="230" height="184" id="minimap" tabindex="0" role="button" aria-label="Plan overview. Click to walk to a permitted location."></canvas><div class="map-note">Click the plan to walk there</div></div></div><div id="tour" class="tour-strip" hidden><span class="step" id="tour-step"></span><div class="tour-copy"><strong id="tour-title"></strong><p id="tour-text"></p></div><button class="tour-next" id="tour-next">Next &rarr;</button><button class="tour-close" id="tour-close" aria-label="End guided tour">&times;</button></div><div class="toast" id="toast" role="status" aria-live="polite"></div><div class="error" id="error" hidden><h2>The 3D view could not start.</h2><p id="error-message"></p><p>The precinct directory and meter records remain available in the side panels.</p></div><div class="loading" id="loading"><div><b>Every connection, in context.</b>Preparing your precinct...</div></div></main>
+<aside class="inspector" id="inspector" aria-label="Selected precinct or asset details" aria-live="polite"></aside></div><footer class="footer"><span>CONCEPT MODEL &middot; Sample meters and readings &middot; Geometry and routes are schematic.</span><span id="render-status">Offline-ready &middot; Interactive 3D</span></footer></div>
+<dialog id="help-dialog"><button class="close-dialog" aria-label="Close help">&times;</button><div class="eyebrow">WeBill precinct explorer</div><h2 style="margin-top:12px">A place for every connection.</h2><p><strong>Explore:</strong> choose The Nuvo Hotel, Block A Office, Block B Office, or The Commons Mall. Choose a level, space, then a meter. Search across the entire precinct by building name, room, suite, shop, utility, or meter ID.</p><p><strong>Orbit:</strong> drag to rotate, scroll to zoom, or right-drag / Shift-drag to pan. Pinch to zoom and use two fingers to pan on touch screens. The camera controls reset, zoom, show a plan, and switch between daylight and twilight.</p><p><strong>Walk:</strong> drag to look, then use W A S D, arrow keys, or the on-screen pad to move. Hold Shift to move faster. Select levels in the directory to change floors. Escape returns to orbit. Click the minimap to move to a clear point; press Enter on the minimap to start at the current level's entrance.</p><p><strong>Utilities:</strong> reveal schematic utility routes and filter water, electricity, alternative electricity, hot water, and gas. Select a meter and use Trace supply to follow its conceptual connection. X-ray reveals the building's level structure; individual levels open as furnished cutaways.</p><p><strong>Concept model:</strong> the original precinct's hierarchy, shops, meter IDs and readings are preserved. Layouts, amenity heights, supply relationships and equipment positions are illustrative. No live account, tariff, allocation or operational control is connected.</p><button class="primary close-dialog-button">Start exploring</button></dialog>
+<noscript>The Precinct includes The Nuvo Hotel (23 primary levels), two office blocks (20 levels each), and The Commons Mall (4 levels). Enable JavaScript to explore the directory and sample meters.</noscript>
+<script>
+(function precinctEnhanced(){
+'use strict';
+// UI, WebGL2 renderer and camera interaction adapted from webill-property-explorer-enhanced.html.
+// Precinct hierarchy, shops, meter IDs, roles and sample registers preserved from precinct.html.
+// Geometry, equipment placement and supply relationships are conceptual. No network dependencies.
+const downloadSource='<!doctype html>\n'+document.documentElement.outerHTML;
+const V = {
+ add:(a,b)=>a.map((x,i)=>x+b[i]), sub:(a,b)=>a.map((x,i)=>x-b[i]),
+ mul:(a,s)=>a.map(x=>x*s), dot:(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0),
+ cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+ len:a=>Math.hypot(...a), norm:a=>{let l=Math.hypot(...a)||1;return a.map(x=>x/l)},
+ mix:(a,b,t)=>a.map((x,i)=>x+(b[i]-x)*t)
+};
+const M = {
+ mul:(a,b)=>{let r=new Float32Array(16);for(let c=0;c<4;c++)for(let j=0;j<4;j++)for(let k=0;k<4;k++)r[c*4+j]+=a[k*4+j]*b[c*4+k];return r},
+ perspective:(f,a,n,z)=>{let t=1/Math.tan(f/2);return new Float32Array([t/a,0,0,0,0,t,0,0,0,0,(z+n)/(n-z),-1,0,0,2*z*n/(n-z),0])},
+ ortho:(l,r,b,t,n,f)=>new Float32Array([2/(r-l),0,0,0,0,2/(t-b),0,0,0,0,-2/(f-n),0,-(r+l)/(r-l),-(t+b)/(t-b),-(f+n)/(f-n),1]),
+ look:(e,t)=>{let z=V.norm(V.sub(e,t)),x=V.norm(V.cross([0,1,0],z)),y=V.cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V.dot(x,e),-V.dot(y,e),-V.dot(z,e),1])},
+ point:(m,p)=>{let q=[...p,1];return [0,1,2,3].map(j=>q.reduce((s,x,k)=>s+m[k*4+j]*x,0))},
+ inv:m=>{let a=Array.from({length:4},(_,r)=>Array.from({length:8},(_,c)=>c<4?m[c*4+r]:(c-4===r?1:0)));for(let k=0;k<4;k++){let p=k;for(let r=k+1;r<4;r++)if(Math.abs(a[r][k])>Math.abs(a[p][k]))p=r;[a[k],a[p]]=[a[p],a[k]];let d=a[k][k];if(Math.abs(d)<1e-10)return null;for(let c=0;c<8;c++)a[k][c]/=d;for(let r=0;r<4;r++)if(r!==k){let z=a[r][k];for(let c=0;c<8;c++)a[r][c]-=z*a[k][c]}}let out=new Float32Array(16);for(let r=0;r<4;r++)for(let c=0;c<4;c++)out[c*4+r]=a[r][c+4];return out}
+};
+function rgb(h){if(Array.isArray(h))return h;let n=parseInt(h.replace('#',''),16);return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]}
+const groups={};
+class Geo {
+ constructor(name){this.name=name;this.data=[];groups[name]=this;this.count=0;}
+ tri(a,b,c,n,col,kind=0,uv=[[0,0],[1,0],[1,1]]){col=rgb(col);[a,b,c].forEach((p,i)=>this.data.push(...p,...n,...col,kind,...uv[i]));}
+ quad(a,b,c,d,n,col,kind=0){this.tri(a,b,c,n,col,kind,[[0,0],[1,0],[1,1]]);this.tri(a,c,d,n,col,kind,[[0,0],[1,1],[0,1]]);}
+ box(x,y,z,w,h,d,col,kind=0,ry=0){let co=Math.cos(ry),si=Math.sin(ry),pt=(a,b,c)=>[x+a*co+c*si,y+b,z-a*si+c*co],no=(a,b,c)=>[a*co+c*si,b,-a*si+c*co];let X=w/2,Y=h/2,Z=d/2;this.quad(pt(-X,-Y,Z),pt(X,-Y,Z),pt(X,Y,Z),pt(-X,Y,Z),no(0,0,1),col,kind);this.quad(pt(X,-Y,-Z),pt(-X,-Y,-Z),pt(-X,Y,-Z),pt(X,Y,-Z),no(0,0,-1),col,kind);this.quad(pt(X,-Y,Z),pt(X,-Y,-Z),pt(X,Y,-Z),pt(X,Y,Z),no(1,0,0),col,kind);this.quad(pt(-X,-Y,-Z),pt(-X,-Y,Z),pt(-X,Y,Z),pt(-X,Y,-Z),no(-1,0,0),col,kind);this.quad(pt(-X,Y,Z),pt(X,Y,Z),pt(X,Y,-Z),pt(-X,Y,-Z),no(0,1,0),col,kind);this.quad(pt(-X,-Y,-Z),pt(X,-Y,-Z),pt(X,-Y,Z),pt(-X,-Y,Z),no(0,-1,0),col,kind);return this;}
+ tube(a,b,r,col,kind=0,sides=10){let w=V.norm(V.sub(b,a)),u=V.norm(V.cross(w,Math.abs(w[1])>.9?[1,0,0]:[0,1,0])),v=V.cross(w,u);for(let i=0;i<sides;i++){let t=i*Math.PI*2/sides,t2=(i+1)*Math.PI*2/sides,n=V.add(V.mul(u,Math.cos(t)),V.mul(v,Math.sin(t))),n2=V.add(V.mul(u,Math.cos(t2)),V.mul(v,Math.sin(t2))),p=V.add(a,V.mul(n,r)),q=V.add(b,V.mul(n,r)),p2=V.add(a,V.mul(n2,r)),q2=V.add(b,V.mul(n2,r));this.quad(p,p2,q2,q,V.norm(V.add(n,n2)),col,kind);this.tri(a,p2,p,V.mul(w,-1),col,kind);this.tri(b,q,q2,w,col,kind)}return this;}
+ sphere(x,y,z,r,col,sy=1,sides=10,rings=6){let pt=(i,j)=>{let a=i*Math.PI/rings,b=j*Math.PI*2/sides;return [x+r*Math.sin(a)*Math.cos(b),y+r*Math.cos(a)*sy,z+r*Math.sin(a)*Math.sin(b)]};for(let i=0;i<rings;i++)for(let j=0;j<sides;j++){let a=pt(i,j),b=pt(i+1,j),c=pt(i+1,j+1),d=pt(i,j+1),n=V.norm(V.sub(V.mul(V.add(V.add(a,b),V.add(c,d)),.25),[x,y,z]));this.quad(a,b,c,d,n,col,8)}return this;}
+ upload(gl){if(this.vao){gl.deleteVertexArray(this.vao);gl.deleteBuffer(this.buffer)}this.vao=gl.createVertexArray();this.buffer=gl.createBuffer();gl.bindVertexArray(this.vao);gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(this.data),gl.STATIC_DRAW);let stride=48;[[0,3,0],[1,3,12],[2,3,24],[3,1,36],[4,2,40]].forEach(([i,n,o])=>{gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,n,gl.FLOAT,false,stride,o)});this.count=this.data.length/12;gl.bindVertexArray(null);}
+}
+const VS=`#version 300 es
+precision highp float;
+layout(location=0) in vec3 aPos;layout(location=1) in vec3 aNormal;layout(location=2) in vec3 aColor;layout(location=3) in float aKind;layout(location=4) in vec2 aUV;
+uniform mat4 uVP,uLightVP;uniform vec3 uOffset;out vec3 vPos,vNormal,vColor;out float vKind;out vec2 vUV;out vec4 vShadow;
+void main(){vPos=aPos+uOffset;vNormal=aNormal;vColor=aColor;vKind=aKind;vUV=aUV;vShadow=uLightVP*vec4(vPos,1.);gl_Position=uVP*vec4(vPos,1.);}`;
+const FS=`#version 300 es
+precision highp float;
+in vec3 vPos,vNormal,vColor;in float vKind;in vec2 vUV;in vec4 vShadow;
+uniform vec3 uEye,uSun,uSky;uniform float uAlpha,uNight,uGlow;uniform sampler2D uShadow;uniform bool uUseShadow;
+out vec4 frag;
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float shadow(vec3 N,vec3 L){if(!uUseShadow)return 1.;vec3 q=vShadow.xyz/vShadow.w*.5+.5;if(q.x<.002||q.x>.998||q.y<.002||q.y>.998||q.z>1.)return 1.;float b=max(.0022*(1.-dot(N,L)),.0010),s=0.;for(int x=-1;x<=1;x++)for(int y=-1;y<=1;y++){float z=texture(uShadow,q.xy+vec2(x,y)/2048.).r;s+=q.z-b<=z?1.:.45;}return s/9.;}
+void main(){vec3 N=normalize(vNormal);if(!gl_FrontFacing)N=-N;vec3 L=normalize(uSun),E=normalize(uEye-vPos),H=normalize(L+E);vec3 c=vColor;float spec=.04,rough=30.;float k=vKind;
+if(k>1.5&&k<2.5)c*=.85+.15*hash(floor(vPos.xz*50.));
+if(k>2.5&&k<3.5){float m=step(.96,fract(vPos.y*2.2))+step(.978,fract((vPos.x+vPos.z)*.8));c*=1.-m*.10;c*=.97+.03*hash(floor(vPos.xy*16.));}
+if(k>4.5&&k<5.5){c*=.981+.019*sin(vPos.x*48.+sin(vPos.z*.7));c*=mix(.87,1.,step(.012,fract(vPos.x*1.6)));}
+if(k>5.5&&k<6.5){spec=.6;rough=85.;}
+if(k>3.5&&k<4.5){float gx=step(.965,fract(vUV.x*6.)),gy=step(.96,fract(vUV.y*10.));c=mix(c,vec3(.45,.56,.64),max(gx,gy)*.48);spec=.8;rough=100.;}
+if(k>.5&&k<1.5){vec3 R=reflect(-E,N);vec3 env=mix(vec3(.17,.28,.31),vec3(.72,.85,.90),smoothstep(-.35,.7,R.y));float fres=pow(1.-max(dot(E,N),0.),3.);c=mix(c,env,.4+fres*.35);spec=1.1;rough=100.;float w=hash(floor(vPos.xz*.4+vPos.yy*.21));if(uNight>.5&&w>.6)c=mix(c,vec3(.95,.71,.33),.75);}
+float nd=max(dot(N,L),0.),sh=shadow(N,L);float amb=.48+.14*max(N.y,0.);vec3 light=mix(vec3(1.,.97,.88),vec3(.53,.67,.86),uNight);vec3 outc=c*(amb+nd*.63*sh*(1.-uNight*.38))*light;outc+=pow(max(dot(N,H),0.),rough)*spec*sh*vec3(1.,.97,.87)*.65;
+if(k>6.5&&k<7.5)outc=c*1.25;if(k>8.5||uGlow>.5)outc=mix(c,c*1.2,.5);float fog=smoothstep(145.,360.,distance(uEye,vPos));outc=mix(outc,uSky,fog);outc=pow(max(outc,vec3(0.)),vec3(.93));frag=vec4(outc,uAlpha);}`;
+const SV=`#version 300 es
+precision highp float;layout(location=0) in vec3 aPos;uniform mat4 uLightVP;void main(){gl_Position=uLightVP*vec4(aPos,1.);}`;
+const SF=`#version 300 es
+precision highp float;void main(){}`;
+function program(gl,vs,fs){let p=gl.createProgram();for(let [type,src] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){let s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));gl.attachShader(p,s);gl.deleteShader(s)}gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));return p}
+class Renderer {
+ constructor(canvas){this.canvas=canvas;const gl=this.gl=canvas.getContext('webgl2',{antialias:true,alpha:false,preserveDrawingBuffer:true,powerPreference:'high-performance'});if(!gl)throw Error('WebGL 2 is not available. Enable hardware acceleration or try a current desktop browser.');this.p=program(gl,VS,FS);this.sp=program(gl,SV,SF);this.u={};['uVP','uLightVP','uEye','uSun','uSky','uAlpha','uNight','uGlow','uOffset','uShadow','uUseShadow'].forEach(k=>this.u[k]=gl.getUniformLocation(this.p,k));this.su=gl.getUniformLocation(this.sp,'uLightVP');this.tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,this.tex);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,2048,2048,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);this.fbo=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,this.fbo);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,this.tex,0);gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);this.shadows=gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);this.sun=[-35,65,30];this.lightVP=M.mul(M.ortho(-68,68,-65,65,1,190),M.look([-45,90,55],[0,8,0]));this.shadowDirty=true;this.lost=false;canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.lost=true;document.querySelector('#error').hidden=false;document.querySelector('#error-message').textContent='The graphics context was interrupted. Reload this file to restore the 3D view.';});}
+ resize(){let r=this.canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.65);if(this.canvas.width!==Math.round(r.width*d)||this.canvas.height!==Math.round(r.height*d)){this.canvas.width=Math.round(r.width*d);this.canvas.height=Math.round(r.height*d)}this.w=r.width;this.h=r.height;}
+ render(list,eye,target,night,extra=[],fov=Math.PI/4.5){if(this.lost)return;let gl=this.gl;this.resize();this.vp=M.mul(M.perspective(fov<1?2*Math.atan(Math.tan(fov/2)*Math.max(1,1.14/(this.w/this.h))):fov,this.w/this.h,.075,400),M.look(eye,target));if(this.shadowDirty&&this.shadows){gl.bindFramebuffer(gl.FRAMEBUFFER,this.fbo);gl.viewport(0,0,2048,2048);gl.clear(gl.DEPTH_BUFFER_BIT);gl.useProgram(this.sp);gl.uniformMatrix4fv(this.su,false,this.lightVP);gl.enable(gl.POLYGON_OFFSET_FILL);gl.polygonOffset(2,3);list.forEach(o=>{if(o.alpha===undefined||o.alpha>.4){gl.bindVertexArray(o.geo.vao);gl.drawArrays(gl.TRIANGLES,0,o.geo.count)}});gl.disable(gl.POLYGON_OFFSET_FILL);gl.bindFramebuffer(gl.FRAMEBUFFER,null);this.shadowDirty=false}gl.viewport(0,0,this.canvas.width,this.canvas.height);const sky=night?[.17,.22,.29]:[.88,.914,.916];gl.clearColor(...sky,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(this.p);gl.uniformMatrix4fv(this.u.uVP,false,this.vp);gl.uniformMatrix4fv(this.u.uLightVP,false,this.lightVP);gl.uniform3fv(this.u.uEye,eye);gl.uniform3fv(this.u.uSun,this.sun);gl.uniform3fv(this.u.uSky,sky);gl.uniform1f(this.u.uNight,night?1:0);gl.uniform1i(this.u.uUseShadow,this.shadows?1:0);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,this.tex);gl.uniform1i(this.u.uShadow,0);for(let o of [...list,...extra]){let a=o.alpha===undefined?1:o.alpha;if(a<1){gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false)}else{gl.disable(gl.BLEND);gl.depthMask(true)}if(o.overlay)gl.disable(gl.DEPTH_TEST);else gl.enable(gl.DEPTH_TEST);gl.uniform1f(this.u.uAlpha,a);gl.uniform1f(this.u.uGlow,o.glow?1:0);gl.uniform3fv(this.u.uOffset,o.offset||[0,0,0]);gl.bindVertexArray(o.geo.vao);gl.drawArrays(gl.TRIANGLES,0,o.geo.count)}gl.depthMask(true);gl.enable(gl.DEPTH_TEST);gl.disable(gl.BLEND);gl.bindVertexArray(null);}
+ project(p){if(!this.vp)return null;let q=M.point(this.vp,p);return {x:(q[0]/q[3]*.5+.5)*this.w,y:(-.5*q[1]/q[3]+.5)*this.h,visible:q[3]>0&&Math.abs(q[0]/q[3])<.95&&Math.abs(q[1]/q[3])<.92&&Math.abs(q[2]/q[3])<1};}
+ ray(x,y,eye){let inv=M.inv(this.vp);if(!inv)return null;let q=M.point(inv,[x/this.w*2-1,1-y/this.h*2,1]),p=q.slice(0,3).map(v=>v/q[3]);return {o:eye,d:V.norm(V.sub(p,eye))};}
+}
+function rayBox(ray,min,max){let near=-Infinity,far=Infinity;for(let i=0;i<3;i++){if(Math.abs(ray.d[i])<1e-8){if(ray.o[i]<min[i]||ray.o[i]>max[i])return null;continue}let a=(min[i]-ray.o[i])/ray.d[i],b=(max[i]-ray.o[i])/ray.d[i];near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));if(near>far)return null}return far<0?null:Math.max(near,0)}
+
+
+  const utilities = [
+    {id:'water', name:'Water', color:'#3f97c1', unit:'kL', prefix:'W'},
+    {id:'electricity', name:'Electricity', color:'#d79e40', unit:'kWh', prefix:'E'},
+    {id:'alternative', name:'Alternative electricity', short:'Alternative', color:'#4caa87', unit:'kWh', prefix:'A'},
+    {id:'hot-water', name:'Hot water', color:'#d47f69', unit:'kL', prefix:'H'},
+    {id:'gas', name:'Gas', color:'#9888b7', unit:'kg', prefix:'G'}
+  ];
+  const mallShops = {
+  "ground": [
+    {
+      "name": "Krispy Kreme",
+      "size": "small"
+    },
+    {
+      "name": "Doppio Zero",
+      "size": "small"
+    },
+    {
+      "name": "Kauai",
+      "size": "small"
+    },
+    {
+      "name": "The Nut Lady",
+      "size": "small"
+    },
+    {
+      "name": "Steers",
+      "size": "small"
+    },
+    {
+      "name": "Smooch & Illy Coffee",
+      "size": "small"
+    },
+    {
+      "name": "Debonairs Pizza",
+      "size": "small"
+    },
+    {
+      "name": "Deli One",
+      "size": "small"
+    },
+    {
+      "name": "Candy Kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Currency Exchange",
+      "size": "small"
+    },
+    {
+      "name": "ATMs",
+      "size": "small"
+    },
+    {
+      "name": "Medical Services Booth",
+      "size": "small"
+    },
+    {
+      "name": "Info Desk",
+      "size": "small"
+    },
+    {
+      "name": "Adidas",
+      "size": "medium"
+    },
+    {
+      "name": "Nike",
+      "size": "medium"
+    },
+    {
+      "name": "Levi's",
+      "size": "medium"
+    },
+    {
+      "name": "Swarovski",
+      "size": "medium"
+    },
+    {
+      "name": "Fossil",
+      "size": "medium"
+    },
+    {
+      "name": "Sunglass Hut",
+      "size": "medium"
+    },
+    {
+      "name": "L'Occitane",
+      "size": "medium"
+    },
+    {
+      "name": "The Body Shop",
+      "size": "medium"
+    },
+    {
+      "name": "Cross Trainer",
+      "size": "medium"
+    },
+    {
+      "name": "Exclusive Books",
+      "size": "medium"
+    },
+    {
+      "name": "Woolworths",
+      "size": "large"
+    },
+    {
+      "name": "Edgars",
+      "size": "large"
+    },
+    {
+      "name": "Ster-Kenikor",
+      "size": "large"
+    },
+    {
+      "name": "Checkers",
+      "size": "large"
+    },
+    {
+      "name": "McDonald's",
+      "size": "large"
+    },
+    {
+      "name": "KFC",
+      "size": "large"
+    }
+  ],
+  "first": [
+    {
+      "name": "Juicy Couture",
+      "size": "small"
+    },
+    {
+      "name": "La Senza",
+      "size": "small"
+    },
+    {
+      "name": "Silverspoon beauty kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Mobile phone accessories",
+      "size": "small"
+    },
+    {
+      "name": "Gift cards kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Shoe repair",
+      "size": "small"
+    },
+    {
+      "name": "Nail bar (SoHo)",
+      "size": "small"
+    },
+    {
+      "name": "Travel agency booth",
+      "size": "small"
+    },
+    {
+      "name": "Eyewear mini-outlet",
+      "size": "small"
+    },
+    {
+      "name": "Jewelry kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Photobooth",
+      "size": "small"
+    },
+    {
+      "name": "WiFi hotspot station",
+      "size": "small"
+    },
+    {
+      "name": "Children's toy popup",
+      "size": "small"
+    },
+    {
+      "name": "Café counter",
+      "size": "small"
+    },
+    {
+      "name": "Timberland",
+      "size": "medium"
+    },
+    {
+      "name": "Diesel",
+      "size": "medium"
+    },
+    {
+      "name": "Levi's outlet",
+      "size": "medium"
+    },
+    {
+      "name": "Aldo",
+      "size": "medium"
+    },
+    {
+      "name": "Coach",
+      "size": "medium"
+    },
+    {
+      "name": "Pandora",
+      "size": "medium"
+    },
+    {
+      "name": "Michael Kors",
+      "size": "medium"
+    },
+    {
+      "name": "Clairé Fine Jewelry",
+      "size": "medium"
+    },
+    {
+      "name": "Swatch",
+      "size": "medium"
+    },
+    {
+      "name": "Crocs",
+      "size": "medium"
+    },
+    {
+      "name": "H&M",
+      "size": "large"
+    },
+    {
+      "name": "Zara",
+      "size": "large"
+    },
+    {
+      "name": "Cotton On",
+      "size": "large"
+    },
+    {
+      "name": "Sportscene",
+      "size": "large"
+    },
+    {
+      "name": "Superdry",
+      "size": "large"
+    },
+    {
+      "name": "MAC Cosmetics",
+      "size": "large"
+    }
+  ],
+  "second": [
+    {
+      "name": "Smoothie bar",
+      "size": "small"
+    },
+    {
+      "name": "Ice cream kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Healthybowl stall",
+      "size": "small"
+    },
+    {
+      "name": "Juice bar",
+      "size": "small"
+    },
+    {
+      "name": "Vegan snacks",
+      "size": "small"
+    },
+    {
+      "name": "Coffee kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Spice shop",
+      "size": "small"
+    },
+    {
+      "name": "Popup dessert stall",
+      "size": "small"
+    },
+    {
+      "name": "Children's play zone (softplay)",
+      "size": "small"
+    },
+    {
+      "name": "Newsstand",
+      "size": "small"
+    },
+    {
+      "name": "Pharmacy booth",
+      "size": "small"
+    },
+    {
+      "name": "Mobile repair desk",
+      "size": "small"
+    },
+    {
+      "name": "ATM",
+      "size": "small"
+    },
+    {
+      "name": "Prayer room",
+      "size": "small"
+    },
+    {
+      "name": "Family rest area",
+      "size": "small"
+    },
+    {
+      "name": "Bukhara",
+      "size": "medium"
+    },
+    {
+      "name": "The Butcher Shop & Grill",
+      "size": "medium"
+    },
+    {
+      "name": "Green Fork Café",
+      "size": "medium"
+    },
+    {
+      "name": "Tashas",
+      "size": "medium"
+    },
+    {
+      "name": "Starbucks",
+      "size": "medium"
+    },
+    {
+      "name": "Mugg & Bean",
+      "size": "medium"
+    },
+    {
+      "name": "Superga outlet",
+      "size": "medium"
+    },
+    {
+      "name": "Jack's Corner",
+      "size": "medium"
+    },
+    {
+      "name": "Terracotta Bistro",
+      "size": "medium"
+    },
+    {
+      "name": "Vida e Caffè",
+      "size": "large"
+    },
+    {
+      "name": "Johannesburg Fish Market",
+      "size": "large"
+    },
+    {
+      "name": "Fishaways",
+      "size": "large"
+    },
+    {
+      "name": "Wimpy",
+      "size": "large"
+    },
+    {
+      "name": "Harvest Brew Café",
+      "size": "large"
+    },
+    {
+      "name": "Lekgotla",
+      "size": "large"
+    }
+  ],
+  "third": [
+    {
+      "name": "Mobile gaming kiosk",
+      "size": "small"
+    },
+    {
+      "name": "Snack bar",
+      "size": "small"
+    },
+    {
+      "name": "Coffee station",
+      "size": "small"
+    },
+    {
+      "name": "Popcorn stand",
+      "size": "small"
+    },
+    {
+      "name": "Softdrink fountain",
+      "size": "small"
+    },
+    {
+      "name": "Candy floss cart",
+      "size": "small"
+    },
+    {
+      "name": "Photoprints booth",
+      "size": "small"
+    },
+    {
+      "name": "Charging station",
+      "size": "small"
+    },
+    {
+      "name": "Seating lounge",
+      "size": "small"
+    },
+    {
+      "name": "Info touchscreen",
+      "size": "small"
+    },
+    {
+      "name": "Arcade ticket booth",
+      "size": "small"
+    },
+    {
+      "name": "Wheelchair station",
+      "size": "small"
+    },
+    {
+      "name": "Lost & found desk",
+      "size": "small"
+    },
+    {
+      "name": "Mini souvenir kiosk",
+      "size": "small"
+    },
+    {
+      "name": "VR headset rental",
+      "size": "small"
+    },
+    {
+      "name": "Electronic games store",
+      "size": "medium"
+    },
+    {
+      "name": "VR experience zone",
+      "size": "medium"
+    },
+    {
+      "name": "Photostudio booth",
+      "size": "medium"
+    },
+    {
+      "name": "Gift shop",
+      "size": "medium"
+    },
+    {
+      "name": "Shady Lane Eyewear",
+      "size": "medium"
+    },
+    {
+      "name": "Sports accessories",
+      "size": "medium"
+    },
+    {
+      "name": "Gym popup",
+      "size": "medium"
+    },
+    {
+      "name": "The Sunroom",
+      "size": "medium"
+    },
+    {
+      "name": "Nail care kiosk",
+      "size": "medium"
+    },
+    {
+      "name": "Padel Indoor Courts",
+      "size": "large"
+    },
+    {
+      "name": "NetSet Padel outdoor",
+      "size": "large"
+    },
+    {
+      "name": "Game arcade",
+      "size": "large"
+    },
+    {
+      "name": "Bowling alley",
+      "size": "large"
+    },
+    {
+      "name": "Family entertainment zone",
+      "size": "large"
+    },
+    {
+      "name": "VIP cinema",
+      "size": "large"
+    }
+  ]
+};
+  const numberedLevels = count => Array.from({length:count}, (_,i) => ({id:String(i+1), name:'Floor '+(i+1), short:String(i+1).padStart(2,'0')}));
+  const buildings = [
+    {id:'hotel', name:'The Nuvo Hotel', type:'Hotel', code:'NH', color:'#70a0b6', x:-24, z:-15, w:10, d:10, story:1.48,
+      levels:[...numberedLevels(20), {id:'gym',name:'Gym',short:'GYM'}, {id:'restaurant',name:'Restaurant',short:'REST'}, {id:'penthouse',name:'Penthouse',short:'PH'}],
+      description:'20 room floors, a gym, restaurant, and penthouse. Lobby and basement are shared service areas.'},
+    {id:'office-a', name:'Block A Office', type:'Office', code:'OA', color:'#89b0a4', x:-6, z:-18, w:10, d:9, story:1.48,
+      levels:numberedLevels(20), description:'20 office levels with 10 suites per level. Lobby and basement serve the whole building.'},
+    {id:'office-b', name:'Block B Office', type:'Office', code:'OB', color:'#aaa3be', x:13, z:-15, w:10, d:9, story:1.48,
+      levels:numberedLevels(20), description:'20 office levels with 10 suites per level. Lobby and basement serve the whole building.'},
+    {id:'mall', name:'The Commons Mall', type:'Retail', code:'CM', color:'#d2b185', x:-8, z:9, w:30, d:12, story:1.8,
+      levels:['Ground','First','Second','Third'].map((name,i) => ({id:name.toLowerCase(),name:name+' floor',short:['G','01','02','03'][i]})),
+      description:'Four retail levels around a shared concourse. Shops, dining, leisure, and amenities follow the precinct demo directory.'}
+  ];
+  const byId = Object.fromEntries(buildings.map(b => [b.id,b]));
+
+const spaces={},levelSpaces=new Map();
+const setLevel=(key,value)=>levelSpaces.set(key,value);
+const levelKey=(b,l)=>b.id+':'+l;
+  function addSpace(b, level, id, name, kind, utilityTypes=utilities, role='Submeter') {
+    const key = levelKey(b,level)+':'+id;
+    const s = {id:key, name, kind, building:b.id, level, short:id, meters:[]};
+    s.meters = utilityTypes.map((u,index) => ({...u, id:b.code+'-'+level.toUpperCase()+'-'+id.toUpperCase()+'-'+u.prefix,
+      reading: ((Object.keys(spaces).length+1)*137.63+(index+1)*36.7).toFixed(2), role}));
+    spaces[key]=s;
+    return s;
+  }
+  for (const b of buildings) {
+    for (const l of b.levels) {
+      let ss;
+      if (b.id==='mall') {
+        ss=mallShops[l.id].map((shop,i) => addSpace(b,l.id,String(i+1).padStart(2,'0'),shop.name,shop.size+' retail space'));
+        ss.push(addSpace(b,l.id,'amenities','Amenities','Common area'));
+      } else if (b.id==='hotel' && !/^\d+$/.test(l.id)) {
+        ss=[addSpace(b,l.id,l.id,l.name,'Hotel amenity')];
+      } else {
+        const count=b.id==='hotel'?20:10;
+        ss=Array.from({length:count},(_,i) => addSpace(b,l.id,String(i+1).padStart(2,'0'),(b.id==='hotel'?'Room ':'Suite ')+l.id+String(i+1).padStart(2,'0'),b.type==='Hotel'?'Hotel room':'Office suite'));
+      }
+      setLevel(levelKey(b,l.id),ss);
+      if(b.id!=='hotel'||/^\d+$/.test(l.id)) addSpace(b,l.id,'check','Floor check meters','Verification',utilities,'Check meter');
+    }
+    for (const common of (b.id==='mall'?['basement']:['lobby','basement'])) {
+      setLevel(levelKey(b,common),[addSpace(b,common,common,common==='lobby'?'Lobby & reception':'Basement services','Common area')]);
+    }
+    setLevel(levelKey(b,'roof'),[addSpace(b,'roof','solar','Rooftop solar','Illustrative generation',[utilities[2]],'Generation meter')]);
+  }
+  const site = {id:'site',code:'PR'};
+  setLevel('site:supplies',[
+    addSpace(site,'supplies','bulk','Precinct bulk supply','Supply boundary',utilities,'Bulk meter'),
+    addSpace(site,'supplies','check','Precinct check meters','Verification',utilities,'Check meter')
+  ]);
+  setLevel('site:energy',[
+    addSpace(site,'energy','generator','Shared generator','Illustrative generation',[utilities[2]],'Generation meter'),
+    addSpace(site,'energy','solar','Solar distribution','Illustrative generation',[utilities[2]],'Generation meter')
+  ]);
+  setLevel('site:parking',[addSpace(site,'parking','parking','Precinct parking','Common area',utilities.slice(0,2))]);
+
+const meters=Object.values(spaces).flatMap(s=>s.meters.map(m=>({...m,type:utilities.find(u=>u.prefix===m.prefix).id,space:s.id})));
+// A meter's original id is the device ID. Its type stays distinct from that ID.
+const meterById=Object.fromEntries(meters.map(m=>[m.id,m]));
+for(const s of Object.values(spaces))s.meters=s.meters.map(m=>meterById[m.id]);
+const COLORS=Object.fromEntries(utilities.map(u=>[u.id,u.color]));
+const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+const ICONS={
+ cube:'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8M7 5.2l9 5.2"/>',
+ building:'<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1m4 0h1M9 11h1m4 0h1M9 15h1m4 0h1M10 21v-3h4v3"/>',
+ roof:'<path d="m3 10 9-7 9 7M6 9v11h12V9M9 13h6v4H9z"/>',
+ parking:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M10 17V7h3a3 3 0 0 1 0 6h-3"/>',
+ water:'<path d="M12 2C9 7 5 10 5 14a7 7 0 0 0 14 0c0-4-4-7-7-12Z"/><path d="M8 14a4 4 0 0 0 4 4"/>',
+ bolt:'<path d="m13 2-8 12h6l-1 8 9-13h-6z"/>',
+ generator:'<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M6 7V4h5v3M6 11h5m-5 3h5m6-3v4M5 19v2m14-2v2"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+ solar:'<path d="m5 4-2 12h18L19 4zM11 4 9 16m6-12 1 12M4 10h16M12 16v5m-4 0h8"/>',
+ plug:'<path d="M8 3v5m8-5v5M6 8h12v4a6 6 0 0 1-12 0zm6 10v4"/>',
+ eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+ xray:'<path d="m12 3 9 5-9 5-9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/>',
+ orbit:'<circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="10" ry="5" transform="rotate(-35 12 12)"/><path d="m3 13-1-4 4 1"/>',
+ walk:'<circle cx="14" cy="4" r="2"/><path d="m7 12 4-5 4 2 3 4m-7-6-2 8-4 6m4-6 5 2 1 5"/>',
+ routes:'<circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M5 7v8a4 4 0 0 0 4 4h8M7 5h8a4 4 0 0 1 4 4v4m-3-3 3 3 3-3"/>',
+ target:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',
+ grid:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18m6-18v18"/>',
+ moon:'<path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/>',
+ camera:'<path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>',
+ fullscreen:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5"/>',
+ help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4m0 3v.2"/>',
+ menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+ arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',back:'<path d="M20 12H4m6-6-6 6 6 6"/>',
+ lift:'<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M12 8v13M7 6h10M7 12l2-2 2 2m2 3 2 2 2-2"/>',
+ lobby:'<path d="M3 21V3h18v18M3 8h18M9 8v13m6-13v13M8 5h8M1 21h22"/>',
+};
+function icon(n){return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||ICONS.cube}</svg>`;}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+const state={loc:'site',building:'site',level:'all',mode:'orbit',space:null,meter:null,flows:false,xray:false,labels:true,night:false,trace:false,layers:Object.fromEntries(utilities.map(u=>[u.id,true])),tour:-1};
+let renderer=null,visible=[],markerData=[],routeSamples=[],lastEye=[75,75,90],lastTarget=[0,16,0],renderError=null;
+let renderRevision=0,lastRenderSignature='',lastDrawTime=0,detailKey=null;
+const orbit={target:[0,21,3],theta:.68,phi:1.06,radius:188},goal={...orbit,target:[...orbit.target]},walk={pos:[-5,1.7,44],yaw:0,pitch:0},keys=new Set();
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const assetPos={},spacePositions={},picks=[],colliders={},layouts=new Map();
+const G=n=>groups[n]||new Geo(n);
+const context=(loc=state.loc)=>loc==='site'?{building:'site',level:'all'}:{building:loc.split(':')[0],level:loc.split(':')[1]||'all'};
+const locationFor=s=>s.building+':'+s.level;
+const isDetailed=(loc=state.loc)=>context(loc).level!=='all';
+const niceUtility=t=>utilities.find(u=>u.id===t)?.name||t;
+const meterService=m=>m.type;
+const locSpaces=(loc=state.loc)=>levelSpaces.get(loc)||[];
+const locMeters=loc=>meters.filter(m=>locationFor(spaces[m.space])===loc);
+const allLevels=b=>[...b.levels,...(b.id==='mall'?[]:[{id:'lobby',name:'Lobby & reception',short:'L'}]),{id:'basement',name:'Basement services',short:'B'},{id:'roof',name:'Rooftop solar',short:'R'}];
+const siteLevels=[{id:'all',name:'Precinct overview'},{id:'supplies',name:'Bulk supply & check meters'},{id:'energy',name:'Solar & backup generation'},{id:'parking',name:'Parking & landscape'}];
+const primaryCount=buildings.reduce((n,b)=>n+b.levels.length,0);
+const bPos=b=>[(b.x+b.w/2)*1.6,0,(b.z+b.d/2)*1.6];
+const bHeight=b=>3.7+b.levels.length*b.story*1.6;
+function levelY(b,l){if(!b)return 0;if(l==='basement')return -3.5;if(l==='lobby')return 0;if(l==='roof')return bHeight(b)+.2;let i=b.levels.findIndex(x=>x.id===l);return 3.7+Math.max(i,0)*b.story*1.6;}
+function locShort(loc=state.loc){let {building,level}=context(loc),b=byId[building];return level==='all'?(b?.name||'Precinct overview'):building==='site'?siteLevels.find(l=>l.id===level)?.name||level:allLevels(b).find(l=>l.id===level)?.name||level;}
+const locTitle=(loc=state.loc)=>loc==='site'?'Four buildings. One connected precinct.':locShort(loc);
+function validLocation(loc){if(loc==='site')return true;let c=context(loc),b=byId[c.building];return b?c.level==='all'||allLevels(b).some(l=>l.id===c.level):c.building==='site'&&siteLevels.some(l=>l.id===c.level);}
+function layoutFor(loc){if(layouts.has(loc))return layouts.get(loc);let {building,level}=context(loc),b=byId[building],ss=locSpaces(loc),check=spaces[loc+':check'],grid=!!b&&b.levels.some(l=>l.id===level)&&ss.length>1;
+ let cols=grid?(b.id==='mall'?Math.min(8,ss.length):5):Math.min(3,Math.max(1,ss.length)),rows=Math.ceil(ss.length/cols),cw=grid?4.5:8,rd=grid?4.2:9,pairs=Math.ceil(rows/2),width=grid?cols*cw+3.6:Math.max(24,cols*cw+3.6),depth=grid?pairs*(rd*2+2.2):18,y=levelY(b,level),entries=[];
+ ss.forEach((s,i)=>{let col=i%cols,row=Math.floor(i/cols),aisle=grid?-depth/2+Math.floor(row/2)*(rd*2+2.2)+rd+1.1:4.5,x=grid?-cols*cw/2+(col+.5)*cw:(col-(cols-1)/2)*cw,z=grid?aisle+(row%2?1:-1)*(rd/2+1.1):-2.2,face=grid?(row%2?-1:1):1;
+  let p={s,x,z,y,cw: grid?cw:7,rd:grid?rd:10,aisle,face};entries.push(p);spacePositions[s.id]=[x,y+.1,z];s.meters.forEach((m,k)=>{let mx=x+(k-(s.meters.length-1)/2)*.58,mz=grid?aisle-face*1.2:z+4.4;assetPos[m.id]=[mx,y+1.3,mz];});});
+ if(check&&!ss.includes(check)){spacePositions[check.id]=[width/2-.85,y,0];check.meters.forEach((m,i)=>assetPos[m.id]=[width/2-.85,y+.95+i*.62,0]);}
+ let out={loc,b,level,ss,check,grid,cols,rows,width,depth,y,entries};layouts.set(loc,out);return out;}
+for(let loc of levelSpaces.keys())layoutFor(loc);
+function spaceCenter(id){return spacePositions[id]||[0,0,0];}
+function pick(type,id,pos,size,loc,extra={}){picks.push({type,id,pos,min:V.sub(pos,V.mul(size,.5)),max:V.add(pos,V.mul(size,.5)),loc,...extra});}
+function physicalMeter(m,g,scale=.62){let [x,y,z]=assetPos[m.id],c=COLORS[m.type],s=spaces[m.space],entry=layoutFor(locationFor(s)).entries.find(e=>e.s.id===s.id),face=entry?.face||1;
+ if(m.type==='water'||m.type==='hot-water'){g.tube([x,y-.5*scale,z],[x,y+.5*scale,z],.055*scale,'#7899a2',6,8);g.box(x,y,z,.30*scale,.43*scale,.22*scale,'#c1ceca',6);g.tube([x,y,z],[x,y,z+face*.20*scale],.21*scale,c,6,12);g.box(x,y+.04*scale,z+face*.22*scale,.23*scale,.10*scale,.02*scale,'#486660',7);
+ }else{g.box(x,y,z,.45*scale,.65*scale,.23*scale,'#d6dfd5',6);g.box(x,y+.12*scale,z+face*.13*scale,.32*scale,.18*scale,.04*scale,'#486f61',7);g.box(x,y-.17*scale,z+face*.14*scale,.33*scale,.06*scale,.035*scale,c,7);g.tube([x,y-.33*scale,z],[x,y-.65*scale,z],.026*scale,'#8aa198',6,6);}
+ pick('meter',m.id,[x,y,z],[.42,.68,.42],locationFor(s),{service:m.type});}
+function tree(x,z,r=1,seed=0){const g=G('landscape');g.tube([x,0,z],[x,4.5*r,z],.16*r,'#74604b',5,9);for(let i=0;i<8;i++){let a=i*2.399+seed,h=4.7*r+(i%3)*.48*r,rr=(i===0?0:1.1*r);g.sphere(x+Math.cos(a)*rr,h,z+Math.sin(a)*rr,1.45*r,['#66836b','#779276','#587762','#859b73'][i%4],.9,10,6);}g.box(x,-.005,z,3.5*r,.06,3.5*r,'#8b9d7e',8);}
+function car(x,z,color,angle=0){let g=G('landscape');let X=(a,b,c)=>[x+a*Math.cos(angle)+c*Math.sin(angle),b,z-a*Math.sin(angle)+c*Math.cos(angle)],bx=(a,b,c,w,h,d,col,kind=0)=>{let p=X(a,b,c);g.box(...p,w,h,d,col,kind,angle)};
+ bx(0,.55,0,1.85,.55,4.15,color,6);bx(0,.82,.08,1.79,.23,3.75,color,6);bx(0,1.08,.15,1.65,.7,2.1,'#477076',1);bx(0,1.45,.2,1.66,.12,2.08,color,6);bx(0,.89,1.63,1.8,.16,.87,color,6);bx(0,.88,-1.6,1.8,.16,.8,color,6);for(let side of [-1,1]){bx(side*.88,1.13,.13,.035,.54,.075,color,6);bx(side*.64,.61,2.095,.43,.17,.018,'#e6ecda',7);bx(side*.64,.61,-2.095,.38,.15,.018,'#9b5346',7);for(let zz of [-1.35,1.35]){g.tube(X(side*.8,.43,zz),X(side*1.0,.43,zz),.33,'#29312e',0,14);g.tube(X(side*1.003,.43,zz),X(side*1.012,.43,zz),.19,'#abb4ae',6,12)}}bx(0,.44,2.085,1.27,.13,.02,'#3a4640');}
+function bench(x,z,ry=0){let g=G('landscape');g.box(x,.54,z,2.6,.13,.64,'#9b7955',5,ry);g.box(x,.97,z-.26,2.6,.65,.09,'#9b7955',5,ry);for(let s of [-1,1])g.box(x+s*.94,.26,z,.12,.53,.53,'#596d62',6);}
+
+function buildGeometry(){let ground=G('ground');ground.box(0,-.75,0,240,.6,220,'#b7c7b3',8);ground.box(0,-.35,2,105,.4,100,'#d0d9cd',3);ground.box(0,-.08,53,145,.12,10,'#77817c',2);ground.box(48,-.07,2,8,.13,95,'#77817c',2);for(let x=-65;x<=65;x+=10)ground.box(x,.003,53,4,.015,.12,'#e3e7d8');ground.box(-2,-.015,6,77,.08,6,'#e6e7dc',3);ground.box(-37,-.015,26,24,.08,34,'#6a7772',2);
+ for(let z=11;z<44;z+=5.2){ground.box(-44,.035,z,7,.02,.12,'#e1e6d9');ground.box(-30,.035,z,7,.02,.12,'#e1e6d9');if(z!==21.4)car(-44,z,['#3b6272','#bec7bc','#ab9a85'][Math.round(z)%3],Math.PI/2);if(z!==31.8)car(-30,z,'#7a9891',-Math.PI/2);}
+ for(let [x,z] of [[-48,-35],[-48,-18],[-49,0],[-48,47],[39,-37],[40,-20],[41,0],[40,36],[-16,44],[0,45],[17,45],[-16,1],[15,2]])tree(x,z,.8,x);bench(-12,9);bench(14,8);
+ for(let b of buildings){let [x,,z]=bPos(b),w=b.w*1.6,d=b.d*1.6,h=bHeight(b),shell=G('shell/'+b.id),skeleton=G('skeleton/'+b.id),roof=G('roof/'+b.id);ground.box(x,-.04,z,w+3,.08,d+3,'#dddcd0',3);shell.box(x,1.7,z,w,3.4,d,'#bccab9',3);
+  for(let side of [-1,1]){shell.box(x,1.65,z+side*(d/2+.015),w-.7,2.9,.06,'#5e868b',1);shell.box(x+side*(w/2+.015),1.65,z,.06,2.9,d-.7,'#5e868b',1);}
+  for(let i=0;i<b.levels.length;i++){let y=3.7+i*b.story*1.6,fh=b.story*1.6;shell.box(x,y+fh/2,z,w,fh-.12,d,b.color,3);skeleton.box(x,y,z,w,.12,d,'#d5dccf',3);
+   for(let side of [-1,1]){shell.box(x,y+fh*.53,z+side*(d/2+.025),w-.65,fh*.71,.045,'#6f999e',1);shell.box(x+side*(w/2+.025),y+fh*.53,z,.045,fh*.71,d-.65,'#6f999e',1);shell.box(x,y+.02,z+side*(d/2+.08),w+.15,.16,.18,'#e0e3d5',3);for(let c=1;c<5;c++)shell.box(x-w/2+c*w/5,y+fh/2,z+side*(d/2+.08),.13,fh,.12,b.color,6);}
+   for(let sx of [-1,1])for(let sz of [-1,1])skeleton.box(x+sx*(w/2-.25),y+fh/2,z+sz*(d/2-.25),.35,fh,.35,b.color,6);
+   pick('level',b.id+':'+b.levels[i].id,[x,y+fh/2,z],[w,fh,d],b.id+':all');}
+  shell.box(x,h-.16,z,w+.5,.25,d+.5,'#d6dfce',3);roof.box(x,h+.08,z,w+.45,.22,d+.45,'#b6c6b4',3);
+  for(let row=0;row<2;row++)for(let col=0;col<(b.id==='mall'?8:3);col++){let px=x-w*.35+col*(w*.7/(b.id==='mall'?7:2)),pz=z-d*.23+row*d*.4;roof.box(px,h+.54,pz,b.id==='mall'?3.4:3,.12,2.3,'#173e51',4);roof.box(px,h+.37,pz,2.6,.18,1.8,'#738e86',6);}
+  pick('building',b.id,[x,h/2,z],[w,h,d],'site');}
+ let services=G('site-services');services.box(-39,.1,-4,18,.24,5,'#bbc8b6',3);services.box(-39,1.5,-5.8,18,2.7,.25,'#a3b7a7',3);for(let k=0;k<5;k++){services.box(-46+k*3.2,1.2,-3.6,1.3,1.8,.8,'#d0dbce',6);services.box(-46+k*3.2,1.6,-3.15,.8,.36,.035,COLORS[utilities[k].id],7);}pick('nav','site:supplies',[-39,1.2,-4],[18,3,5],'site');
+ services.box(-41,.15,-29,11,.3,7,'#9fac99',3);services.box(-41,1.5,-29,7,2.6,4,'#587c65',6);services.box(-41,2.88,-29,7.2,.16,4.2,'#8ea58b',6);for(let i=0;i<9;i++)services.box(-43.5,1.0+i*.13,-26.96,1.4,.055,.04,'#2d4d3b',6);pick('nav','site:energy',[-41,1.5,-29],[11,3,7],'site');pick('nav','site:parking',[-37,.2,26],[24,.6,34],'site');
+}
+function clearDetails(){for(let n of Object.keys(groups))if(n.startsWith('detail/')){let g=groups[n];if(renderer){renderer.gl.deleteVertexArray(g.vao);renderer.gl.deleteBuffer(g.buffer);}delete groups[n];}for(let i=picks.length-1;i>=0;i--)if(picks[i].dynamic)picks.splice(i,1);}
+function blockedBox(loc,x,z,w,d){(colliders[loc]??=[]).push([x-w/2-.19,z-d/2-.19,x+w/2+.19,z+d/2+.19]);}
+function detailWall(g,loc,x,y,z,w,h,d,col='#dddcd0'){g.box(x,y+h/2,z,w,h,d,col,3);blockedBox(loc,x,z,w,d);}
+function furnishing(g,e){let {s,x,y,z,cw,rd}=e;
+ if(s.kind==='Hotel room'){g.box(x-.7,y+.35,z,1.55,.65,2,'#a5b8a4',3);g.box(x-.7,y+.72,z,1.52,.13,1.9,'#eef0e5');g.box(x-.7,y+.81,z-e.face*.68,1.28,.12,.4,'#d4ddcd');g.box(x+1.1,y+.68,z-.6,.8,.12,1.2,'#9c8e72',5);}
+ else if(s.kind==='Office suite'){g.box(x,y+.77,z,2.6,.12,1.25,'#bdbaa0',5);for(let side of [-1,1]){g.box(x+side*.7,y+.82,z,.62,.05,.43,'#496e65',6);g.box(x+side*.7,y+.42,z+.9,.48,.13,.55,'#698c7f',6);g.box(x+side*.7,y+.88,z+1.12,.48,.8,.1,'#698c7f',6);}}
+ else if(s.kind.includes('retail')){g.box(x,y+.61,z-1,Math.max(1,cw-1),1.1,.65,'#b7b797',5);g.box(x,y+.86,z+.8,cw-1.5,.14,.7,'#d3c8ac',5);for(let k=0;k<3;k++)g.box(x-.8+k*.75,y+1.4,z-1,.45,.4,.43,['#829a87','#b9a687','#8f9fac'][k],3);}
+ else if(s.short==='gym'){for(let i=0;i<4;i++){g.box(x-2+i*1.3,y+.22,z,1,.35,2,'#5c7569',6);g.box(x-2+i*1.3,y+1.1,z-1,.85,.12,.5,'#98aaa0',6);}}
+ else if(s.short==='restaurant'){for(let dx of [-2,0,2])for(let dz of [-2,1]){g.box(x+dx,y+.8,z+dz,1.35,.1,1.1,'#b0a383',5);g.box(x+dx,y+.35,z+dz, .2,.7,.2,'#6d8170',6);}}
+ else if(s.short==='generator'){g.box(x,y+1.1,z,5,2.1,2.7,'#537866',6);g.box(x,y+2.2,z,5.15,.14,2.86,'#87a28c',6);for(let i=0;i<9;i++)g.box(x-1.65,y+.5+i*.14,z+1.38,1.4,.06,.04,'#2c4e40',6);}
+ else if(s.short==='solar'||s.level==='roof'){for(let r=0;r<2;r++)for(let k=0;k<3;k++)g.box(x-2.5+k*2.5,y+.5,z-2+r*3,2.1,.12,2.2,'#214b59',4);}
+ else{g.box(x,y+.55,z,Math.min(cw-1,4),1,1,'#aabda5',3);g.box(x,y+1.2,z-.5,Math.min(cw-1,4),.22,.24,'#c6d1ba',3);}
+}
+function ensureDetail(){if(!isDetailed())return;if(detailKey===state.loc)return;clearDetails();detailKey=state.loc;let l=layoutFor(state.loc),{width,depth,y}=l,slab=G('detail/slab'),decor=G('detail/decor'),low=G('detail/low'),high=G('detail/high');colliders[state.loc]=[];let start=picks.length;
+ slab.box(0,y-.15,0,width,.3,depth+.8,'#ced8c7',3);decor.box(0,y+.02,0,width-.2,.045,depth+.5,'#d8ddcd',3);
+ for(let e of l.entries){let {s,x,z,cw,rd,aisle,face}=e;decor.box(x,y+.06,z,cw-.15,.045,rd-.15,l.b?.color||'#a7bca6',5);furnishing(decor,e);
+  if(l.grid){for(let side of [-1,1]){low.box(x+side*cw/2,y+.34,z,.10,.68,rd,'#d9dccd',3);detailWall(high,state.loc,x+side*cw/2,y,z,.10,2.4,rd);}
+   let front=aisle-face*1.1,back=z-face*rd/2;for(let side of [-1,1]){let wx=x+side*(cw/4+.36),ww=cw/2-.72;low.box(wx,y+.35,front,ww,.7,.12,'#deded0',3);detailWall(high,state.loc,wx,y,front,ww,2.4,.12);}
+   low.box(x,y+.35,back,cw,.7,.12,'#deded0',3);detailWall(high,state.loc,x,y,back,cw,2.4,.12);decor.box(x,y+2.39,front,1.5,.12,.19,'#889c85',6);
+  }else{low.box(x,y+.35,z-rd/2,cw,.7,.16,'#d2dbcb',3);detailWall(high,state.loc,x,y,z-rd/2,cw,2.4,.16);}
+  s.meters.forEach(m=>physicalMeter(m,G('detail/meters/'+m.type)));
+  pick('space',s.id,[x,y+.45,z],[cw-.25,.9,rd-.2],state.loc);
+ }
+ if(l.check&&!l.ss.includes(l.check)){decor.box(width/2-.78,y+1.8,0,.65,3.6,1.1,'#b3c5ad',6);l.check.meters.forEach(m=>physicalMeter(m,G('detail/meters/'+m.type),.72));pick('space',l.check.id,spaceCenter(l.check.id),[1,3.7,1.3],state.loc);}
+ for(let i=start;i<picks.length;i++)picks[i].dynamic=true;
+ for(let n of Object.keys(groups))if(n.startsWith('detail/'))groups[n].upload(renderer.gl);
+}
+function buildVisible(){renderRevision++;visible=[];const add=n=>{if(groups[n])visible.push({geo:groups[n]});};let c=context(),b=byId[c.building];
+ if(isDetailed()){ensureDetail();for(let n of ['slab','decor',state.mode==='walk'?'high':'low'])add('detail/'+n);for(let u of utilities)if(state.layers[u.id])add('detail/meters/'+u.id);}
+ else{add('ground');add('landscape');add('site-services');for(let bb of buildings){if(b&&bb.id!==b.id)continue;add((state.xray?'skeleton/':'shell/')+bb.id);if(!state.xray)add('skeleton/'+bb.id);add('roof/'+bb.id);}}
+ if(renderer){renderer.shadowDirty=true;let center=isDetailed()?[0,layoutFor(state.loc).y+1,0]:b?V.add(bPos(b),[0,bHeight(b)/2,0]):[0,20,4];renderer.lightVP=M.mul(M.ortho(-75,75,-75,75,1,260),M.look(V.add(center,[-70,100,65]),center));}
+}
+function fitLocation(instant=false){let c=context(),b=byId[c.building],conf;if(isDetailed()){let l=layoutFor(state.loc);conf={target:[0,l.y+.4,0],radius:Math.max(l.width,l.depth)*1.9,phi:.6,theta:.18};}
+ else if(b)conf={target:V.add(bPos(b),[0,bHeight(b)/2,0]),radius:Math.max(bHeight(b)*2,85),phi:1.07,theta:.58};
+ else conf={target:[0,21,3],radius:188,phi:1.06,theta:.68};Object.assign(goal,conf);goal.target=[...conf.target];if(instant||reducedMotion){Object.assign(orbit,conf);orbit.target=[...conf.target];}}
+function closeNavigation(){$('#navigation').classList.remove('open');$('#menu').setAttribute('aria-expanded','false');}
+function navigate(loc,level){if(level!==undefined)loc=loc+':'+level;if(!validLocation(loc))return;state.loc=loc;Object.assign(state,context(loc));state.space=null;state.meter=null;state.trace=false;keys.clear();$('#search').value='';updateSearch();closeNavigation();fitLocation();if(state.mode==='walk')spawnWalk();refresh();}
+function selectSpace(id){let s=spaces[id];if(!s)return;let loc=locationFor(s),changed=state.loc!==loc;state.loc=loc;Object.assign(state,context(loc));state.space=id;state.meter=null;state.trace=false;if(changed)fitLocation();if(state.mode==='walk')spawnWalk();closeNavigation();refresh();}
+function selectMeter(id){let m=meterById[id];if(!m)return;state.loc=locationFor(spaces[m.space]);Object.assign(state,context());state.space=m.space;state.meter=id;state.trace=false;state.layers[m.type]=true;if(state.mode==='walk')spawnWalk();else focusMeter(m);closeNavigation();refresh();}
+function focusMeter(m){let p=assetPos[m.id];if(!p)return;let e=layoutFor(state.loc).entries.find(e=>e.s.id===m.space),face=e?.face||1;Object.assign(goal,{target:[...p],radius:3.8,phi:1.12,theta:face>0?.2:Math.PI+.2});}
+function orientWalk(target){let d=V.sub(target,walk.pos);walk.yaw=Math.atan2(d[0],-d[2]);walk.pitch=Math.atan2(d[1],Math.hypot(d[0],d[2]));}
+function spawnWalk(){if(isDetailed()){let l=layoutFor(state.loc);walk.pos=[l.width/2-1,l.y+1.7,0];orientWalk([0,l.y+1.7,0]);if(state.space){let e=l.entries.find(e=>e.s.id===state.space);if(e){walk.pos=[e.x,l.y+1.7,e.aisle];orientWalk([e.x,l.y+1.4,e.z]);}}if(state.meter){let p=assetPos[state.meter],e=l.entries.find(e=>e.s.id===state.space),sign=e?.face||1;walk.pos=[p[0],l.y+1.7,p[2]+sign*.95];orientWalk(p);}}
+ else{let b=byId[context().building],p=b?bPos(b):[0,0,0];walk.pos=[p[0],1.7,p[2]+(b?b.d*.8+7:44)];orientWalk(V.add(p,[0,7,0]));}}
+function setMode(mode){if(!['walk','orbit'].includes(mode))return;if(mode===state.mode)return;state.mode=mode;keys.clear();if(mode==='walk'){spawnWalk();toast('Drag to look. Use W A S D or the arrow pad to walk.');}else{fitLocation();if(state.meter)focusMeter(meterById[state.meter]);}refresh();}
+function canStand(x,z,loc=state.loc){if(isDetailed(loc)){let l=layoutFor(loc);if(Math.abs(x)>l.width/2-.3||Math.abs(z)>l.depth/2+.05)return false;for(let box of colliders[loc]||[])if(x>box[0]&&x<box[2]&&z>box[1]&&z<box[3])return false;return true;}
+ if(x<-51||x>44||z<-43||z>49)return false;for(let b of buildings){let [bx,,bz]=bPos(b);if(Math.abs(x-bx)<b.w*.8+.3&&Math.abs(z-bz)<b.d*.8+.3)return false;}if(x>-48&&x<-30&&z>-7&&z<-1)return false;if(x>-46.5&&x<-35.5&&z>-32.5&&z<-25.5)return false;return true;}
+function updateWalk(dt){let f=(keys.has('w')||keys.has('arrowup')?1:0)-(keys.has('s')||keys.has('arrowdown')?1:0),s=(keys.has('d')||keys.has('arrowright')?1:0)-(keys.has('a')||keys.has('arrowleft')?1:0);if(!f&&!s)return;let len=Math.hypot(f,s),step=(keys.has('shift')?7:3.2)*dt,nx=walk.pos[0]+(Math.sin(walk.yaw)*f+Math.cos(walk.yaw)*s)*step/len,nz=walk.pos[2]+(-Math.cos(walk.yaw)*f+Math.sin(walk.yaw)*s)*step/len;if(canStand(nx,walk.pos[2]))walk.pos[0]=nx;if(canStand(walk.pos[0],nz))walk.pos[2]=nz;}
+function addRoute(points,service){if(!state.layers[service])return;let g=G('route-overlay'),radius=isDetailed()?.022:.065;for(let i=1;i<points.length;i++)g.tube(points[i-1],points[i],radius,COLORS[service],9,6);let lengths=[],total=0;for(let i=1;i<points.length;i++){let len=V.len(V.sub(points[i],points[i-1]));lengths.push(len);total+=len;}if(total>0)routeSamples.push({points,service,lengths,total});}
+function buildRoutes(){let g=G('route-overlay');g.data=[];routeSamples=[];if(state.flows||state.trace){if(isDetailed()){let l=layoutFor(state.loc),chosen=state.trace?[meterById[state.meter]]:locMeters(state.loc);for(let m of chosen){if(!m)continue;let p=assetPos[m.id],e=l.entries.find(e=>e.s.id===m.space),z=e?.aisle||0,sy=l.y+1.3;addRoute([[l.width/2-.65,sy,z],[p[0],sy,z],[p[0],p[1],p[2]]],m.type);}}
+ else{let focus=byId[context().building];for(let b of buildings){if(focus&&b.id!==focus.id)continue;let [x,,z]=bPos(b),h=bHeight(b);for(let [i,u] of utilities.entries()){let rx=x-b.w*.8-.5-i*.27;addRoute([[-45+i*2,.9,-3.5],[-26+i*.38,.9,2],[rx,.9,2],[rx,.9,z],[rx,h-.6,z]],u.id);}}}}
+ if(renderer)g.upload(renderer.gl);}
+function rebuildHighlight(){let g=G('selection');g.data=[];let p=state.meter?assetPos[state.meter]:state.space?spaceCenter(state.space):null;if(p){let color=state.meter?COLORS[meterById[state.meter].type]:'#2e9c74',sz=state.meter?[.34,.5,.3]:[1.4,.12,1.4],lo=V.sub(p,sz),hi=V.add(p,sz),corners=[];for(let x of [lo[0],hi[0]])for(let y of [lo[1],hi[1]])for(let z of [lo[2],hi[2]])corners.push([x,y,z]);for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)if(corners[i].filter((n,k)=>n!==corners[j][k]).length===1)g.tube(corners[i],corners[j],.022,color,9,6);}if(renderer)g.upload(renderer.gl);}
+function setupUI(){for(let [id,i] of [['menu','menu'],['search-icon','search'],['snapshot','camera'],['fullscreen','fullscreen'],['help','help'],['home-view','target'],['zoom-in','plus'],['zoom-out','minus'],['plan-view','grid'],['day-night','moon']])$('#'+id).innerHTML=icon(i);$('#site-nav').innerHTML=icon('cube')+'Precinct overview<span class="count">4 buildings</span>';
+ $('#building-nav').innerHTML=buildings.map(b=>`<button class="nav-button" data-loc="${b.id}:all"><span class="building-dot" style="background:${b.color}"></span>${esc(b.name)}<span class="count">${b.levels.length}</span></button>`).join('');
+ for(let [id,i,t] of [['supplies','plug','Bulk & check meters'],['energy','generator','Solar & backup'],['parking','parking','Parking & landscape']])$('#'+id+'-nav').innerHTML=icon(i)+t;
+ $('#utility-layers').innerHTML=utilities.map(u=>`<label class="layer"><input type="checkbox" data-layer="${u.id}" checked><span class="dot" style="--dot:${u.color}"></span>${esc(u.short||u.name)}<small>${meters.filter(m=>m.type===u.id).length}</small></label>`).join('');
+ for(let [id,i,t] of [['orbit','orbit','Orbit'],['walk','walk','Walk'],['cutaway','xray','X-ray'],['routes','routes','Utilities'],['labels','eye','Labels']])$('#'+id).innerHTML=icon(i)+t;}
+function levelButtons(b){return [...b.levels].reverse().map(l=>`<button data-loc="${b.id}:${l.id}" aria-label="Explore ${esc(b.name+' '+l.name)}" class="${/^\d+$/.test(l.id)?'':'special'} ${state.level===l.id?'active':''}" aria-pressed="${state.level===l.id}">${/^\d+$/.test(l.id)?l.short:esc(l.name)}</button>`).join('');}
+function updateUI(){renderRevision++;let c=context(),b=byId[c.building];$('#level-navigation').hidden=!b;if(b){$('#level-heading').textContent=b.name+' / Levels';$('#floor-grid').innerHTML=levelButtons(b);$('#level-select').innerHTML=[{id:'all',name:'Whole building'},...allLevels(b)].map(l=>`<option value="${b.id}:${l.id}">${esc(l.name)}</option>`).join('');$('#level-select').value=state.loc;$('#level-note').textContent=b.id==='hotel'?'20 room floors + Gym, Restaurant, Penthouse':b.id==='mall'?'Four retail levels + shared amenities':'20 office levels · 10 suites per level';$('#building-services').innerHTML=allLevels(b).filter(l=>['roof','lobby','basement'].includes(l.id)).map(l=>`<button class="nav-button" data-loc="${b.id}:${l.id}">${icon(l.id==='roof'?'solar':l.id==='lobby'?'lobby':'generator')}${esc(l.name)}</button>`).join('');}
+ $$('[data-loc]').forEach(el=>{let active=el.dataset.loc===state.loc;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));});for(let id of ['orbit','walk']){$('#'+id).classList.toggle('active',state.mode===id);$('#'+id).setAttribute('aria-pressed',String(state.mode===id));}for(let [id,key] of [['cutaway','xray'],['routes','flows'],['labels','labels']]){$('#'+id).classList.toggle('active',state[key]);$('#'+id).setAttribute('aria-pressed',String(state[key]));}
+ $('#stage').classList.toggle('walk',state.mode==='walk');$('#app').classList.toggle('night',state.night);$('#view-title').textContent=locTitle();$('#breadcrumb').textContent='THE PRECINCT / '+(b?b.name.toUpperCase()+' / ':'')+(state.mode==='walk'?'WALKTHROUGH':c.level==='all'?'3D OVERVIEW':locShort().toUpperCase());$('#view-subtitle').textContent=state.meter?'Inspecting '+state.meter+' · '+spaces[state.space].name:state.space?spaces[state.space].name+' · '+spaces[state.space].kind:isDetailed()?locSpaces().length+' spaces · '+locMeters(state.loc).length+' sample meter records':b?b.description:'The Nuvo Hotel · Block A Office · Block B Office · The Commons Mall';
+ $('#day-night').innerHTML=icon(state.night?'sun':'moon');$('#day-night').setAttribute('aria-label',state.night?'Switch to daylight':'Switch to twilight lighting');$('#view-help').innerHTML=(state.mode==='walk'?'<strong>WALKTHROUGH</strong><br>Drag to look · <kbd>W A S D</kbd> Move · Esc orbit':`<strong>${state.trace?'SUPPLY TRACE':state.flows?'SCHEMATIC UTILITY ROUTES':isDetailed()?'LEVEL CUTAWAY':'PRECINCT EXPLORER'}</strong><br>Drag to orbit · Scroll to zoom · Click to inspect`)+(state.flows?'<div class="model-legend">'+utilities.filter(u=>state.layers[u.id]).map(u=>`<span><i class="dot" style="--dot:${u.color}"></i>${esc(u.short||u.name)}</span>`).join('')+'</div>':'');
+ $$('[data-layer]').forEach(el=>el.checked=state.layers[el.dataset.layer]);$('#map-title').textContent=isDetailed()?'Level plan':'Precinct plan';$('#cutaway').disabled=isDetailed();$('#cutaway').title=isDetailed()?'This level is already isolated':'Reveal the level structure';$('#scene').setAttribute('aria-label','Interactive 3D '+locShort()+'. Use the directory buttons for keyboard access.');}
+const buildingCards=()=>buildings.map(b=>`<button class="building-card" data-loc="${b.id}:all"><span class="building-dot" style="background:${b.color}"></span><span><strong>${esc(b.name)}</strong><small>${b.levels.length} primary levels · ${b.type}</small></span><span class="arrow">↗</span></button>`).join('');
+function assetCards(s){return s.meters.map(m=>`<button class="asset-card ${state.meter===m.id?'active':''}" data-meter="${m.id}" aria-pressed="${state.meter===m.id}"><span class="asset-icon" style="--color:${COLORS[m.type]};--tint:${COLORS[m.type]}18">${icon(m.type==='water'||m.type==='hot-water'?'water':'bolt')}</span><span><strong>${esc(m.name)}</strong><small>${esc(m.id)}<br>${esc(m.role)}</small></span><span class="arrow">›</span></button>`).join('');}
+function supplySteps(m){let s=spaces[m.space],b=byId[s.building],u=niceUtility(m.type);if(m.role==='Generation meter')return[[s.name,'Illustrative source'],[m.id,'Generation meter'],[b?b.name:'Precinct distribution','Conceptual alternative electricity connection']];let list=[['Precinct '+u.toLowerCase()+' supply','Shared supply boundary']];if(b)list.push([b.name,'Illustrative building distribution']);if(b&&b.levels.some(l=>l.id===s.level))list.push([locShort(locationFor(s)),m.role==='Check meter'?'Floor verification':'Floor distribution and check meters']);list.push([s.name,m.role==='Check meter'?'Verification only':'Space connection'],[m.id,m.role]);return list;}
+function inspector(){let s=spaces[state.space],m=meterById[state.meter],c=context(),b=byId[c.building],html='';
+ if(m){html=`<button class="back" data-space="${s.id}">${icon('back')} Back to ${esc(s.name)}</button><div class="eyebrow">${esc(m.role)}</div><h2 class="meter-id">${esc(m.id)}</h2><p><span class="dot" style="--dot:${COLORS[m.type]}"></span> ${esc(m.name)} · ${esc(s.name)}</p><div class="reading"><div class="eyebrow">Sample cumulative register</div><div class="value">${Number(m.reading).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}<small>${esc(m.unit)}</small></div><p>Original illustrative reading · No live connection</p></div><dl>${[['Building',b?.name||'Shared precinct'],['Level',locShort()],['Space',s.name],['Role',m.role],['Billing',m.role==='Check meter'?'Verification only':'Not connected']].map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl><button class="primary" data-action="trace">${icon('routes')}${state.trace?'Hide supply trace':'Trace supply'}</button><button class="secondary" data-action="walk-here">${icon('walk')}Walk to this asset</button><h3>Supply relationship</h3><div class="path">${supplySteps(m).map(([t,sub])=>`<div>${esc(t)}<small>${esc(sub)}</small></div>`).join('')}</div><div class="note">${m.role==='Check meter'?'Verification only. Checks downstream consumption; no billing account is connected.':'No live account or tariff is connected.'} Device positions and supply paths are illustrative.</div>`;
+ }else if(s){html=`<button class="back" data-loc="${state.loc}">${icon('back')} ${esc(locShort())}</button><div class="eyebrow">${esc(s.kind)}</div><h2>${esc(s.name)}</h2><p>${esc(b?.name||'Shared precinct')} / ${esc(locShort())}</p><span class="tag">${s.meters.length} sample meters · Original records</span><h3>Utility assets</h3><div class="asset-list">${assetCards(s)}</div><button class="secondary" data-action="walk-here">${icon('walk')}Walk into this space</button><div class="note">Select a meter to inspect its sample register and trace its conceptual supply. Layouts and meter placement are schematic.</div>`;
+ }else if(state.loc==='site'){html=`<div class="eyebrow">The connected precinct</div><h2>A place for everything.</h2><p class="lead">One connected place to stay, work, shop, and explore. Start with a building, then discover its levels, spaces, and utility assets.</p><span class="tag"><span class="dot"></span>Concept model · Original sample records</span><div class="stats"><div class="stat"><strong>4</strong><span>Connected buildings</span></div><div class="stat"><strong>${primaryCount}</strong><span>Primary levels</span></div></div><div class="building-cards">${buildingCards()}</div><h3>Every connection, in context.</h3><div class="systems">${[['building',Object.values(spaces).length+' spaces','Across the precinct'],['plug',meters.length+' meters','5 utility types'],['solar','Solar & backup','Shared generation']].map(([i,t,sub])=>`<div class="system">${icon(i)}${t}<small>${sub}</small></div>`).join('')}</div><button class="primary" data-action="tour">Take a precinct tour ${icon('arrow')}</button><div class="note">67 primary levels. Lobbies, basements and roofs are explored separately. Geometry and utility routes are schematic.</div>`;
+ }else if(c.level==='all'&&b){let count=Object.values(spaces).filter(s=>s.building===b.id).length;html=`<button class="back" data-loc="site">${icon('back')} Precinct overview</button><div class="eyebrow">${b.type} / ${b.levels.length} primary levels</div><h2>${esc(b.name)}</h2><p class="lead">${esc(b.description)}</p><div class="stats"><div class="stat"><strong>${count}</strong><span>Spaces & services</span></div><div class="stat"><strong>${meters.filter(m=>spaces[m.space].building===b.id).length}</strong><span>Sample meters</span></div></div><h3>Choose a level</h3><div class="level-grid">${levelButtons(b)}</div><h3>Building services</h3><div class="space-list">${allLevels(b).filter(l=>['lobby','basement','roof'].includes(l.id)).map(l=>`<button class="space-card" data-loc="${b.id}:${l.id}">${icon(l.id==='roof'?'solar':l.id==='lobby'?'lobby':'generator')} ${esc(l.name)}<span class="arrow">›</span></button>`).join('')}</div><div class="note">${b.id==='hotel'?'Gym and Restaurant sit above floors 1–20, with Penthouse at the top. Amenity heights are illustrative.':'Choose a floor for its furnished cutaway and original space directory.'}</div>`;
+ }else{let l=layoutFor(state.loc),ss=l.ss,check=l.check&&!ss.includes(l.check)?l.check:null;html=`<button class="back" data-loc="${b?b.id+':all':'site'}">${icon('back')} ${esc(b?.name||'Precinct overview')}</button><div class="eyebrow">${b?.type||'Shared infrastructure'} / Level details</div><h2>${esc(locShort())}</h2><p>${ss.length} spaces · ${locMeters(state.loc).length} sample meters</p><h3>${b?.id==='mall'?'Shops & amenities':b?.id==='hotel'&&/^\d+$/.test(c.level)?'Hotel rooms':b?.type==='Office'&&/^\d+$/.test(c.level)?'Office suites':'Spaces & assets'}</h3><div class="space-list">${ss.map(s=>`<button class="space-card" data-space="${s.id}"><span class="space-badge">${l.grid?esc(s.short):icon(s.short==='solar'?'solar':s.short==='generator'?'generator':'cube')}</span><span><strong>${esc(s.name)}</strong><small>${esc(s.kind)} · ${s.meters.length} meters</small></span><span class="arrow">›</span></button>`).join('')}</div>${check?`<h3>Floor verification</h3><button class="space-card" data-space="${check.id}">${icon('plug')}Floor check meters<span class="arrow">›</span></button>`:''}<button class="secondary" data-action="walk-here">${icon('walk')}Walk through this level</button><div class="note">The original precinct directory and meter records are preserved. Room arrangements, floor plans and supply paths are illustrative.</div>`;}
+ const focused=document.activeElement,focus=focused&&$('#inspector').contains(focused)?{space:focused.dataset.space,meter:focused.dataset.meter,action:focused.dataset.action}:null;$('#inspector').innerHTML=html;$('#inspector').scrollTop=0;if(focus){let el=$$('#inspector button').find(el=>focus.meter?el.dataset.meter===focus.meter:focus.space?el.dataset.space===focus.space:focus.action&&el.dataset.action===focus.action);el?.focus({preventScroll:true});}}
+function setMarkers(){markerData=[];if(!renderer){$('#markers').innerHTML='';return;}let add=(label,pos,type,id,color='#47957a')=>markerData.push({label,pos,type,id,color});let c=context(),b=byId[c.building];
+ if(!isDetailed()){for(let bb of buildings){if(b&&b.id!==bb.id)continue;let p=bPos(bb);add(bb.name,V.add(p,[0,bHeight(bb)*.91,0]),'nav',bb.id+':all',bb.color);}if(!b){add('Bulk & check meters',[-39,4,-4],'nav','site:supplies',COLORS.water);add('Solar & backup',[-41,4,-29],'nav','site:energy',COLORS.alternative);add('Parking & landscape',[-38,2,34],'nav','site:parking','#7e9985');}else{add('Rooftop solar',V.add(bPos(b),[0,bHeight(b)+1,4]),'nav',b.id+':roof',COLORS.alternative);add('Choose a level',V.add(bPos(b),[0,bHeight(b)*.55,b.d*.8+1]),'nav',b.id+':'+b.levels[Math.floor(b.levels.length/2)].id,b.color);}}
+ else{let l=layoutFor(state.loc);if(state.space){for(let m of spaces[state.space].meters)if(state.layers[m.type])add(m.id,V.add(assetPos[m.id],[0,.6,0]),'meter',m.id,COLORS[m.type]);}else{for(let e of l.entries)add(l.grid?e.s.short:e.s.name,[e.x,e.y+1.3,e.z],'space',e.s.id,l.b?.color);if(l.check&&!l.ss.includes(l.check))add('Floor check meters',V.add(spaceCenter(l.check.id),[0,4,0]),'space',l.check.id,COLORS.electricity);}}
+ $('#markers').innerHTML=markerData.map((m,i)=>`<button class="hotspot" data-marker="${i}" aria-label="Explore ${esc(m.label)}"><span class="dot" style="--dot:${m.color}"></span><b>${esc(m.label)}</b></button>`).join('');markerData.forEach((m,i)=>m.el=$$('#markers .hotspot')[i]);}
+function updateMarkers(){if(!renderer)return;let bounds=[];for(let m of markerData){let p=renderer.project(m.pos),w=m.el.offsetWidth||90,h=m.el.offsetHeight||28,display=state.labels&&p?.visible;let bb=display?[p.x-w/2,p.y-h,p.x+w/2,p.y+8]:[];if(display&&(p.y-h<170||p.y>renderer.h-114||p.x<w/2+7||p.x>renderer.w-w/2-40||bounds.some(a=>a[0]<bb[2]&&a[2]>bb[0]&&a[1]<bb[3]&&a[3]>bb[1])))display=false;if(display){bounds.push(bb);m.el.style.left=p.x+'px';m.el.style.top=p.y+'px';}m.el.style.visibility=display?'visible':'hidden';}}
+function refresh(){inspector();updateUI();if(renderer){buildVisible();buildRoutes();rebuildHighlight();setMarkers();}else setMarkers();}
+function updateSearch(){let q=$('#search').value.trim().toLowerCase(),out=$('#search-results');$('#nav-body').hidden=!!q;out.hidden=!q;if(!q){out.innerHTML='';return;}let found=[];for(let b of buildings)if([b.name,b.type,b.code].some(v=>v.toLowerCase().includes(q)))found.push({loc:b.id+':all',title:b.name,sub:b.levels.length+' primary levels',rank:0});
+ for(let s of Object.values(spaces)){let b=byId[s.building],hay=[s.name,s.id,s.kind,b?.name];if(hay.some(v=>v?.toLowerCase().includes(q)))found.push({space:s.id,title:s.name,sub:(b?.name||'Shared precinct')+' / '+locShort(locationFor(s)),rank:s.name.toLowerCase()===q?0:2});}
+ for(let m of meters)if([m.id,m.name,m.role,spaces[m.space].name].some(v=>v.toLowerCase().includes(q)))found.push({meter:m.id,title:m.id+' / '+m.name,sub:spaces[m.space].name+' · '+m.role,rank:m.id.toLowerCase()===q?0:3});found.sort((a,b)=>a.rank-b.rank);out.innerHTML=`<div class="search-summary" role="status">${found.length} matches${found.length>60?' · First 60 shown':''}</div>`+found.slice(0,60).map(r=>`<button class="result-item" ${r.loc?'data-loc="'+r.loc+'"':r.space?'data-space="'+r.space+'"':'data-meter="'+r.meter+'"'}>${esc(r.title)}<small>${esc(r.sub)}</small></button>`).join('')+(found.length?'':'<div class="search-summary">Try Nuvo, Room 601, a shop name, or an exact meter ID.</div>');}
+let toastTimer;function toast(text){$('#toast').textContent=text;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3600);}
+const tourStops=[{loc:'site',title:'Four buildings. One place.',text:'Discover a hotel, two office towers and a mall connected by shared infrastructure.'},{loc:'site:supplies',title:'Start at the supply boundary',text:'Bulk supply and check meters cover five utilities across the precinct.'},{loc:'hotel:6',title:'A place to stay',text:'The Nuvo has 20 room floors, followed by Gym, Restaurant and Penthouse.'},{loc:'office-a:10',title:'A place to work',text:'Each office block has 20 levels with 10 suites per level and separate floor checks.'},{loc:'mall:ground',title:'A place to explore',text:'The Commons preserves the original shops and amenities across four retail levels.'},{loc:'hotel:roof',title:'Shared and on-site generation',text:'Inspect rooftop solar, then explore the precinct’s shared backup generation.'},{loc:'site:parking',title:'Account for the whole precinct',text:'Parking, landscape and common services have their own utility records.'}];
+function showTour(i){if(i>=tourStops.length){state.tour=-1;$('#tour').hidden=true;toast('Tour complete. Explore any building, space or meter.');return;}state.tour=i;state.mode='orbit';navigate(tourStops[i].loc);$('#tour').hidden=false;$('#tour-step').textContent=String(i+1).padStart(2,'0')+' / '+String(tourStops.length).padStart(2,'0');$('#tour-title').textContent=tourStops[i].title;$('#tour-text').textContent=tourStops[i].text;$('#tour-next').textContent=i===tourStops.length-1?'Finish':'Next →';}
+function handleAction(action){if(action==='tour')showTour(0);if(action==='trace'&&state.meter){state.trace=!state.trace;state.flows=state.trace;if(state.trace)state.layers[meterById[state.meter].type]=true;refresh();}if(action==='walk-here'){if(state.mode!=='walk')setMode('walk');else{spawnWalk();refresh();}}}
+function picking(x,y){if(!renderer||!renderer.vp)return;let ray=renderer.ray(x,y,lastEye),best=null;if(!ray)return;for(let p of picks){let allowed=isDetailed()?p.dynamic&&p.loc===state.loc&&(p.type!=='meter'||state.layers[p.service]):p.type==='building'&&context().building==='site'||p.type==='level'&&p.loc===state.loc||p.type==='nav'&&context().building==='site';if(!allowed)continue;let d=rayBox(ray,p.min,p.max);if(d===null)continue;if(!best||d<best.d||(Math.abs(d-best.d)<.1&&p.type==='meter'))best={p,d};}if(best){let p=best.p;if(p.type==='meter')selectMeter(p.id);else if(p.type==='space')selectSpace(p.id);else if(p.type==='building')navigate(p.id+':all');else navigate(p.id);}}
+function planCamera(){if(state.mode==='walk'){state.mode='orbit';keys.clear();refresh();}fitLocation();goal.phi=.045;goal.theta=0;goal.radius=isDetailed()?Math.max(layoutFor(state.loc).width,layoutFor(state.loc).depth)*1.85:state.building==='site'?175:Math.max(bHeight(byId[state.building])*2,100);}
+function panOrbit(dx,dy){let fac=goal.radius*.00125,r=[Math.cos(goal.theta),0,-Math.sin(goal.theta)];goal.target=V.add(goal.target,V.add(V.mul(r,-dx*fac),[0,dy*fac,0]));goal.target[0]=Math.max(-80,Math.min(80,goal.target[0]));goal.target[1]=Math.max(-10,Math.min(90,goal.target[1]));goal.target[2]=Math.max(-65,Math.min(65,goal.target[2]));}
+let mapBox={cx:0,cz:0,scale:1};function drawMap(){let cv=$('#minimap'),c=cv.getContext('2d'),W=cv.width,H=cv.height;mapBox=isDetailed()?{cx:0,cz:0,scale:Math.min(210/layoutFor(state.loc).width,158/layoutFor(state.loc).depth)}:{cx:-2,cz:3,scale:1.72};const P=(x,z)=>[W/2+(x-mapBox.cx)*mapBox.scale,H/2+(z-mapBox.cz)*mapBox.scale],rect=(x,z,w,d,col)=>{let p=P(x-w/2,z-d/2);c.fillStyle=col;c.fillRect(...p,w*mapBox.scale,d*mapBox.scale);c.strokeStyle='#93a78f';c.strokeRect(...p,w*mapBox.scale,d*mapBox.scale);};c.fillStyle='#f1f5ed';c.fillRect(0,0,W,H);if(isDetailed()){let l=layoutFor(state.loc);rect(0,0,l.width,l.depth,'#e6ebdc');for(let e of l.entries){rect(e.x,e.z,e.cw-.1,e.rd-.1,state.space===e.s.id?'#76b390':l.b?.color||'#b0c6a7');if(l.grid){c.fillStyle='#365b48';c.font='10px Arial';c.textAlign='center';c.fillText(e.s.short,...P(e.x,e.z));}}}
+ else{rect(-37,26,24,34,'#c0cbbb');for(let b of buildings){let [x,,z]=bPos(b);rect(x,z,b.w*1.6,b.d*1.6,b.color);c.fillStyle='#3c6555';c.font='11px Arial';c.textAlign='center';c.fillText(b.code,...P(x,z));}rect(-39,-4,18,5,'#9fb69f');rect(-41,-29,11,7,'#9fb69f');}
+ if(state.meter){let p=P(...[assetPos[state.meter][0],assetPos[state.meter][2]]);c.fillStyle=COLORS[meterById[state.meter].type];c.beginPath();c.arc(...p,4,0,Math.PI*2);c.fill();}if(state.mode==='walk'){let p=P(walk.pos[0],walk.pos[2]);c.save();c.translate(...p);c.rotate(walk.yaw);c.fillStyle='#1b6a4c';c.beginPath();c.moveTo(0,-7);c.lineTo(-5,6);c.lineTo(0,3);c.lineTo(5,6);c.closePath();c.fill();c.restore();}}
+function mapClick(e){let r=e.currentTarget.getBoundingClientRect(),x=((e.clientX-r.left)/r.width*230-115)/mapBox.scale+mapBox.cx,z=((e.clientY-r.top)/r.height*184-92)/mapBox.scale+mapBox.cz;if(!canStand(x,z))return toast('Choose a clear walkway on the plan.');if(state.mode!=='walk')setMode('walk');walk.pos=[x,isDetailed()?layoutFor(state.loc).y+1.7:1.7,z];refresh();toast('Moved to the selected point on the plan.');}
+function wireEvents(){document.addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.loc)navigate(b.dataset.loc);if(b.dataset.space)selectSpace(b.dataset.space);if(b.dataset.meter)selectMeter(b.dataset.meter);if(b.dataset.action)handleAction(b.dataset.action);if(b.dataset.marker!==undefined){let m=markerData[+b.dataset.marker];if(m.type==='nav')navigate(m.id);else if(m.type==='space')selectSpace(m.id);else selectMeter(m.id);}});
+ $('#search').addEventListener('input',updateSearch);$('#level-select').onchange=e=>navigate(e.target.value);$('#orbit').onclick=()=>setMode('orbit');$('#walk').onclick=()=>setMode('walk');$('#cutaway').onclick=()=>{state.xray=!state.xray;refresh();};$('#routes').onclick=()=>{state.flows=!state.flows;state.trace=false;refresh();};$('#labels').onclick=()=>{state.labels=!state.labels;updateUI();};$('#utility-layers').onchange=e=>{if(e.target.dataset.layer){state.layers[e.target.dataset.layer]=e.target.checked;refresh();}};$('#day-night').onclick=()=>{state.night=!state.night;updateUI();};$('#home-view').onclick=()=>state.mode==='walk'?spawnWalk():fitLocation();$('#plan-view').onclick=planCamera;$('#zoom-in').onclick=()=>{if(state.mode==='walk'){keys.add('w');setTimeout(()=>keys.delete('w'),180);}else goal.radius=Math.max(2,goal.radius*.8);};$('#zoom-out').onclick=()=>{if(state.mode==='walk'){keys.add('s');setTimeout(()=>keys.delete('s'),180);}else goal.radius=Math.min(250,goal.radius*1.25);};$('#menu').onclick=()=>{let open=$('#navigation').classList.toggle('open');$('#menu').setAttribute('aria-expanded',String(open));if(open)$('#search').focus();};$('#help').onclick=()=>$('#help-dialog').showModal();$$('.close-dialog,.close-dialog-button').forEach(b=>b.onclick=()=>$('#help-dialog').close());$('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('#app').requestFullscreen();}catch(e){toast('Full screen is unavailable in this browser window.');}};
+ $('#download').onclick=()=>{let blob=new Blob([downloadSource],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='precint-enhanced.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};$('#snapshot').onclick=()=>{if(!renderer||renderer.lost)return toast('The 3D renderer is unavailable.');let a=document.createElement('a');a.download='precinct-'+state.loc.replace(':','-')+'-view.png';a.href=$('#scene').toDataURL('image/png');a.click();toast('Scene image saved. Conceptual geometry and demo data.');};$('#tour-next').onclick=()=>showTour(state.tour+1);$('#tour-close').onclick=()=>{state.tour=-1;$('#tour').hidden=true;};
+ window.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)||$('#help-dialog').open)return;let k=e.key.toLowerCase();if(k==='escape'){if(state.mode==='walk')setMode('orbit');closeNavigation();keys.clear();}if(state.mode==='walk'&&['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(k)){e.preventDefault();keys.add(k);}});window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());document.addEventListener('visibilitychange',()=>keys.clear());$$('[data-move]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.move);};b.onpointerup=b.onpointercancel=()=>keys.delete(b.dataset.move);});
+ let canvas=$('#scene'),pointers=new Map(),gesture=null,clickStart=null;canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.addEventListener('pointerdown',e=>{canvas.focus({preventScroll:true});pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});canvas.setPointerCapture(e.pointerId);clickStart={x:e.clientX,y:e.clientY,time:performance.now(),moved:false};gesture={pan:e.button===2||e.shiftKey,dist:0};if(pointers.size===2){clickStart.moved=true;let a=[...pointers.values()];gesture.dist=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);gesture.cx=(a[0].x+a[1].x)/2;gesture.cy=(a[0].y+a[1].y)/2;}});
+ canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;let old=pointers.get(e.pointerId),dx=e.clientX-old.x,dy=e.clientY-old.y;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(clickStart&&Math.hypot(e.clientX-clickStart.x,e.clientY-clickStart.y)>4)clickStart.moved=true;if(pointers.size===2&&state.mode==='orbit'){let a=[...pointers.values()],d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),cx=(a[0].x+a[1].x)/2,cy=(a[0].y+a[1].y)/2;if(gesture.dist>0&&d>0){goal.radius=Math.min(250,Math.max(2,goal.radius*gesture.dist/d));panOrbit(cx-gesture.cx,cy-gesture.cy);}gesture.dist=d;gesture.cx=cx;gesture.cy=cy;return;}if(state.mode==='walk'){walk.yaw+=dx*.0045;walk.pitch=Math.max(-1.2,Math.min(1.2,walk.pitch-dy*.0045));}else if(gesture.pan)panOrbit(dx,dy);else{goal.theta-=dx*.006;goal.phi=Math.max(.035,Math.min(1.53,goal.phi+dy*.005));}});
+ canvas.addEventListener('pointerup',e=>{pointers.delete(e.pointerId);if(clickStart&&!clickStart.moved&&performance.now()-clickStart.time<600&&e.button!==2){let r=canvas.getBoundingClientRect();picking(e.clientX-r.left,e.clientY-r.top);}clickStart=null;if(!pointers.size)gesture=null;});canvas.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);clickStart=null;if(!pointers.size)gesture=null;});canvas.addEventListener('wheel',e=>{e.preventDefault();if(state.mode==='orbit')goal.radius=Math.max(2,Math.min(250,goal.radius*Math.exp(e.deltaY*.001)));},{passive:false});$('#minimap').onclick=mapClick;$('#minimap').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();if(state.mode!=='walk')setMode('walk');else spawnWalk();refresh();}};
+}
+function sampleLine(l,t){let dist=(t%1)*l.total;for(let i=0;i<l.lengths.length;i++){if(dist<=l.lengths[i])return V.mix(l.points[i],l.points[i+1],dist/l.lengths[i]);dist-=l.lengths[i]}return l.points.at(-1);}
+let lastTime=0,lastMap=0;
+function frame(ms){requestAnimationFrame(frame);if(!renderer||renderError||document.hidden)return;let dt=Math.min((ms-lastTime)/1000||.016,.2);lastTime=ms;let eye,target;if(state.mode==='walk'){let steps=Math.ceil(dt/.04);for(let i=0;i<steps;i++)updateWalk(dt/steps);eye=[...walk.pos];const d=[Math.sin(walk.yaw)*Math.cos(walk.pitch),Math.sin(walk.pitch),-Math.cos(walk.yaw)*Math.cos(walk.pitch)];target=V.add(eye,d);}else{let f=reducedMotion?1:1-Math.exp(-dt*9);orbit.theta+=(goal.theta-orbit.theta)*f;orbit.phi+=(goal.phi-orbit.phi)*f;orbit.radius+=(goal.radius-orbit.radius)*f;orbit.target=V.mix(orbit.target,goal.target,f);eye=V.add(orbit.target,[orbit.radius*Math.sin(orbit.phi)*Math.sin(orbit.theta),orbit.radius*Math.cos(orbit.phi),orbit.radius*Math.sin(orbit.phi)*Math.cos(orbit.theta)]);target=orbit.target;}lastEye=eye;lastTarget=target;let sig=[...eye,...target].map(n=>n.toFixed(4)).join(',')+'|'+renderRevision+'|'+renderer.canvas.clientWidth+'|'+renderer.canvas.clientHeight;if(ms-lastDrawTime<32||(sig===lastRenderSignature&&!state.flows&&!state.trace))return;lastRenderSignature=sig;lastDrawTime=ms;let extra=[];if(groups['route-overlay']?.count&&(state.flows||state.trace)){extra.push({geo:groups['route-overlay'],overlay:true,glow:true,alpha:.90});if(!reducedMotion)routeSamples.filter((l,i)=>i<5||i%9===0).slice(0,13).forEach((l,i)=>{extra.push({geo:groups[(state.trace||isDetailed()?'pulse-fine-':'pulse-')+l.service],offset:sampleLine(l,ms/9000+i*.19),overlay:true,glow:true})});}if(groups.selection?.count)extra.push({geo:groups.selection,overlay:true,glow:true});renderer.render(visible,eye,target,state.night,extra,state.mode==='walk'?Math.PI/2.6:Math.PI/4.5);updateMarkers();if(ms-lastMap>70){drawMap();lastMap=ms;}}
+
+setupUI();wireEvents();inspector();updateUI();
+window.PrecinctExplorer=window.WebillExplorer={version:'1.0.0',navigate,selectSpace,selectMeter,setMode,getState:()=>JSON.parse(JSON.stringify(state)),getCamera:()=>({eye:[...lastEye],target:[...lastTarget]}),getData:()=>JSON.parse(JSON.stringify({buildings,spaces,meters})),getDiagnostics:()=>({webgl:!!renderer&&!renderer.lost,triangles:Object.values(groups).reduce((n,g)=>n+g.count/3,0),meters:meters.length,positionedMeters:Object.keys(assetPos).length,spaces:Object.keys(spaces).length,primaryLevels:primaryCount,shadowSupport:!!renderer?.shadows,errors:renderError}),projectAsset:id=>renderer&&assetPos[id]?renderer.project(assetPos[id]):null};
+setTimeout(()=>{try{renderer=new Renderer($('#scene'));buildGeometry();for(let service of Object.keys(COLORS)){new Geo('pulse-'+service).sphere(0,0,0,.15,COLORS[service],1,8,5);new Geo('pulse-fine-'+service).sphere(0,0,0,.036,COLORS[service],1,8,5);}G('route-overlay');G('selection');Object.values(groups).forEach(g=>g.upload(renderer.gl));fitLocation(true);refresh();$('#loading').hidden=true;requestAnimationFrame(frame);}catch(e){console.error(e);renderError=e.message;renderer=null;$('#error').hidden=false;$('#error-message').textContent=e.message;$('#loading').hidden=true;$('#render-status').textContent='3D unavailable / Directory still works';}},30);
+})();
+</script></body></html>
