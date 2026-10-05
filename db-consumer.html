@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Your Home Utility Story</title>
 <meta name="description" content="One household's utilities told as a story: what you are spending this month, your bill line by line, where the money goes, your daily rhythm, how you compare, your payments and balance, and what you can do.">
@@ -46,7 +46,7 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 .badge.WATER { background: color-mix(in srgb, #447CBF 12%, #fff); color: #447CBF; border-color: rgb(68 124 191 / .4); }
 .badge.GAS { background: color-mix(in srgb, #6F301B 12%, #fff); color: #6F301B; border-color: rgb(111 48 27 / .4); }
 .appbar .sub { font-size: 12px; margin-top: 3px; } .appbar .sub .dim { color: rgb(255 255 255 / .5); }
-.pills { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 600; border: 1px solid var(--navy); background: #fff; color: var(--navy); }
 .pill.ok { border-color: #a7f3d0; color: #047857; background: #ecfdf5; }
 .pill.warn { border-color: #fde68a; color: #92400e; background: #fffbeb; }
@@ -159,7 +159,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .tbl th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; padding: 8px 10px; border-bottom: 1px solid var(--line-2); background: #f7f7f8; white-space: nowrap; }
 .tbl td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
 .tbl td.num, .tbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
-.tbl tr.click { cursor: pointer; } .tbl tr.click:hover td { background: #f5f5f6; }
+.tbl tr.click { cursor: pointer; } .tbl tr.click:hover td { background: #eef0f3; }
 .tbl .name { font-weight: 600; color: var(--ink); } .tbl .small { font-size: 11px; color: var(--muted); }
 .datatable { margin-top: 10px; max-height: 240px; overflow: auto; border: 1px solid var(--line-2); border-radius: 8px; }
 .datatable table { font-size: 11.5px; } .datatable th { position: sticky; top: 0; }
@@ -256,6 +256,12 @@ body.drawer-open .scrim { opacity: 1; pointer-events: auto; } body.drawer-open .
 .studio-link:hover { color: var(--navy); text-decoration: none; border-bottom: 1px solid var(--gold); }
 .studio-link:focus-visible { outline: 3px solid var(--active); outline-offset: 5px; }
 @media (max-width: 860px) { .studio-bar-inner { padding: 0 14px; min-height: 60px; } .studio-link { letter-spacing: 1.5px; } }
+
+/* button hover states — matches enhanced explorer hover language */
+.seg button{transition:background .15s,color .15s}
+.seg button:not(.active):hover{background:#eef0f3;color:var(--ink)}
+.home-trigger{transition:border-color .15s,background-color .15s}
+.home-trigger:hover{border-color:#cbd5e1;background-color:#f8fafc}
 </style>
 </head>
 <body>

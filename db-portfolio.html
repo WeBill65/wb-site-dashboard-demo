@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Northreef Property Group · Portfolio Story</title>
 <meta name="description" content="A narrative utility dashboard for an organisation's whole portfolio: what the sites consume, pay, bill and recover; what solar saves; where the portfolio leaks; what to do next and what it is worth; which sites, units and consumers lead and lag.">
@@ -168,7 +168,7 @@ table.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .tbl td { padding: 9px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
 .tbl td.num, .tbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .tbl tr.click { cursor: pointer; }
-.tbl tr.click:hover td { background: #f8fafc; }
+.tbl tr.click:hover td { background: #eef0f3; }
 .tbl .name { font-weight: 600; color: var(--ink); }
 .tbl .small { font-size: 11px; color: var(--muted); }
 .tbl.dark thead th { background: var(--navy); color: #fff; border-bottom: 0; }
@@ -389,6 +389,15 @@ footer { max-width: 1280px; margin: 24px auto 0; padding: 18px 24px; font-size: 
 .filters .home-menu { width: auto; }
 .filters .home-trigger { width: auto; min-width: 160px; }
 
+
+/* button hover states — matches enhanced explorer hover language */
+.seg button{transition:background .15s,color .15s}
+.seg button:not(.active):hover{background:#eef0f3;color:var(--ink)}
+.home-trigger{transition:border-color .15s,background-color .15s}
+.home-trigger:hover{border-color:#cbd5e1;background-color:#f8fafc}
+.picker button{transition:background .15s,color .15s,border-color .15s}
+.picker button:not(.active):hover{background:#eef0f3;color:var(--ink);border-color:#cbd5e1}
+.pills { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 </style>
 </head>
 <body>

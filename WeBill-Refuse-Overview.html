@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" /><link rel="icon" type="image/png" sizes="32x32" href="assets/webill-favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="assets/webill-favicon.png"><link rel="apple-touch-icon" href="assets/webill-favicon.png"><script>try{if('scrollRestoration'in history)history.scrollRestoration='manual';}catch(e){}(function(){if(location.hash)return;function t(){scrollTo(0,0);}addEventListener('load',function(){t();requestAnimationFrame(t);setTimeout(t,0);});addEventListener('pageshow',t);})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WeBill — Refuse removal, billed on what you actually collect</title>
+<meta name="description" content="WeBill extends its utility-billing platform to refuse and waste management — a cost-reflective service tariff billed alongside water, electricity and gas." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#faa919;
+    --amber:#404041;
+    --charcoal:#404041;
+    --ink:#404041;
+    --muted:#6b6b73;
+    --paper:#FFFFFF;
+    --neutral:#f5f5f6;
+    --tint:#fff7e6;
+    --hair:#e4e4e7;
+    --hair-strong:#d4d4d8;
+    --sans:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --display:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --mono:Roboto,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --pad:clamp(20px,5vw,72px);
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--paper); color:var(--charcoal);
+    font-family:var(--sans); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  :focus-visible{outline:3px solid var(--yellow); outline-offset:3px;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--pad);}
+
+  /* masthead */
+  .mast{border-bottom:1px solid var(--hair);}
+  .mast .wrap{display:flex; align-items:center; justify-content:space-between; gap:24px; padding-top:22px; padding-bottom:20px;}
+  .mast img{width:132px;}
+  .mast .tag{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); white-space:nowrap;}
+  .mast .tag b{color:var(--charcoal); font-weight:600;}
+
+  /* hero */
+  .hero{position:relative; overflow:hidden;}
+  .hero::before{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg,var(--neutral) 0%,rgba(245,246,247,0) 62%); z-index:0;}
+  .hero .wrap{position:relative; z-index:1; padding-top:clamp(44px,7vw,84px); padding-bottom:clamp(40px,6vw,72px);}
+  .hero-grid{display:grid; grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr); gap:clamp(28px,4.5vw,64px); align-items:start;}
+
+  .eyebrow{display:inline-flex; align-items:center; gap:10px; font-family:var(--mono); font-size:11px; font-weight:500; letter-spacing:.22em; text-transform:uppercase; color:var(--amber);}
+  .eyebrow::before{content:""; width:26px; height:2.5px; background:var(--yellow); display:block;}
+  h1{font-family:var(--display); font-weight:700; letter-spacing:-.026em; font-size:clamp(34px,5.1vw,58px); line-height:1.03; margin:18px 0 0; color:var(--ink);}
+  h1 em{font-style:normal; color:var(--ink); background-image:linear-gradient(180deg,transparent 64%,var(--yellow) 64%); background-repeat:no-repeat; padding:0 .07em;}
+  .hero .sub{font-family:var(--display); font-weight:600; font-size:clamp(16px,1.6vw,20px); color:var(--charcoal); margin-top:18px; line-height:1.3;}
+  .hero .lede{margin:20px 0 0; font-size:clamp(15px,1.15vw,16.5px); color:#6b6b73; max-width:52ch;}
+  .hero .lede b{color:var(--ink); font-weight:600;}
+
+  .claims{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;}
+  .claim{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--charcoal); background:var(--paper); border:1px solid var(--hair-strong); border-radius:2px; padding:7px 11px;}
+  .claim i{font-style:normal; color:var(--amber);}
+
+  /* signature: the refuse service record */
+  .statement{background:var(--paper); border:1px solid var(--hair-strong); border-radius:4px; box-shadow:0 18px 40px -28px rgba(35,38,42,.42); overflow:hidden;}
+  .statement .st-head{background:var(--charcoal); color:#fff; padding:14px 18px; display:flex; align-items:baseline; justify-content:space-between; gap:12px;}
+  .statement .st-head .t{font-family:var(--display); font-weight:600; font-size:13.5px; letter-spacing:.01em;}
+  .statement .st-head .t span{color:var(--yellow);}
+  .statement .st-head .k{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:#c7c8d7; white-space:nowrap;}
+  .st-body{padding:8px 18px 4px;}
+  .st-row{display:grid; grid-template-columns:1fr auto; gap:16px; align-items:baseline; padding:9px 0; border-bottom:1px dotted var(--hair);}
+  .st-row:last-of-type{border-bottom:none;}
+  .st-row .l{font-size:13.5px; color:#6b6b73; line-height:1.35;}
+  .st-row .l small{display:block; font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.05em; margin-top:2px;}
+  .st-row .v{font-family:var(--mono); font-size:13.5px; font-weight:500; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .st-row.basis{position:relative;}
+  .st-row.basis .l{padding-left:14px;}
+  .st-row.basis .l::before{content:"×"; position:absolute; margin-left:-14px; color:var(--amber); font-family:var(--mono);}
+  .st-row.net{background:var(--tint); margin:6px -18px 0; padding:14px 18px; border-bottom:none; border-top:2px solid var(--yellow);}
+  .st-row.net .l{font-family:var(--display); font-weight:600; font-size:13px; color:var(--charcoal);}
+  .st-row.net .l small{font-family:var(--mono); font-weight:400;}
+  .st-row.net .v{font-size:15px; font-weight:600; color:var(--charcoal);}
+  .st-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-top:1px solid var(--hair);}
+  .st-foot .n{font-family:var(--mono); font-size:10.5px; color:var(--muted); letter-spacing:.03em;}
+  .st-foot .p{font-family:var(--mono); font-size:10.5px; color:var(--amber); letter-spacing:.12em; text-transform:uppercase; font-weight:600;}
+
+  /* band */
+  .band{background:var(--charcoal); color:#fff;}
+  .band .wrap{padding-top:26px; padding-bottom:26px;}
+  .band p{margin:0; font-family:var(--display); font-weight:600; font-size:clamp(17px,2.1vw,25px); line-height:1.24; letter-spacing:-.014em;}
+  .band p span{color:var(--yellow);}
+
+  /* sections */
+  section{padding-top:clamp(48px,6vw,78px);}
+  .s-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; border-bottom:2px solid var(--ink); padding-bottom:12px;}
+  .s-head h2{margin:0; font-family:var(--display); font-weight:600; letter-spacing:-.014em; font-size:clamp(19px,2.3vw,27px); line-height:1.14; color:var(--ink);}
+  .s-head .note{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); white-space:nowrap;}
+
+  .ledger{display:grid; grid-template-columns:repeat(2,minmax(0,1fr));}
+  .item{padding:26px 30px 28px 0; border-bottom:1px solid var(--hair); display:grid; gap:8px;}
+  .ledger .item:nth-child(odd){padding-right:34px;}
+  .ledger .item:nth-child(even){padding-left:34px; border-left:1px solid var(--hair);}
+  .item .h{font-family:var(--display); font-weight:600; font-size:clamp(15.5px,1.5vw,18px); letter-spacing:-.01em; color:var(--ink); margin:0; display:flex; align-items:baseline; gap:9px;}
+  .item .h::before{content:""; flex:0 0 auto; width:9px; height:9px; background:var(--yellow); margin-top:1px;}
+  .item p{margin:0; font-size:14.5px; color:#6b6b73; line-height:1.55; max-width:46ch;}
+
+  .strip{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:2px solid var(--ink);}
+  .strip .c{padding:22px 20px 4px 0; border-bottom:1px solid var(--hair);}
+  .strip .c + .c{padding-left:20px; border-left:1px solid var(--hair);}
+  .strip .k{font-family:var(--mono); font-size:11.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--amber); margin:0 0 8px;}
+  .strip p{margin:0 0 18px; font-size:13.5px; color:#6b6b73; line-height:1.5;}
+
+  .cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.12fr); gap:clamp(28px,4vw,60px); align-items:start;}
+  .col h3{margin:0 0 18px; font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--muted);}
+  .aud{list-style:none; margin:0; padding:0;}
+  .aud li{border-top:1px solid var(--hair); padding:16px 0 17px; display:grid; grid-template-columns:auto 1fr; gap:14px;}
+  .aud li::before{content:""; width:8px; height:8px; background:var(--yellow); margin-top:8px;}
+  .aud b{font-family:var(--display); font-weight:600; font-size:15px; color:var(--ink); display:block; margin-bottom:4px; letter-spacing:-.008em;}
+  .aud span{font-size:14px; color:#6b6b73;}
+
+  .steps{list-style:none; margin:0; padding:0; counter-reset:s;}
+  .steps li{counter-increment:s; border-top:1px solid var(--hair); padding:15px 0 16px; display:grid; grid-template-columns:38px 1fr; gap:14px; align-items:start;}
+  .steps li::before{content:counter(s,decimal-leading-zero); font-family:var(--mono); font-size:12.5px; font-weight:600; color:var(--amber); letter-spacing:.06em; padding-top:2px;}
+  .steps b{font-family:var(--display); font-weight:600; font-size:14.5px; color:var(--ink); display:block; margin-bottom:3px; letter-spacing:-.006em;}
+  .steps span{font-size:13.8px; color:#6b6b73;}
+
+  /* cta */
+  .cta{margin-top:clamp(48px,6vw,80px); background:var(--ink); color:#fff;}
+  .cta .wrap{padding-top:clamp(40px,5vw,60px); padding-bottom:clamp(36px,4.5vw,54px);}
+  .cta-grid{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr); gap:clamp(26px,4vw,56px); align-items:end;}
+  .cta h2{margin:0; font-family:var(--display); font-weight:700; letter-spacing:-.022em; font-size:clamp(24px,3.3vw,40px); line-height:1.1;}
+  .cta h2 span{color:var(--yellow);}
+  .cta p{margin:18px 0 0; font-size:14.5px; color:#c7c8d7; max-width:46ch; line-height:1.6;}
+  .cta p b{color:#fff; font-weight:600;}
+  .cta .next{border-left:2px solid var(--yellow); padding-left:20px;}
+  .cta .next .k{font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--yellow); margin:0 0 10px;}
+  .cta .next p{font-size:13.8px; color:#c7c8d7; margin:0;}
+  .sig{margin-top:34px; padding-top:20px; border-top:1px solid #4e4e7d; display:flex; flex-wrap:wrap; gap:10px 26px; align-items:center; justify-content:space-between;}
+  .sig .tagline{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#fff;}
+  .sig .contact{font-family:var(--mono); font-size:11px; color:#9a9aa3; letter-spacing:.03em;}
+
+  @media (max-width:940px){
+    .hero-grid{grid-template-columns:1fr;}
+    .statement{max-width:520px;}
+    .ledger{grid-template-columns:1fr;}
+    .ledger .item:nth-child(odd){padding-right:0;}
+    .ledger .item:nth-child(even){padding-left:0; border-left:none;}
+    .strip{grid-template-columns:1fr 1fr;}
+    .strip .c + .c{padding-left:0; border-left:none;}
+    .cols{grid-template-columns:1fr;}
+    .cta-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:560px){
+    .strip{grid-template-columns:1fr;}
+    .mast .wrap{flex-direction:column; align-items:flex-start; gap:12px;}
+    .mast .tag{white-space:normal;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+  @media print{
+    @page{size:A4; margin:13mm;}
+    body{font-size:10.5pt;}
+    .hero::before{display:none;}
+    .statement{box-shadow:none;}
+    section{padding-top:22px; break-inside:avoid;}
+    .item,.strip .c,.aud li,.steps li{break-inside:avoid;}
+    .cta{margin-top:26px;}
+  }
+
+  /* dashboard identity: dark surfaces -> navy */
+  .statement .st-head{background:#404041;}
+  .band{background:#404041;}
+
+  /* ===== header / palette / claims refinements ===== */
+  .mast .wrap{align-items:center;}
+  .studio-link{color:#404041;font-size:11px;letter-spacing:.16em;font-weight:700;text-transform:uppercase;text-decoration:none;line-height:1;display:inline-flex;align-items:center;}
+  .studio-link:hover{border-bottom:1px solid #faa919;}
+  .studio-link:focus-visible{outline:3px solid #faa919;outline-offset:3px;}
+  h1 em{color:#FAA919;background:none;background-image:none;padding:0;}
+  .band{background:#404068;}
+  .cta{background:#404068;}
+  .claims{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0;margin-top:26px;}
+  .claim{font-family:inherit;font-size:13px;letter-spacing:0;text-transform:none;color:#404041;background:none;border:0;border-left:1px solid var(--hair-strong);border-radius:0;padding:2px 16px;line-height:1.35;}
+  .claim:first-child{padding-left:0;border-left:0;}
+  .claim i{display:none;}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <a class="studio-link" href="index.html">Demo studio</a>
+    <div class="tag">Client overview &nbsp;·&nbsp; <b>Refuse &amp; Waste Management</b> &nbsp;·&nbsp; October 2026</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+
+      <div>
+        <span class="eyebrow">The offering</span>
+        <h1>Refuse removal, billed on <em>what you actually collect</em></h1>
+        <p class="sub">The same platform as water, electricity and gas.</p>
+        <p class="lede">WeBill is extending its utility-billing platform to <b>refuse and waste management</b> — a service tariff, not a meter reading. The billable quantity is the <b>service the property actually receives</b>: the receptacles, how often they are emptied, and the service level behind them. Cost-reflective charges, on the same account and audit trail that already run your utilities.</p>
+        <div class="claims">
+          <span class="claim"><i>◆</i> Service-based</span>
+          <span class="claim"><i>◆</i> Cost-reflective</span>
+          <span class="claim"><i>◆</i> Re-rated on change</span>
+          <span class="claim"><i>◆</i> Full provenance</span>
+        </div>
+      </div>
+
+      <figure class="statement" aria-label="Illustrative refuse service record and charge basis">
+        <div class="st-head">
+          <div class="t">Refuse service · <span>priced on entitlement</span></div>
+          <div class="k">Illustrative</div>
+        </div>
+        <div class="st-body">
+          <div class="st-row">
+            <div class="l">Service point<small>Property-level · no meter required</small></div>
+            <div class="v">Erf 1234</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Receptacle<small>Type · size · quantity</small></div>
+            <div class="v">240-litre × 1</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Collection frequency<small>Schedule at this service point</small></div>
+            <div class="v">1 × per week</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Service level<small>Collection standards level</small></div>
+            <div class="v">Kerbside</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Waste stream<small>Hazardous excluded</small></div>
+            <div class="v">General</div>
+          </div>
+          <div class="st-row basis">
+            <div class="l">Charge basis resolves<small>One of six, configurable</small></div>
+            <div class="v">Receptacle × freq</div>
+          </div>
+          <div class="st-row">
+            <div class="l">Effect of a service change<small>Effective-dated, never retroactive</small></div>
+            <div class="v">Re-rated</div>
+          </div>
+          <div class="st-row net">
+            <div class="l">Charge posted<small>Every input stored on the line</small></div>
+            <div class="v">One account</div>
+          </div>
+        </div>
+        <div class="st-foot">
+          <span class="n">Illustrative structure — rates are set by each municipality.</span>
+          <span class="p">Cost-reflective</span>
+        </div>
+      </figure>
+
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <p>From service point to posted account — <span>one configurable, cost-reflective refuse engine.</span></p>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="s-head">
+        <h2>What the offering covers</h2>
+        <span class="note">Six capabilities</span>
+      </div>
+      <div class="ledger">
+        <article class="item">
+          <h3 class="h">Refuse service billing</h3>
+          <p>Service entitlement × tariff — priced on what is collected, not on property value. Re-rated automatically whenever the service changes.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Service points &amp; receptacles</h3>
+          <p>The asset register behind every charge: bins, bulk containers and skips, each with size, quantity, lifts per week and effective dates.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Charging methods, configurable</h3>
+          <p>Flat, receptacle × frequency, volume, weight, value-indexed or cost-of-service — set per municipality, category and zone with no code change.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Commercial &amp; bulk waste</h3>
+          <p>Skips by mass or volume, garden and building rubble as their own streams, and disposal priced at the landfill gate.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">Free basic &amp; indigent relief</h3>
+          <p>The basic service free through the indigent register and above-basic charged in full, with revenue foregone reported separately from bad debt.</p>
+        </article>
+        <article class="item">
+          <h3 class="h">One consolidated account</h3>
+          <p>Refuse, rates and utilities on a single monthly invoice, with a plain-language explanation of the service entitlement behind each charge line.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="s-head">
+        <h2>Compliance is built in, not bolted on</h2>
+        <span class="note">Grounded in the standards</span>
+      </div>
+      <div class="strip">
+        <div class="c">
+          <p class="k">Waste Act 59 of 2008</p>
+          <p>The service mandate and the service charges that fund it — determined under the Act.</p>
+        </div>
+        <div class="c">
+          <p class="k">Collection Standards</p>
+          <p>Weekly kerbside collection, with rigid, covered receptacles no bigger than 240 litres.</p>
+        </div>
+        <div class="c">
+          <p class="k">Pricing Strategy</p>
+          <p>Polluter-pays and full-cost recovery, with volumetric tariffs expressly contemplated.</p>
+        </div>
+        <div class="c">
+          <p class="k">mSCOA</p>
+          <p>Revenue classified as Service Charges → Waste Management, with VAT indicators.</p>
+        </div>
+        <div class="c">
+          <p class="k">POPIA</p>
+          <p>Owner, occupant and means-test data purpose-limited, access-controlled and access-logged.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cols">
+        <div class="col">
+          <h3>Who it's for</h3>
+          <ul class="aud">
+            <li><span><b>Municipalities</b>Metro and local — one platform for four revenue streams, free-basic refuse applied from the register, fewer disputes and less write-off.</span></li>
+            <li><span><b>Managing agents</b>One account per property, service changes reflected on the next account, and no more chasing the municipal office.</span></li>
+            <li><span><b>Property portfolios &amp; body corporates</b>Every receptacle and lift visible, service levels billed as delivered, and one view across the portfolio.</span></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>How we work with you</h3>
+          <ol class="steps">
+            <li><span><b>Configure</b>Your refuse tariffs, categories and relief rules set up together with your team.</span></li>
+            <li><span><b>Import &amp; reconcile</b>Your service points and receptacles imported, then reconciled before anything bills.</span></li>
+            <li><span><b>Parallel run</b>We bill alongside your current process and prove the numbers agree before you switch.</span></li>
+            <li><span><b>Go live</b>One statement per property, one audit trail, on the same platform as your utilities.</span></li>
+            <li><span><b>Extend</b>Add weighbridge charging, cost-of-service and analytics as you're ready.</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="cta">
+  <div class="wrap">
+    <div class="cta-grid">
+      <div>
+        <h2>Let's bill refuse on <span>what you actually collect.</span></h2>
+        <p><b>Bring your refuse tariff schedule and a sample of your service points</b> to a short working session — we'll show you the charge, line by line, on your own data.</p>
+      </div>
+      <div class="next">
+        <p class="k">Next step</p>
+        <p>A short working session on your refuse tariff schedule and service points. We can run a parallel billing cycle on your own data before you commit to anything.</p>
+      </div>
+    </div>
+    <div class="sig">
+      <span class="tagline">Read | Rate | Recover | Recommend</span>
+      <span class="contact">webill.net &nbsp;·&nbsp; [contact name, email &amp; phone]</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
